@@ -1,0 +1,28 @@
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db'); // Assuming you named your configuration file as db.js
+
+const Product = sequelize.define('Product', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  id_cure: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  id_molecule: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  startDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  }  
+});
+
+module.exports = Product;

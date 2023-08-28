@@ -1,0 +1,405 @@
+
+.dashboard-container{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.header{
+    background: var(--main-dark-blue);
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    img{
+        padding: 0.5rem 1rem;
+    }
+    .user-box{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-right: 1rem;
+
+        label{
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 20px;
+            letter-spacing: 0em;
+            text-align: left;
+        }
+    }
+}
+
+.dashbaord-body{
+    padding: 3rem;
+    padding-bottom: 0;
+    flex: 9;
+}
+
+.search-block{
+    padding-left: 5rem;
+
+    .filters{
+        background-color: #F9F9F9;
+        padding: 2rem;
+        margin: 2rem;
+        display: flex;
+        flex-direction: row;
+        row-gap: 3rem;
+        column-gap: 10rem;
+        flex-wrap: wrap;
+        justify-content: center;
+
+        .filter{
+
+            input, select{
+                margin-left: 1.5rem;
+                width: 170px;
+            }
+        }
+    }
+
+    h1{
+        color: var(--main-h1-color);
+    }
+}
+
+.PatientList-container{
+    padding-left: 5rem;
+
+    .list-header{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        button{
+            z-index: 1;
+            background-color: #2663EE;
+        }
+    }
+    .patient-list{
+        height: 400px;
+        padding: 2rem;
+
+        .MuiDataGrid-columnHeadersInner div:nth-child(1){
+            border-left: unset !important;
+        }
+
+        .MuiDataGrid-columnHeader{
+            background: var(--main-dark-blue);
+            border-left: white solid 4px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 17px;
+            letter-spacing: 0em;
+            text-align: left;
+            
+            .MuiSvgIcon-root{
+                fill: white;
+            }
+        }
+    }
+
+    h1{
+        color: var(--main-h1-color);
+    }
+}
+
+.details-container{
+    // margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 20px;
+    background: #F5F5F5;
+    box-shadow: -6px 8px 48px -5px rgba(0,0,0,0.56);
+
+    h2{
+        padding-bottom: 3rem;
+        color: var(--main-light-blue);
+        width: 100%;
+        text-align: center;
+        padding: 0;
+    }
+    label {
+        padding-right: 1rem;
+    }
+    input, select{
+        width: 200px;
+    }
+    .btn-container{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        column-gap: 2rem;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+}
+
+.admin-details{
+    display: flex;
+    flex-direction: row;
+    row-gap: 2rem;
+    column-gap: 5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 12rem;
+
+    .field{
+        display: flex;
+        align-items: center;
+        padding-bottom: 2rem;
+
+        .main-label{
+            width: 200px;
+        }
+        .main-input{
+            width: 300px;
+        }
+    }
+    .input-commentaire{
+        width: 80%;
+        height: 80px;
+    }
+    .MuiDivider-root{
+        height: 540px;
+        margin-top: 2rem;
+    }
+}
+
+.bio-details{
+    display: flex;
+    flex-direction: row;
+    row-gap: 2rem;
+    column-gap: 5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    input[type=number]{
+        width: 60px;
+        margin-right: 1rem;
+    }
+}
+
+.add-prescription-btn{
+    width: 40px !important;
+    height: 40px !important;
+    background-color: #2663EE !important;
+}
+
+//Add Prescription
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background-color: rgba(35, 51, 104, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 690px;
+    height: 550px;
+    background-color: #fff;
+    border-radius: 40px;
+
+    hr{
+        padding-top: 2rem;
+        width: 470px;
+    }
+    h1{
+        color: #233368;
+        padding-top: 2rem;
+    }
+    .stepper{
+        padding-bottom: 1.5rem;
+        width: 500px;
+    }
+    .row{
+        display: flex;
+        flex-direction: row;
+        column-gap: 5rem;
+        justify-content: space-between;
+        padding-bottom: 1rem;
+        align-items: center;
+
+        .field-detail{
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 20px;
+            letter-spacing: 0em;
+            text-align: left;
+            color: #2874E5;
+        }
+    }
+    .prescription-details, .prescription-second{
+        padding-top: 2rem;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        
+        select, input{
+            width: 220px;
+        }
+        input[type=number]{
+            width: 200px;
+            padding: 0 10px;
+        }
+    }
+    .prescription-second{
+        padding-top: 1rem;
+    }
+    .prescription-third{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        height: 285px;
+
+        .row{
+            padding-bottom: 1.5rem;
+        }
+        .MuiPaper-root{
+            max-height: 240px;
+        }
+    }
+    .btn-container .main-btn{
+        margin: 1rem;
+    }
+    .patient-details{
+        width: 480px;
+    }
+    .btn-container{
+        padding-top: 1rem;
+    }
+}
+.cure-list-header{
+    background-color: var(--main-dark-blue) !important;
+    
+    tr th{
+        color: white !important;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 22px;
+        letter-spacing: 0em;
+        text-align: left;
+    }
+}
+
+.planning-container{
+    display: flex;
+    flex-direction: column;
+    padding: 0 3rem;
+    width: 540px;
+    
+    .prescriptions{
+        display: flex;
+        flex-direction: column;
+        row-gap: 1rem;
+        align-items: flex-end;
+        padding-bottom: 2rem;
+    }
+
+    .block{
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        column-gap: 1rem;
+
+        img{
+            width: 17px;
+        }
+        .details{
+            width: 500px;
+            height: 50px;
+            border-radius: 5px;
+            background: #DCEBFD;
+            border: 2px solid #2663EE;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+
+            label{
+                text-align: center;
+            }
+            img{
+                padding: 0 1rem;
+            }
+            .label1{
+                font-size: 20px;
+                font-weight: 700;
+                line-height: 24px;
+                letter-spacing: 0em;
+                text-align: left;
+            }
+            .label2{
+                padding-left: 0.5rem;
+                font-size: 20px;
+                font-weight: 400;
+                line-height: 24px;
+                letter-spacing: 0em;
+                text-align: left;
+            }
+        }
+        .details-product{
+            margin-top: 1rem;
+            border-left: 1px solid #2874E5
+        }
+    }
+    .child-block{
+
+        .status{
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 24px;
+            letter-spacing: 0em;
+            text-align: left;
+            color: #2874E5;
+            margin-left: auto;
+            padding-right: 0.5rem;
+        }
+        .details{
+            width: 460px;
+        }
+    }
+    .products-block{
+        width: 420px;
+        margin-top: -1rem;
+        border-left: 2px solid #2874E5
+    }
+    h1{
+        padding-left: 2rem;
+        color: var(--main-h1-color);
+    }
+    .open-icon{
+        cursor: pointer;
+    }
+    .child-block, .products-block{
+        display: none;
+    }
+    .shown{
+        display: flex;
+    }
+}
