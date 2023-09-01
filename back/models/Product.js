@@ -15,6 +15,10 @@ const Product = sequelize.define('Product', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  dose: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -22,7 +26,12 @@ const Product = sequelize.define('Product', {
   startDate: {
     type: DataTypes.DATEONLY,
     allowNull: false,
-  }  
+  },
+  validation: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    default: 0
+  }
 });
 
 module.exports = Product;

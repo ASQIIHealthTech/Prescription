@@ -27,6 +27,10 @@ const Prescription = sequelize.define('Prescription', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  // commentaire:{
+  //   type: DataTypes.TEXT,
+  //   allowNull: true,
+  // }
   
 });
 

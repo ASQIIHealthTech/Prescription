@@ -40,6 +40,7 @@ body {
   border: 0;
   color: white;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 .main-btn:hover{
@@ -54,6 +55,27 @@ body {
   border: 0;
   background-color: #DCEBFD;
   color: var(--main-input-color);
+}
+
+.percentage-input-container{
+    display: inline-block;
+    position: relative;
+}
+  
+/* position the unit to the right of the wrapper */
+.percentage-input-container::after {
+  content: '%';
+  position: absolute;
+  top: 12px;
+  right: .5em;
+  transition: all .05s ease-in-out;
+}
+
+/* move unit more to the left on hover or focus within
+    for arrow buttons will appear to the right of number inputs */
+.percentage-input-container:hover::after,
+.percentage-input-container:focus-within::after {
+  right: 1.5em;
 }
 
 .main-label{

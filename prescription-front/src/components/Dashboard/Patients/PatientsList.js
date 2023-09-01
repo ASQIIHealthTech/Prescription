@@ -3,8 +3,10 @@ import Fab from '@mui/material/Fab';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from 'react-router-dom';
 
 export default function PatientList({ addPatient, searchArgs, search, setSearch, setAddPrescription }) {
+  const navigate = useNavigate();
   let [loading, setLoading] = useState(true);
   let [data, setData] = useState([]);
   let [rows, setRows] = useState([]);
@@ -12,9 +14,14 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
 
   const prescriptionButton = (event)=>{
     return(
-      <Fab className="add-prescription-btn" color="2663EE" aria-label="add" onClick={()=>addPrescription(event.row.id)}>
-          <img src="/icons/plus.png" alt="+" />
-      </Fab>
+      <>
+        <Fab className="add-prescription-btn" color="2663EE" aria-label="add" onClick={()=>addPrescription(event.row.id)}>
+            <img src="/icons/plus.png" alt="+" />
+        </Fab>
+        <Fab className="planning-btn" color="2663EE" aria-label="planning" onClick={()=>navigate('/planning/'+event.row.id)}>
+            <img src="/icons/list.svg" alt="+" />
+        </Fab>
+      </>
     ) 
   }
   

@@ -2,6 +2,7 @@ import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import moment from 'moment';
 
 export default function Planning({ patientId }) {
   const navigate = useNavigate();
@@ -39,13 +40,18 @@ export default function Planning({ patientId }) {
 }
 
 export function Prescription({ pres, index }){
-  
+  const navigate = useNavigate();
+  let [currentDay, setCurrentDay] = useState('')
+
   const showCures = (e, presId)=>{
     let el = e.target;
     let cures = document.querySelectorAll("div[pres='"+ presId +"']");
-    console.log(cures)
     cures.forEach(element=>{
       element.classList.toggle('shown')
+      if(element.childNodes[0].shown){
+        //hide products if shown
+        element.childNodes[0].click()
+      }
     })
     if(el.shown){
       el.shown = 0;
@@ -56,11 +62,15 @@ export function Prescription({ pres, index }){
     }
   }
 
+  const navigatePrescription = (pres)=>{
+    navigate('/prescription/'+pres);
+  }
+
   return(
     <>
     <div key={index} className="block parent-block">
       <img className="open-icon" onClick={(e)=>showCures(e, pres.id)} src="/icons/plus_blue.png" />
-      <div className="details">
+      <div onClick={()=>navigatePrescription(pres.id)} className="details">
         <img src="/icons/prescription.png" />
         <label className="bold label1">
           Prescription-{index + 1} :{" "}
@@ -71,14 +81,45 @@ export function Prescription({ pres, index }){
       </div>
     </div>
     {pres.Cures.length > 0 && pres.Cures.map((cure, cureIndex) => (
-      <Cure cure={cure} presIndex={pres.id} cureIndex={cureIndex} />
+      <Cure cure={cure} presIndex={pres.id} cureIndex={cureIndex} currentDay={currentDay} setCurrentDay={setCurrentDay} />
     ))}
     </>
   )
 }
 
-export function Cure({ cure, presIndex, cureIndex }){
+export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
+  let [addDay, setAddDay] = useState(false);
+  let [groupedProducts, setgroupedProducts] = useState([])
+
+  function getDateDifference(date1Str, date2Str) {
+    var start = moment(date2Str, "YYYY-MM-DD");
+    var end = moment(date1Str, "YYYY-MM-DD");
+
+    //Difference in number of days
+    return moment.duration(start.diff(end)).asDays();
+  }
+
+  useEffect(()=>{
+    console.log(currentDay, cure, cure.startDate)
+    if(currentDay != cure.startDate){
+      setAddDay(true)
+      setCurrentDay(cure.startDate)
+    }
+
+    let firstDate = cure.startDate;
+
+    for(const prod of cure.Products){
+      let diff = getDateDifference(firstDate, prod.startDate) + 1;
+      if(!groupedProducts[diff]){
+        groupedProducts[diff] = [];
+      }
+      groupedProducts[diff].push(prod)
+    }
     
+    console.log(groupedProducts)
+    
+  }, [])
+
   const showProducts = (e, cureId)=>{
     let el = e.target;
     let cures = document.querySelectorAll("div[cure='"+ cureId +"']");
@@ -93,11 +134,30 @@ export function Cure({ cure, presIndex, cureIndex }){
       e.target.src = '/icons/minus_blue.png'
     }
   }
+  
+  const showJours = (e, cureId)=>{
+    let el = e.target;
+    let cures = document.querySelectorAll("div[cureJ='"+ cureId +"']");
+    cures.forEach(element=>{
+      element.classList.toggle('shown')
+      if(element.childNodes[0].shown){
+        //hide products if shown
+        element.childNodes[0].click()
+      }
+    })
+    if(el.shown){
+      el.shown = 0;
+      e.target.src = '/icons/plus_blue.png'
+    }else{
+      el.shown = 1;
+      e.target.src = '/icons/minus_blue.png'
+    }
+  }
 
   return(
     <>
     <div key={cureIndex} className="block child-block" pres={presIndex}>
-      <img className="open-icon" onClick={(e)=>showProducts(e, cure.id)} shown={0} src="/icons/plus_blue.png" />
+      <img className="open-icon" onClick={(e)=>showJours(e, cure.id)} shown={0} src="/icons/plus_blue.png" />
       <div className="details">
         <img className="icon-24" src="/icons/cure.png" />
         <label className="bold label1">{cure.name} : </label>
@@ -105,8 +165,21 @@ export function Cure({ cure, presIndex, cureIndex }){
         <label className="status">{cure.state}</label>
       </div>
     </div>
-    {cure.Products.length > 0 && cure.Products.map((product, i)=>(
-      <Product product={product} cureIndex={cure.id} index={i} />
+    {groupedProducts.length > 0 && groupedProducts.map((jour, index)=>(
+      <>
+        <div className="block child-block jour-block" presJ={presIndex} cureJ={cure.id}>
+          <img className="open-icon" onClick={(e)=>showProducts(e, cure.id)} shown={0} src="/icons/plus_blue.png" />
+          <div className="details">
+            <img className="icon-24" src="/icons/j.png" />
+            <label className="bold label1">J{index} : </label>
+            <label className="label2">{jour[0].startDate}</label>
+            <label className="status">{cure.state}</label>
+          </div>
+        </div>
+        {jour.length > 0 && jour.map((product, i)=>(
+          <Product product={product} cureIndex={cure.id} index={i} />
+        ))}
+      </>
     ))}
     </>
   )

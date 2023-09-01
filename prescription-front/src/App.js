@@ -9,7 +9,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard path={'patients'} />} />
-          <Route path="/prescription" element={<Dashboard path={'prescription'} />} />
+          <Route path="/prescription/:presId" element={<Dashboard path={'prescription'} />} />
           <Route path="/planning/:patientId" element={<Dashboard path={'planning'} />} />
           <Route path="/add-patient" element={<Dashboard />} />
           <Route path="/*" element={<Navigate to='/dashboard' />} />

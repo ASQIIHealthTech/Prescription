@@ -9,6 +9,7 @@ var express = require('express');
 var router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const moment = require('moment')
 
 router.get('/', (req,res)=>{
     res.send('hey')
@@ -125,6 +126,14 @@ function addDaysToDate(date, days) {
     result.setDate(result.getDate() + days);
     return result;
 }
+function getDateDifference(date1Str, date2Str) {
+    var start = moment(date1Str, "YYYY-MM-DD");
+    var end = moment(date2Str, "YYYY-MM-DD");
+
+    //Difference in number of days
+    return moment.duration(start.diff(end)).asDays();
+}
+
 router.post('/addPrescription', async (req,res)=>{
     const { patientId, data } = req.body;
 
@@ -163,7 +172,7 @@ router.post('/addPrescription', async (req,res)=>{
             id_prescription: prescription.id,
             name: 'Cure ' + (i + 1),
             startDate: date,
-            state: 'ongoing'
+            state: 'EN COURS'
         })
         let keys = Object.keys(molecules);
         keys.forEach(async (key)=>{
@@ -173,17 +182,17 @@ router.post('/addPrescription', async (req,res)=>{
                 id_cure: cure.id,
                 id_molecule: mol.id,
                 name: mol.molecule,
-                startDate: molDate
+                dose: mol.dose,
+                startDate: molDate,
+                validation: 0
             })
         })
     }
     return res.status(200).send(molecules);
-    console.log(patient, protocole, molecules)
 })
 
 router.post('/getPlanning', async (req, res)=>{
     const { patientId } = req.body;
-
 
     let data = await Prescription.findAll({
         where: {
@@ -194,6 +203,74 @@ router.post('/getPlanning', async (req, res)=>{
 
     return res.status(200).send(data)
 
+})
+
+router.post('/getPrescription', async (req, res)=>{
+    const { presId } = req.body;
+
+    let data = await Prescription.findOne({
+        where: {
+            id: presId
+        },
+        include: { all: true, nested: true }
+    })
+
+    return res.status(200).send(data)
+
+})
+
+router.post('/changeCureDate', async (req,res)=>{
+    const { cureId, date} = req.body
+
+    let cure = await Cure.findOne({
+        where: {
+            id: cureId
+        },
+        include: [Product]
+    })
+
+    let diff = getDateDifference(date,cure.startDate);
+
+    cure.startDate = date;
+
+    cure.Products.forEach(product => {
+        let newDate = addDaysToDate(product.startDate, diff);
+        product.startDate = newDate;
+        product.save()
+        // Product.update({ startDate: newDate  }, {
+        //     where:{
+
+        //     }
+        // })
+    })
+
+    cure.save()
+
+    console.log(diff)
+    return res.status(200).send(cure.Products)
+
+})
+
+router.post('/updateCure', async (req,res)=>{
+    const { pass, cure } = req.body;
+
+    if(!pass){
+        return res.status(400).send('Missing Fields!')
+    }
+
+    cure.forEach(el=>{
+        if(el){
+            el.forEach(prod=>{
+                Product.update({ dose: prod.dose, validation: prod.validation }, {
+                    where:{
+                        id: prod.id
+                    }
+                })
+            })
+        }
+    })
+
+    return res.status(200).send('DONE')
 })
 
 module.exports = router;
