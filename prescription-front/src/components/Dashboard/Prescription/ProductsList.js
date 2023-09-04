@@ -20,6 +20,14 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
     return moment.duration(start.diff(end)).asDays();
   }
 
+  useEffect(() => {
+    // Prompt confirmation when reload page is triggered
+    window.onbeforeunload = () => { return "" };
+        
+    // Unmount the window.onbeforeunload event
+    return () => { window.onbeforeunload = null };
+  }, []);
+
   useEffect(()=>{
     let groupedData = [];
     let firstDate = cure.startDate;
@@ -66,22 +74,6 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
     }
   }
 
-  const Jcell = ({row})=>{
-    // if(!dates[row.startDate]){
-    //   dates[row.startDate] = 1;
-    //   console.log(1)
-    // }else{
-    //   console.log(2)
-    //   return '';
-    // }
-    
-    return (
-        <TableCell rowSpan={1} style={{width: '50px'}}>
-          1
-        </TableCell>
-      )
-  }
-
   const toggleValidate = (changedRow, event, jourIndex)=>{
     const updatedData = rows.map((jour, index) => {
       if (index === jourIndex) {
@@ -96,7 +88,7 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
     setRows(updatedData);
   }
 
-  const changeAdaptedDose = (changedRow, event, jourIndex)=>{
+  const changeDose = (changedRow, event, jourIndex)=>{
     const updatedData = rows.map((jour, index) => {
       if (index === jourIndex) {
         const updatedJour = jour.map((row) =>
@@ -112,7 +104,7 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
   }
 
   const getPercentage = (row)=>{
-    return (parseInt(row.dose) * 100)/parseInt(getAdaptedDose(row.Molecule))
+    return (parseInt(row.dose) * 100)/parseInt(row.Molecule.dose)
   }
 
   const changePercentage = (e, row, jourIndex)=>{
@@ -137,6 +129,7 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
             <TableCell align="left">Produit</TableCell>
             <TableCell align="left">Formule (dose - Unité)</TableCell>
             <TableCell align="left">Dosage théorique</TableCell>
+            <TableCell align="left">Dose</TableCell>
             <TableCell align="left">Dose adaptée</TableCell>
             <TableCell align="left">Dose %</TableCell>
             <TableCell align="left">Validation</TableCell>
@@ -161,8 +154,9 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
                   <TableCell align="left">{row.Molecule.molecule}</TableCell>
                   <TableCell align="left">{row.Molecule.dose + ' ' + row.Molecule.unite}</TableCell>
                   <TableCell align="left">{getAdaptedDose(row.Molecule) + ' ' + row.Molecule.unite}</TableCell>
-                  <TableCell align="left"><input type='number' onChange={(e)=>changeAdaptedDose(row, e, index)} value={row.dose} className='main-input' /></TableCell>
-                  <TableCell align="left"><div className='percentage-input-container'><input onChange={(e)=>changePercentage(e, row, index)} type='number' value={getPercentage(row).toFixed(2)} className='main-input' /></div></TableCell>
+                  <TableCell align="left"><input type='number' disabled={row.validation == 1} onChange={(e)=>changeDose(row, e, index)} value={row.dose} className='main-input' /></TableCell>
+                  <TableCell align="left"><input type='number' disabled={row.validation == 1}  value={getAdaptedDose(row.Molecule)} className='main-input' /></TableCell>
+                  <TableCell align="left"><div className='percentage-input-container'><input disabled={row.validation == 1} onChange={(e)=>changePercentage(e, row, index)} type='number' value={getPercentage(row).toFixed(2)} className='main-input' /></div></TableCell>
                   <TableCell align="left">
                     <div onClick={(e)=>toggleValidate(row, e, index)} className={( row.validation == 1 ? 'validationCircle valid-medecin' : 'validationCircle') }></div>
                   </TableCell>

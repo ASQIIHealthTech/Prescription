@@ -120,9 +120,9 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
     
   }, [])
 
-  const showProducts = (e, cureId)=>{
+  const showProducts = (e, cureId, jour)=>{
     let el = e.target;
-    let cures = document.querySelectorAll("div[cure='"+ cureId +"']");
+    let cures = document.querySelectorAll("div[cure='"+ cureId +"'][jour='"+ jour +"']");
     cures.forEach(element=>{
       element.classList.toggle('shown')
     })
@@ -137,7 +137,7 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
   
   const showJours = (e, cureId)=>{
     let el = e.target;
-    let cures = document.querySelectorAll("div[cureJ='"+ cureId +"']");
+    let cures = document.querySelectorAll("div[curej='"+ cureId +"']");
     cures.forEach(element=>{
       element.classList.toggle('shown')
       if(element.childNodes[0].shown){
@@ -167,8 +167,8 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
     </div>
     {groupedProducts.length > 0 && groupedProducts.map((jour, index)=>(
       <>
-        <div className="block child-block jour-block" presJ={presIndex} cureJ={cure.id}>
-          <img className="open-icon" onClick={(e)=>showProducts(e, cure.id)} shown={0} src="/icons/plus_blue.png" />
+        <div className="block child-block jour-block" presj={presIndex} curej={cure.id}>
+          <img className="open-icon" onClick={(e)=>showProducts(e, cure.id, index)} shown={0} src="/icons/plus_blue.png" />
           <div className="details">
             <img className="icon-24" src="/icons/j.png" />
             <label className="bold label1">J{index} : </label>
@@ -177,7 +177,7 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
           </div>
         </div>
         {jour.length > 0 && jour.map((product, i)=>(
-          <Product product={product} cureIndex={cure.id} index={i} />
+          <Product product={product} cureIndex={cure.id} jour={index} index={i} />
         ))}
       </>
     ))}
@@ -185,9 +185,9 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
   )
 }
 
-export function Product({ product, index, cureIndex }){
+export function Product({ product, index, cureIndex, jour }){
   return(
-    <div cure={cureIndex} key={index} shown={0} className="block products-block">
+    <div cure={cureIndex} key={index} shown={0} jour={jour} className="block products-block">
       <div className="details details-product">
         <img className="icon-24" src="/icons/product.png" />
         <label className="bold label1">{product.name} : </label>

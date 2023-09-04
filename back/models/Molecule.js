@@ -19,6 +19,10 @@ const Molecule = sequelize.define('Molecule', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  formule: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   unite: {
     type: DataTypes.STRING,
     allowNull: false,

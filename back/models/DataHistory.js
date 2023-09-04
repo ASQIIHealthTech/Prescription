@@ -1,28 +1,32 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Assuming you named your configuration file as db.js
 
-const User = sequelize.define('User', {
+const DataHistory = sequelize.define('DataHistory', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  username: {
-    type: DataTypes.STRING,
+  id_patient: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
-  password: {
-    type: DataTypes.STRING,
+  id_user: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   type: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  value: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  date: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  }  
 });
 
-module.exports = User;
+module.exports = DataHistory;

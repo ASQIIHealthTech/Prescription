@@ -57,6 +57,10 @@ body {
   color: var(--main-input-color);
 }
 
+.main-input:disabled{
+  background-color: #bfcde0;
+}
+
 .percentage-input-container{
     display: inline-block;
     position: relative;

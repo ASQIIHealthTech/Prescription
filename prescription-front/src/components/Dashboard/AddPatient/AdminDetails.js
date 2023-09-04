@@ -64,7 +64,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
     if (!(formule && sexe && creatinine && age && poids)) {
       return;
     }
-		
+
     if (formule == "mdrd") {
       if (sexe == "Homme") {
         clcr = (
@@ -75,7 +75,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
           186 * Math.pow(creatinine / 88.4, -1.154) * Math.pow(age, -0.203) * 0.742
         ).toFixed(2);
       }
-    } else if (formule == "Cockroft") {
+    } else if (formule == "cockroft") {
       if (sexe == "Homme") {
         clcr = ((1.23 * poids * (140 - age)) / creatinine).toFixed(2);
       } else if(sexe == "Femme") {
@@ -94,7 +94,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
     let input = event.target;
     let field = input.getAttribute("field");
     formData[field] = input.value;
-    console.log(formData);
+
     if (field == "poids" || field == "taille") {
       let surf = getSurfCorp(formData.poids, formData.taille);
       formData["surfCorp"] = surf;
@@ -102,12 +102,10 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
     } else if (field == "surfCorp") {
       setSurfCorp(input.value);
     }
-
-    if (field == "formuleClair") {
-      let clcr = getClairance(input.value);
-			console.log(clcr)
+    if (['formuleClair', 'creatinine', 'birthDate', 'poids', 'sexe'].includes(field)) {
+      let clcr = getClairance(formData['formuleClair']);
       setClairance(clcr);
-      formData[field] = clcr;
+      formData['clairance'] = clcr;
     }
   };
 
@@ -115,7 +113,6 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
     axios
       .post(process.env.REACT_APP_SERVER_URL + "/addPatient", formData)
       .then((res) => {
-        console.log(res);
         setAddingPatient(false);
       })
       .catch((err) => {
@@ -257,7 +254,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
           >
             <option value=""></option>
             <option value="mdrd">mdrd</option>
-            <option value="Cockroft">Cockroft</option>
+            <option value="cockroft">Cockroft</option>
           </select>
         </div>
         <div className="field">
@@ -272,7 +269,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
         </div>
       </div>
       <h2>Commentaire</h2>
-      <input
+      <textarea
         type="text"
         onChange={changeField}
         field="commentaire"

@@ -5,9 +5,11 @@ import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import AddPrescriptionSecond from './AddPrescriptionSecond';
 import AddPrescriptionThird from './AddPrescriptionThird';
+import AddPrescriptionFourth from './AddPrescriptionFourth';
 import axios from 'axios';
 import { CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
 const steps = ['1', '2', '3'];
 
@@ -18,12 +20,14 @@ export default function AddPrescription({ setAddPrescription, addPrescription })
   const [patient, setPatient] = useState({});
   let [prescriptionData, setPrescriptionData] = useState({
     prescripteur: '',
-    date: '',
+    date: moment().format('YYYY-MM-DD'),
     organe: '',
     indication: '',
     protocole: '',
     nbrCures: 1
   });
+
+  
 
   useEffect(()=>{
     if(addPrescription){
@@ -77,7 +81,7 @@ export default function AddPrescription({ setAddPrescription, addPrescription })
   };
 
   const handleComplete = () => {
-    if(activeStep == 2){
+    if(isLastStep()){
       let patientId = patient.id;
       axios.post(process.env.REACT_APP_SERVER_URL + '/addPrescription', { patientId , data: prescriptionData })
         .then((res)=>{
@@ -112,10 +116,11 @@ export default function AddPrescription({ setAddPrescription, addPrescription })
         { Object.keys(patient).length== 0 && <CircularProgress /> }
         { activeStep == 0 && Object.keys(patient).length != 0 && <AddPrescriptionFirst patient={patient} prescriptionData={prescriptionData} setPrescriptionData={setPrescriptionData} /> }
         { activeStep == 1 && Object.keys(patient).length != 0 && <AddPrescriptionSecond patient={patient} prescriptionData={prescriptionData} setPrescriptionData={setPrescriptionData} /> }
-        { activeStep == 2 && Object.keys(patient).length != 0 && <AddPrescriptionThird patient={patient} prescriptionData={prescriptionData} setPrescriptionData={setPrescriptionData} /> }
+        { activeStep == 2 && Object.keys(patient).length != 0 && <AddPrescriptionFourth patient={patient} prescriptionData={prescriptionData} setPrescriptionData={setPrescriptionData} /> }
+        {/* { activeStep == 3 && Object.keys(patient).length != 0 && <AddPrescriptionFourth patient={patient} prescriptionData={prescriptionData} setPrescriptionData={setPrescriptionData} /> } */}
         <div className="btn-container">
           <button className="main-btn" onClick={()=>handleBack()}>{ activeStep == 0 ? 'Annuler' : 'Précèdent'}</button>
-          <button className="main-btn" onClick={()=>handleComplete()}>{ activeStep == 2 ? 'Confirmer' : 'Suivant'}</button>
+          <button className="main-btn" onClick={()=>handleComplete()}>{ isLastStep() ? 'Confirmer' : 'Suivant'}</button>
         </div>
       </div>
     </div>

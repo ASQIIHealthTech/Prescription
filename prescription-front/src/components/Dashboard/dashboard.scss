@@ -496,6 +496,9 @@
                 &:hover{
                     background:#bfd9f9;
                 }
+                &.disabled-cure{
+                    background:#98b1d0
+                }
             }
             .selectedCure{
                 background:#a8ccf8;
@@ -600,7 +603,7 @@
     transition: 0.3s;
 
     &.valid-medecin{
-        background: #DCEBFD;
+        background: #2663EE; //#DCEBFD old design
         border: 3px solid #2663EE;
     }
 }
@@ -614,7 +617,7 @@
     align-items: center;
     column-gap: 2rem;
 
-    input{
+    textarea{
         width: 100%;
         height: 60px;
     }

@@ -1,5 +1,4 @@
 import { Divider } from "@mui/material";
-import { useState } from "react";
 
 export default function AddPrescriptionFirst({ patient, prescriptionData, setPrescriptionData }){
 
@@ -41,7 +40,6 @@ export default function AddPrescriptionFirst({ patient, prescriptionData, setPre
                 <div className="row">
                     <label className="main-label">Nom du Prescripteur : </label>
                     <select onChange={changeData} value={prescriptionData.prescripteur} name="prescripteur" id="prescripteur" className="main-input">
-                        <option value=""></option>
                         <option value="DR Mghirbi">DR Mghirbi</option>
                     </select>
                 </div>

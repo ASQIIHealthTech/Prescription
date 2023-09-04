@@ -2,7 +2,7 @@ import CureList from "./CureList";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-export default function AddPrescriptionThird({ patient, prescriptionData, setPrescriptionData }){
+export default function AddPrescriptionFourth({ patient, prescriptionData, setPrescriptionData }){
     let [protocole, setProtocole] = useState({})
     let [molecules, setMolecules] = useState({})
 
@@ -22,7 +22,7 @@ export default function AddPrescriptionThird({ patient, prescriptionData, setPre
                 <div className="row">
                     <div className="field">
                         <label className="main-label">Protocole : </label>
-                        <input type="number" className="main-input" />
+                        <label className="field-detail">{ protocole.protocole ? protocole.protocole : 'Sélectionner un protocole' }</label>
                     </div>
                     <div className="field">
                         <label className="main-label">Intercure : </label>

@@ -172,7 +172,7 @@ router.post('/addPrescription', async (req,res)=>{
             id_prescription: prescription.id,
             name: 'Cure ' + (i + 1),
             startDate: date,
-            state: 'EN COURS'
+            state: (i==0 ? 'En Cours' : 'Prévu')
         })
         let keys = Object.keys(molecules);
         keys.forEach(async (key)=>{
@@ -191,20 +191,6 @@ router.post('/addPrescription', async (req,res)=>{
     return res.status(200).send(molecules);
 })
 
-router.post('/getPlanning', async (req, res)=>{
-    const { patientId } = req.body;
-
-    let data = await Prescription.findAll({
-        where: {
-            id_patient: patientId
-        },
-        include: { all: true, nested: true }
-    })
-
-    return res.status(200).send(data)
-
-})
-
 router.post('/getPrescription', async (req, res)=>{
     const { presId } = req.body;
 
@@ -216,6 +202,19 @@ router.post('/getPrescription', async (req, res)=>{
     })
 
     return res.status(200).send(data)
+
+})
+
+router.post('/changePrescriptionCommentaire', async (req, res)=>{
+    const { presId, commentaire } = req.body;
+
+    await Prescription.update({ commentaire }, {
+        where: {
+            id: presId
+        },
+    })
+
+    return res.sendStatus(200)
 
 })
 
@@ -237,11 +236,6 @@ router.post('/changeCureDate', async (req,res)=>{
         let newDate = addDaysToDate(product.startDate, diff);
         product.startDate = newDate;
         product.save()
-        // Product.update({ startDate: newDate  }, {
-        //     where:{
-
-        //     }
-        // })
     })
 
     cure.save()
@@ -271,6 +265,28 @@ router.post('/updateCure', async (req,res)=>{
     })
 
     return res.status(200).send('DONE')
+})
+
+///////////////////////////////
+///////////////// Planning ///
+router.post('/getPlanning', async (req, res)=>{
+    const { patientId } = req.body;
+
+    let data = await Prescription.findAll({
+        where: {
+            id_patient: patientId
+        },
+        include: { all: true, nested: true }
+    })
+
+    return res.status(200).send(data)
+
+})
+
+///////////////////////////////
+////////////// DataHistory ///
+router.post('/addDataHistory', async(req,res)=>{
+
 })
 
 module.exports = router;

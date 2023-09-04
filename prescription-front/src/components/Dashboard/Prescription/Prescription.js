@@ -22,7 +22,6 @@ export default function Prescription(){
             .then((res)=>{
                 setData(res.data)
                 setLoading(false)
-                console.log(res.data)
             })
         }, 500 )
     }
@@ -49,8 +48,12 @@ export default function Prescription(){
         return yearsDiff;
     };
 
-    const showCure = (id)=>{
-        setSelectedCure(id)
+    const showCure = (id, prevu)=>{
+        if(prevu){
+            return;
+        }else{
+            setSelectedCure(id)
+        }
     }
 
     const changeCureDate = (e)=>{
@@ -76,6 +79,15 @@ export default function Prescription(){
           pdf.save("shipping_label.pdf");
         });
       };
+
+      const changeCommentaire = (e)=>{
+        let commentaire = e.target.value;
+        setData({
+            ...data,
+            commentaire
+        })
+        axios.post(process.env.REACT_APP_SERVER_URL + '/changePrescriptionCommentaire', { presId: data.id, commentaire})
+      }
 
     if(loading){
         return <CircularProgress />;
@@ -108,7 +120,7 @@ export default function Prescription(){
                     <div className="cures">
                         {
                             data.Cures.map((cure, i)=>(
-                                <div onClick={()=>showCure(i)} className={ (i == selectedCure ? 'cure selectedCure' : "cure") }>
+                                <div onClick={()=>showCure(i, cure.state == 'Prévu')} className={ 'cure' + (i == selectedCure ? ' selectedCure' : "") + (cure.state == 'Prévu' ? ' disabled-cure' : '') }>
                                     {i + 1}
                                 </div>
                             ))
@@ -195,7 +207,7 @@ export default function Prescription(){
         </div>
         <div className="commentaire-container">
             <h1>Commentaire</h1>
-            <input className="main-input commentaire-input" />
+            <textarea className="main-input commentaire-input" value={data.commentaire} onChange={changeCommentaire} />
         </div>
         </>
     )
