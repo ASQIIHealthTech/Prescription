@@ -13,7 +13,7 @@ export default function Planning({ patientId }) {
     axios
       .post(process.env.REACT_APP_SERVER_URL + "/getPlanning", { patientId })
       .then((res) => {
-        console.log(res);
+        console.log('response from /getPlanning', res.data);
         setData(res.data);
         setLoading(false);
       })
@@ -40,6 +40,7 @@ export default function Planning({ patientId }) {
 }
 
 export function Prescription({ pres, index }){
+  console.log('prescription', pres.Protocole);
   const navigate = useNavigate();
   let [currentDay, setCurrentDay] = useState('')
 

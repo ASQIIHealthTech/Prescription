@@ -25,6 +25,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
     creatinine: 0,
     clairance: 0,
     commentaire: "",
+    id_patient: 0,
   });
 
   const handleChange = (event) => {
@@ -101,6 +102,8 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
       setSurfCorp(surf);
     } else if (field == "surfCorp") {
       setSurfCorp(input.value);
+    } else if (field == "DMI") {
+      formData["id_patient"] = input.value;
     }
     if (['formuleClair', 'creatinine', 'birthDate', 'poids', 'sexe'].includes(field)) {
       let clcr = getClairance(formData['formuleClair']);
@@ -110,6 +113,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
   };
 
   const add = () => {
+    console.log('formdata', formData)
     axios
       .post(process.env.REACT_APP_SERVER_URL + "/addPatient", formData)
       .then((res) => {

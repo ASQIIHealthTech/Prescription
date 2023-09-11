@@ -1,0 +1,71 @@
+version: '3.9'
+services:
+  front-service:
+    container_name: prescription-front
+    networks:
+      - mynet
+    image: azizhassen01/prescription-front:1.0.0
+    environment:
+      REACT_APP_SERVER_URL: http://localhost:3030
+    ports:
+      - 80:3000
+    
+  
+  db-service:
+    restart: on-failure
+    image: azizhassen01/prescription-db:latest
+    networks:
+      - mynet
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: mysql -u user -puser -e "USE prescription;" -e "DESCRIBE Protocoles;"
+      interval: 50s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  backend-service:
+    restart: always
+    depends_on:
+      - db-service
+    image: azizhassen01/prescription-back:latest
+    networks:
+      - mynet
+    environment:
+      DB_HOST: db-service
+      DB_NAME: root
+      DB_PASS: root 
+      DB_DATABASE: prescription
+      JWT_KEY: 5PgGDhf9MlRt5Plv6POcBddJ-EUs
+    ports:
+      - 3030:3030
+    command: ["./wait-for-it.sh", "-t", "0", "db-service:3306", "--", "npm", "start"]
+
+    
+
+  flyway:
+    image: flyway/flyway:latest
+    restart: on-failure
+    networks:
+      - mynet
+    volumes:
+      - ./db/migration/sql:/flyway/sql
+      - ./db/migration/flyway.conf:/flyway/conf/flyway.conf
+    command: ["migrate"]
+    depends_on:
+      db-service:
+        condition: service_healthy
+    
+
+
+
+networks:
+  mynet:
+    driver: bridge
+
+
+
+
+
+

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const steps = ['Données Administratives', 'Données Biologiques'];
 
-export default function AddPatient({ setAddingPatient }) {
+export function AddPatientOLD({ setAddingPatient }) {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
