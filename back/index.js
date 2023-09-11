@@ -37,7 +37,7 @@ Patient.hasMany(Prescription, {foreignKey: 'id_patient'});
 Prescription.belongsTo(Patient, {foreignKey: 'id_patient'});
 
 Prescription.hasOne(Protocole, {foreignKey: 'id_protocole'});  //error
-Protocole.belongsTo(Prescription, {foreignKey: 'id_protocole'});
+Protocole.belongsTo(Prescription, {foreignKey: 'id_protocole'}); // error
 
 Prescription.hasMany(Cure, {foreignKey: 'id_prescription'});
 Cure.belongsTo(Prescription, {foreignKey: 'id_prescription'});
@@ -50,13 +50,14 @@ Product.belongsTo(Molecule, {foreignKey: 'id_molecule'});
 DataHistory.belongsTo(Patient, {foreignKey: 'id_patient'});
 DataHistory.belongsTo(User, {foreignKey: 'id_user'});
 
+
 // Sync models with the database
 (async () => {
 try {
     await sequelize.sync({ alter: false });
     console.log('Models synchronized with the database.');
 } catch (error) {
-    console.error('Unable to sync models with the database:', error);
+    console.error('Unable to sync models with the database:', error);   
 }
 })();
 

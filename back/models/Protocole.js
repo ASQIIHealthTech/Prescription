@@ -24,6 +24,9 @@ const Protocole = sequelize.define('Protocole', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+}, {
+  tableName: 'Protocoles',
+  timestamps: true
 });
 
 module.exports = Protocole;

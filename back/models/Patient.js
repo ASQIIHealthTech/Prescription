@@ -2,10 +2,14 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Assuming you named your configuration file as db.js
 
 const Patient = sequelize.define('Patient', {
-  id: {
+  id : {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
+  },
+  id_patient: {
+    type: DataTypes.INTEGER,
+    unique: true
   },
   DMI: {
     type: DataTypes.INTEGER,

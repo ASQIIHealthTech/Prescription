@@ -23,6 +23,9 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+}, {
+  tableName: 'Users',
+  timestamps: true
 });
 
 module.exports = User;

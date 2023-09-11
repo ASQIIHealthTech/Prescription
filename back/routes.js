@@ -7,12 +7,25 @@ const Cure = require('./models/Cure');
 const Product = require('./models/Product');
 var express = require('express');
 var router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const moment = require('moment')
+const moment = require('moment');
+const sequelize = require('./config/db');
 
 router.get('/', (req,res)=>{
     res.send('hey')
+})
+
+
+router.get('/health', (req, res) => {
+    sequelize.sync()
+    .then(() => {
+        res.status(200).send('Ok');
+    })
+    .catch((error) => {
+        console.log('Error checking the database health', error);
+        res.status(403).send('Forbidden');
+    })
 })
 
 ///////////////////////////////
@@ -48,7 +61,6 @@ router.post('/login', async (req,res)=>{
         console.log(err)
     }
 })
-
 
 ///////////////////////////////
 ////////////////// PATIENT ///

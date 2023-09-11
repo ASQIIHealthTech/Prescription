@@ -31,6 +31,9 @@ const Molecule = sequelize.define('Molecule', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+}, {
+  tableName: 'Molecules',
+  timestamps: true
 });
 
 module.exports = Molecule;

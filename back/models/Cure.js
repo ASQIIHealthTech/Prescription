@@ -23,7 +23,10 @@ const Cure = sequelize.define('Cure', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  
+}, 
+{
+  tableName: 'Cures',
+  timestamps: true
 });
 
 module.exports = Cure;
