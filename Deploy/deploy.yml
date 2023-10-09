@@ -6,7 +6,7 @@ services:
       - mynet
     image: azizhassen01/prescription-front:1.0.0
     environment:
-      REACT_APP_SERVER_URL: http://localhost:3030
+      REACT_APP_SERVER_URL: backend-service:3030
     ports:
       - 80:3000
     
