@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Snackbar } from '@mui/base';
-import { Alert } from '@mui/material';
 
 
-export default function ConfirmChangesModal({ setConfirmChanges, cure, refreshData }) {
+export default function ConfirmChangesModal({ setConfirmChanges, cure, refreshData, user }) {
   const navigate = useNavigate();
   let passRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -17,7 +15,11 @@ export default function ConfirmChangesModal({ setConfirmChanges, cure, refreshDa
     axios.post(process.env.REACT_APP_SERVER_URL + '/updateCure', { pass, cure })
         .then((res) => {
             console.log(res)
-            refreshData()
+            if(user.type == 'pharmacien'){
+              navigate('/dashboard')
+            }else{
+              refreshData()
+            }
             setConfirmChanges(false)
         })
         .catch((err) => {

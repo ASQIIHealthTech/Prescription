@@ -65,6 +65,7 @@
 
     h1{
         color: var(--main-h1-color);
+        font-size: 2.5em;
     }
 }
 
@@ -108,6 +109,7 @@
 
     h1{
         color: var(--main-h1-color);
+        font-size: 2.5em;
     }
 }
 
@@ -167,6 +169,10 @@
         .main-input{
             width: 300px;
         }
+        .age-label{
+            padding-left: 10px;
+            font-weight: bold;
+        }
     }
     .input-commentaire{
         width: 80%;
@@ -175,6 +181,11 @@
     .MuiDivider-root{
         height: 540px;
         margin-top: 2rem;
+    }
+    .surfCorp-label{
+        padding-left: 0.5rem;
+        color: red;
+        font-weight: bold;
     }
 }
 
@@ -275,6 +286,17 @@
             width: 200px;
             padding: 0 10px;
         }
+        .essai-row{
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-direction: row;
+            column-gap: 1rem;
+
+            button{
+                margin-left: 3rem;
+            }
+        }
     }
     .prescription-second{
         padding-top: 1rem;
@@ -319,10 +341,73 @@
 
 .planning-container{
     display: flex;
-    flex-direction: column;
-    padding: 0 3rem;
-    width: 540px;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
     
+    .fiche-patient{
+        background: #F9F9F9;
+        margin-left: auto;
+        width: 470px;
+        margin-right: -3em;
+        margin-top: -3em;
+
+        .addPresBtn{
+            background-color: #2663ee;
+            position: absolute;
+            top: 100px;
+            right: 500px;
+        }
+        .fiche-header{
+            background: #D9D9D9;
+            width: 100%;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            
+            label{
+                font-size: 20px;
+                font-weight: 700;
+                line-height: 24px;
+                letter-spacing: 0em;
+                padding-left: 1rem;
+                color: #233368;
+            }
+        }
+        .fiche-body{
+            padding: 2rem;
+
+            .block{
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                row-gap: 1rem;
+
+                .separator{
+                    width: 100%;
+                    height: 1px;
+                    margin: 2rem 0;
+                    background-color: #BFBFBF;
+                }
+                .row{
+                    width: 100%;
+
+                    .info-label{
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: #2874E5;
+                    }
+                }
+
+            }
+        }
+    }
+    .list-container{
+        display: flex;
+        flex-direction: column;
+        padding: 0 3rem;
+        width: 900px;
+    }
     .prescriptions{
         display: flex;
         flex-direction: column;
@@ -342,7 +427,7 @@
             width: 17px;
         }
         .details{
-            width: 500px;
+            width: 860px;
             height: 50px;
             border-radius: 5px;
             background: #DCEBFD;
@@ -393,17 +478,25 @@
             padding-right: 0.5rem;
         }
         .details{
-            width: 460px;
+            width: 812px;
         }
         &.jour-block{
             
             .details{
-                width: 430px;
+                width: 760px;
             }
+        }
+        .removeCureBtn{
+            width: 40px;
+            height: 40px;
+            background-color: #DCEBFD;
+            border: 2px solid #2663EE;
+            position: absolute;
+            left: 1020px;  
         }
     }
     .products-block{
-        width: 420px;
+        width: 710px;
         margin-top: -1rem;
         border-left: 2px solid #2874E5
     }
@@ -603,11 +696,33 @@
     transition: 0.3s;
 
     &.valid-medecin{
-        background: #2663EE; //#DCEBFD old design
-        border: 3px solid #2663EE;
+        background: #DDFDDC;
+        border: 3px solid #05E11B;
+    }
+    &.valid-pharmacien{
+        background: #05E11B;
+        border: 3px solid #05E11B;
     }
 }
+.gear-icon, .pres-icon{
+    width: 30px;
+    cursor: pointer;
+}
+.x-icon{
+    width: 25px;
+    cursor: pointer;
+}
+.icons-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 0.5rem;
 
+    &.disabled img{
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
 .commentaire-container{
     padding: 1rem;
     display: flex;
@@ -620,6 +735,7 @@
     textarea{
         width: 100%;
         height: 60px;
+        font-size: 16px;
     }
     h1{
         color: var(--main-h1-color);
@@ -631,5 +747,206 @@
 
     label{
         padding: 1rem;
+    }
+}
+.poche-modal-box{
+    padding: 0 2rem;
+    height: 440px;
+    width: 500px;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+.ajustement-modal{
+    padding: 0 2rem;
+    height: 800px;
+    width: 1000px;
+
+    thead{
+        background: #e3e3e3;
+    }
+    .repartitionTable{
+        height: 250px;
+    }
+    .fractionTable{
+        height: 120px;
+    }
+    .ajustement-header{
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        align-content: flex-start;
+        
+        .doses{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            column-gap: 2rem;
+        }
+    }
+}
+.date-controls{
+    color: rgb(0, 189, 0);
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+    &.date-controls-disabled{
+        color: gray;
+    }
+}
+.planning-tab{
+    margin-left: auto !important;
+}
+.FAB-container{
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+
+    .fiche{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 1000px;
+        row-gap: 2rem;
+
+        .fab-bg{
+            background-color: rgb(215, 215, 215);
+        }
+        .row{
+            width: 950px;
+            padding: 0 2rem;
+
+            label{
+                font-size: 18px;
+            }
+        }
+        .fab-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            border: black solid 1px;
+            width: 100%;
+            border-radius: 40px;
+        }
+        .prod-details{
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            align-items: center;
+            height: 60px;
+            border-radius: 50px;
+        }
+        .fields{
+            display: flex;
+            flex-direction: row;
+            column-gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .patient-details{
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            column-gap: 1rem;
+
+            .patient{
+                flex: 7;
+                padding: 1rem;
+                display: flex;
+                flex-direction: column;
+                border-radius: 25px;
+                justify-content: space-around;
+
+                h2{
+                    padding: 0;
+                    margin: 0;
+                    width: 100%;
+                }
+            }
+            .admin{
+                flex: 3;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 1rem;
+                border-radius: 25px;
+
+            }
+        }
+        .patient-data{
+            border-radius: 25px;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .dose-data{
+            border-radius: 25px;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+
+            .conc-label{
+                font-size: 25px;
+            }
+            .conc-info{
+                font-size: 25px;
+                color: var(--main-dark-blue);
+                font-weight: bold;
+            }
+        }
+        .prep-data{
+            border-radius: 25px;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-direction: column;
+            padding-bottom: 1.5rem;
+
+            .fields{
+                width: 100%;
+                justify-content: space-around;
+            }
+        }
+        .last-details{
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            column-gap: 1rem;
+
+            .fab{
+                flex: 3;
+                padding: 1rem;
+                display: flex;
+                flex-direction: column;
+                border-radius: 25px;
+                justify-content: space-around;
+
+                h2{
+                    padding: 0;
+                    margin: 0;
+                    width: 100%;
+                }
+            }
+            .fourF{
+                flex: 7 1;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                padding: 1rem;
+                border-radius: 25px;
+                flex-direction: column;
+
+                .Frow{
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-around;
+                }
+            }
+        }
     }
 }

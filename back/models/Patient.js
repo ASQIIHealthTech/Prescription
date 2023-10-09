@@ -11,10 +11,6 @@ const Patient = sequelize.define('Patient', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  civil: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   nom: {
     type: DataTypes.STRING,
     allowNull: false
@@ -27,8 +23,8 @@ const Patient = sequelize.define('Patient', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  DDN: {
-    type: DataTypes.INTEGER,
+  matrimonial: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
   birthDate: {

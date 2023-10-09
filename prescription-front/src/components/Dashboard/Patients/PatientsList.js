@@ -3,10 +3,12 @@ import Fab from '@mui/material/Fab';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function PatientList({ addPatient, searchArgs, search, setSearch, setAddPrescription }) {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   let [loading, setLoading] = useState(true);
   let [data, setData] = useState([]);
   let [rows, setRows] = useState([]);
@@ -15,10 +17,10 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
   const prescriptionButton = (event)=>{
     return(
       <>
-        <Fab className="add-prescription-btn" color="2663EE" aria-label="add" onClick={()=>addPrescription(event.row.id)}>
+        <Fab title="Ajouter une prescription" className="add-prescription-btn" color="2663EE" aria-label="add" onClick={()=>addPrescription(event.row.id)}>
             <img src="/icons/plus.png" alt="+" />
         </Fab>
-        <Fab className="planning-btn" color="2663EE" aria-label="planning" onClick={()=>navigate('/planning/'+event.row.id)}>
+        <Fab title="Planning des prescriptions" className="planning-btn" color="2663EE" aria-label="planning" onClick={()=>navigate('/planning/'+event.row.id)}>
             <img src="/icons/list.svg" alt="+" />
         </Fab>
       </>
@@ -26,13 +28,11 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
   }
   
   const columns = [
-    { field: "id", headerName: "ID", flex:1 },
-    { field: "DDN", headerName: "DDN", flex:1 },
     { field: "DMI", headerName: "DMI", flex:1 },
     { field: "nom", headerName: "Nom", flex:1 },
-    { field: "prenom", headerName: "Prenom", flex:1 },
+    { field: "prenom", headerName: "Prénom", flex:1 },
     { field: "birthDate", headerName: "Date Naissance", flex:1 },
-    { field: "sexe", headerName: "Sexe", flex:1 },
+    { field: "sexe", headerName: "Genre", flex:1 },
     { field: "prescription", headerName: "Prescription", align: 'center', flex:1, renderCell: prescriptionButton },
   ];
 
@@ -45,11 +45,19 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
       .then(res => {
         setData(res.data);
         setRows(res.data);
+        console.log(res.data)
         setLoading(false)
       })
       .catch(err =>{
         console.log(err)
       })
+
+    let addpres = searchParams.get('addpres');
+    
+    if(addpres != 0){
+      setAddPrescription(addpres)
+    }
+    
 
   }, [])
 
@@ -93,7 +101,7 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
     <div className="PatientList-container">
       <div className="list-header">
         <h1>Liste Des Patients</h1>
-        <Fab color="2663EE" aria-label="add" onClick={()=>addPatient()}>
+        <Fab title="Ajouter un Patient" color="2663EE" aria-label="add" onClick={()=>addPatient()}>
             <img src="/icons/plus.png" alt="+" />
         </Fab>
       </div>

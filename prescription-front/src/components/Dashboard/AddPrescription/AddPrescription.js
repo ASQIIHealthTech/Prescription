@@ -18,13 +18,15 @@ export default function AddPrescription({ setAddPrescription, addPrescription })
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
   const [patient, setPatient] = useState({});
+  const [loading, setLoading] = useState(false);
   let [prescriptionData, setPrescriptionData] = useState({
     prescripteur: '',
     date: moment().format('YYYY-MM-DD'),
     organe: '',
     indication: '',
     protocole: '',
-    nbrCures: 1
+    nbrCures: 1,
+    essaiClin: 0
   });
 
   
@@ -81,7 +83,9 @@ export default function AddPrescription({ setAddPrescription, addPrescription })
   };
 
   const handleComplete = () => {
+    console.log(prescriptionData)
     if(isLastStep()){
+      setLoading(true)
       let patientId = patient.id;
       axios.post(process.env.REACT_APP_SERVER_URL + '/addPrescription', { patientId , data: prescriptionData })
         .then((res)=>{
@@ -102,6 +106,7 @@ export default function AddPrescription({ setAddPrescription, addPrescription })
 
   return (
     <div className="modal-container">
+      { loading ? <CircularProgress /> : (
       <div className="modal-box">
         <h1>NOUVELLE PRESCRIPTION</h1>
         <Stepper className='stepper' nonLinear activeStep={activeStep}>
@@ -123,6 +128,7 @@ export default function AddPrescription({ setAddPrescription, addPrescription })
           <button className="main-btn" onClick={()=>handleComplete()}>{ isLastStep() ? 'Confirmer' : 'Suivant'}</button>
         </div>
       </div>
+      )}
     </div>
   );
 }

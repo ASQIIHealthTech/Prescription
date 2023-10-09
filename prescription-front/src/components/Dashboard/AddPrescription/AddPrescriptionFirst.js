@@ -30,7 +30,7 @@ export default function AddPrescriptionFirst({ patient, prescriptionData, setPre
                         <label className="field-detail">{ patient.birthDate }</label>
                     </div>
                     <div className="field">
-                        <label className="main-label">Sexe : </label>
+                        <label className="main-label">Genre : </label>
                         <label className="field-detail">{ patient.sexe }</label>
                     </div>
                 </div>

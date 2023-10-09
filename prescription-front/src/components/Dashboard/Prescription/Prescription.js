@@ -7,7 +7,7 @@ import { CircularProgress, Fab } from "@mui/material";
 import { jsPDF } from "jspdf";
 import ConfirmChangesModal from "./ConfirmChangesModal";
 
-export default function Prescription(){
+export default function Prescription({user}){
     const { presId } = useParams();
     let [loading, setLoading] = useState(true);
     let [selectedCure, setSelectedCure] = useState(0);
@@ -27,6 +27,7 @@ export default function Prescription(){
     }
 
     useEffect(()=>{
+        console.log(user)
         refreshData()
     }, [])
 
@@ -49,11 +50,9 @@ export default function Prescription(){
     };
 
     const showCure = (id, prevu)=>{
-        if(prevu){
-            return;
-        }else{
+
             setSelectedCure(id)
-        }
+        
     }
 
     const changeCureDate = (e)=>{
@@ -95,61 +94,13 @@ export default function Prescription(){
 
     return(
         <>
-        {confirmChanges && <ConfirmChangesModal setConfirmChanges={setConfirmChanges} cure={rows} refreshData={refreshData} />}
+        {confirmChanges && <ConfirmChangesModal setConfirmChanges={setConfirmChanges} cure={rows} refreshData={refreshData} user={user} />}
         <div className="prescription-details">
-            <div className="prescription">
-                <h1>PRESCRIPTION / CURE</h1>
-                <div className="field-row">
-                    <div className="field">
-                        <label className="main-label">Protocole : </label>
-                        <label className="field-detail">{ data.Protocole.protocole }</label>
-                    </div>
-                    <div className="field">
-                        <label className="main-label">Nbr Cures : </label>
-                        <label className="field-detail">{ data.nbrCures }</label>
-                    </div>
-                    <div className="field">
-                        <label className="main-label">Intercure : </label>
-                        <label className="field-detail">{ data.Protocole.intercure } Jours</label>
-                    </div>
-                    <div className="field">
-                        <label className="main-label">Navigation entre les cures :</label>
-                    </div>
-                </div>
-                <div className="cures-list">
-                    <div className="cures">
-                        {
-                            data.Cures.map((cure, i)=>(
-                                <div onClick={()=>showCure(i, cure.state == 'Prévu')} className={ 'cure' + (i == selectedCure ? ' selectedCure' : "") + (cure.state == 'Prévu' ? ' disabled-cure' : '') }>
-                                    {i + 1}
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
-            </div>
-            <div className="cure">
-                <h1>CURE Actuelle</h1>
-                <div className="field-row">
-                    <div className="field">
-                        <label className="main-label">N Cure : </label>
-                        <label className="field-detail">{selectedCure + 1 }</label>
-                    </div>
-                    <div className="field">
-                        <label className="main-label">Date début cure {selectedCure + 1 } : </label>
-                        <input type="date" className="main-input" onChange={changeCureDate} value={data.Cures[selectedCure].startDate} />
-                    </div>
-                    <div className="field">
-                        <label className="main-label">Status : </label>
-                        <label className="field-detail">{data.Cures[selectedCure].state}</label>
-                    </div>
-                </div>
-            </div>
-            <div className="patient">
+        <div className="patient">
                 <h1>PATIENT : { data.Patient.nom + ' ' + data.Patient.prenom }</h1>
                 <div className="field-row">
                     <div className="field">
-                        <label className="main-label">Sexe: </label>
+                        <label className="main-label">Genre: </label>
                         <label className="field-detail">{ data.Patient.sexe }</label>
                     </div>
                     <div className="field">
@@ -174,7 +125,7 @@ export default function Prescription(){
                         <label className="main-label">Formule: </label>
                         <select readOnly name="formuleClair" id="formuleClair" className="main-input" value={data.Patient.formuleClair}>
                             <option value=""></option>
-                            <option value="MDRD">MDRD</option>
+                            <option value="mdrd">MDRD</option>
                             <option value="Cockroft">Cockroft</option>
                         </select>
                     </div>
@@ -187,6 +138,54 @@ export default function Prescription(){
                     <div className="field clcr-field">
                         <label className="main-label">Clcr: </label>
                         <label className="field-detail">{data.Patient.clairance} ml/m</label>
+                    </div>
+                </div>
+            </div>
+            <div className="cure">
+                <h1>CURE Actuelle</h1>
+                <div className="field-row">
+                    <div className="field">
+                        <label className="main-label">N Cure : </label>
+                        <label className="field-detail">{selectedCure + 1 }</label>
+                    </div>
+                    <div className="field">
+                        <label className="main-label">Date début cure {selectedCure + 1 } : </label>
+                        <input type="date" className="main-input" onChange={changeCureDate} value={data.Cures[selectedCure].startDate} />
+                    </div>
+                    <div className="field">
+                        <label className="main-label">Status : </label>
+                        <label className="field-detail">{data.Cures[selectedCure].state}</label>
+                    </div>
+                </div>
+            </div>
+            <div className="prescription">
+                <h1>PRESCRIPTION / CURE</h1>
+                <div className="field-row">
+                    <div className="field">
+                        <label className="main-label">Protocole : </label>
+                        <label className="field-detail">{ data.Protocole.protocole }</label>
+                    </div>
+                    <div className="field">
+                        <label className="main-label">Nbr Cures : </label>
+                        <label className="field-detail">{ data.nbrCures }</label>
+                    </div>
+                    <div className="field">
+                        <label className="main-label">Intercure : </label>
+                        <label className="field-detail">{ data.Protocole.intercure } Jours</label>
+                    </div>
+                    <div className="field">
+                        <label className="main-label">Navigation entre les cures :</label>
+                    </div>
+                </div>
+                <div className="cures-list">
+                    <div className="cures">
+                        {
+                            data.Cures.map((cure, i)=>(
+                                <div onClick={()=>showCure(i, cure.state == 'Prévu')} className={ 'cure' + (i == selectedCure ? ' selectedCure' : "")  }>
+                                    {i + 1}
+                                </div>
+                            ))
+                        }
                     </div>
                 </div>
             </div>
@@ -203,7 +202,7 @@ export default function Prescription(){
                     <img src="/icons/plus.png" alt="+" />
                 </Fab>
             </div>
-            <ProductsList rows={rows} setRows={setRows} products={data.Cures[selectedCure].Products} cure={data.Cures[selectedCure]} patient={data.Patient} validateAll={validateAll} setValidateAll={setValidateAll} />
+            <ProductsList user={user} rows={rows} setRows={setRows} products={data.Cures[selectedCure].Products} cure={data.Cures[selectedCure]} patient={data.Patient} validateAll={validateAll} setValidateAll={setValidateAll} />
         </div>
         <div className="commentaire-container">
             <h1>Commentaire</h1>
