@@ -17,14 +17,6 @@ export default function SearchBlock({ searchArgs, setSearch }){
             <h1>Recherche</h1>
             <div className="filters">
                 <div className="filter">
-                    <label className="main-label">ID</label>
-                    <input onChange={addSearchArg} field="id" type="number" className="main-input" />
-                </div>
-                <div className="filter">
-                    <label className="main-label">DDN</label>
-                    <input onChange={addSearchArg} field="DDN" type="number" className="main-input" />
-                </div>
-                <div className="filter">
                     <label className="main-label">DMI</label>
                     <input onChange={addSearchArg} field="DMI" type="number" className="main-input" />
                 </div>
@@ -33,15 +25,15 @@ export default function SearchBlock({ searchArgs, setSearch }){
                     <input onChange={addSearchArg} field="nom" type="text" className="main-input" />
                 </div>
                 <div className="filter">
-                    <label className="main-label">Prenom</label>
+                    <label className="main-label">Prénom</label>
                     <input onChange={addSearchArg} field="prenom" type="text" className="main-input" />
                 </div>
                 <div className="filter">
-                    <label className="main-label">Date Naissance</label>
+                    <label className="main-label">Date De Naissance</label>
                     <input onChange={addSearchArg} field="birthDate" type="date" className="main-input" />
                 </div>
                 <div className="filter">
-                    <label className="main-label">Sexe</label>
+                    <label className="main-label">Genre</label>
                     <select onChange={addSearchArg} field="sexe" className="main-input" name="sexe" id="sexe">
                         <option value=""></option>
                         <option value="Homme">Homme</option>

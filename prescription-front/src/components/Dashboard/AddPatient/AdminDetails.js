@@ -3,20 +3,21 @@ import Radio from "@mui/material/Radio";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Divider from "@mui/material/Divider";
+import moment from 'moment'
 
 export default function AdminDetails({ setAddingPatient, handleNext }) {
   const navigate = useNavigate();
+  let [age, setAge] = useState(0);
 
   const [selectedValue, setSelectedValue] = useState("Mlle");
   const [surfCorp, setSurfCorp] = useState(0);
   const [clairance, setClairance] = useState(0);
   let [formData, setFormData] = useState({
     DMI: 0,
-    civil: "",
     nom: "",
     prenom: "",
     sexe: "",
-    DDN: 0,
+    matrimonial: "",
     birthDate: "",
     poids: 0,
     taille: 0,
@@ -30,7 +31,6 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
-    formData["civil"] = event.target.value;
   };
 
   const cancel = () => {
@@ -98,7 +98,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
 
     if (field == "poids" || field == "taille") {
       let surf = getSurfCorp(formData.poids, formData.taille);
-      formData["surfCorp"] = surf;
+      formData["surfCorp"] = (surf>2 ? 2 : surf);
       setSurfCorp(surf);
     } else if (field == "surfCorp") {
       setSurfCorp(input.value);
@@ -109,6 +109,10 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
       let clcr = getClairance(formData['formuleClair']);
       setClairance(clcr);
       formData['clairance'] = clcr;
+    }
+    if(field == 'birthDate'){
+      var age = moment().diff(formData[field], 'years',false);
+      setAge(age)
     }
   };
 
@@ -138,33 +142,6 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
           />
         </div>
         <div className="field">
-          <label className="main-label">Civilité</label>
-          <Radio
-            checked={selectedValue === "Mlle"}
-            onChange={handleChange}
-            value="Mlle"
-            name="radio-buttons"
-            inputProps={{ "aria-label": "Mlle" }}
-          />
-          <label>Mlle</label>
-          <Radio
-            checked={selectedValue === "Mme"}
-            onChange={handleChange}
-            value="Mme"
-            name="radio-buttons"
-            inputProps={{ "aria-label": "Mme" }}
-          />
-          <label>Mme</label>
-          <Radio
-            checked={selectedValue === "M."}
-            onChange={handleChange}
-            value="M."
-            name="radio-buttons"
-            inputProps={{ "aria-label": "M." }}
-          />
-          <label>M.</label>
-        </div>
-        <div className="field">
           <label className="main-label">Nom</label>
           <input
             type="text"
@@ -174,7 +151,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
           />
         </div>
         <div className="field">
-          <label className="main-label">Prenom</label>
+          <label className="main-label">Prénom</label>
           <input
             type="text"
             onChange={changeField}
@@ -183,7 +160,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
           />
         </div>
         <div className="field">
-          <label className="main-label">Sexe</label>
+          <label className="main-label">Genre</label>
           <select onChange={changeField} field="sexe" className="main-input">
             <option value=""></option>
             <option value="Homme">Homme</option>
@@ -191,13 +168,12 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
           </select>
         </div>
         <div className="field">
-          <label className="main-label">DDN</label>
-          <input
-            type="number"
-            onChange={changeField}
-            field="DDN"
-            className="main-input"
-          />
+          <label className="main-label">État civil</label>
+          <select onChange={changeField} field="matrimonial" className="main-input">
+            <option value=""></option>
+            <option value="mariée">marié(e)</option>
+            <option value="célibataire">célibataire</option>
+          </select>
         </div>
         <div className="field">
           <label className="main-label">Date Naissance</label>
@@ -207,6 +183,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
             field="birthDate"
             className="main-input"
           />
+          <label className="age-label">{(age > 0 ? age + ' ans' : '')}</label>
         </div>
       </div>
       <Divider orientation="vertical" />
@@ -235,10 +212,11 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
           <input
             type="number"
             onChange={changeField}
-            value={surfCorp}
+            value={surfCorp > 2 ? 2 : surfCorp}
             field="surfCorp"
             className="main-input"
           />
+          <label className="surfCorp-label">{surfCorp > 2 && parseFloat(surfCorp).toFixed(2)}</label>
         </div>
         <div className="field">
           <label className="main-label">Créatinine (µmol/l)</label>

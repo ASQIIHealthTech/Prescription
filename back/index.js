@@ -32,18 +32,22 @@ const Prescription = require('./models/Prescription');
 const Cure = require('./models/Cure');
 const Product = require('./models/Product');
 const DataHistory = require('./models/DataHistory');
+const Vehicule = require('./models/Vehicule');
 
 Patient.hasMany(Prescription, {foreignKey: 'id_patient'});
 Prescription.belongsTo(Patient, {foreignKey: 'id_patient'});
 
-Prescription.hasOne(Protocole, {foreignKey: 'id_protocole'});  //error
-Protocole.belongsTo(Prescription, {foreignKey: 'id_protocole'}); // error
+Prescription.belongsTo(Protocole, {foreignKey: 'id_protocole'});  //error
+// Protocole.hasMany(Prescription, {foreignKey: 'id_protocole'});
 
 Prescription.hasMany(Cure, {foreignKey: 'id_prescription'});
 Cure.belongsTo(Prescription, {foreignKey: 'id_prescription'});
 
 Cure.hasMany(Product, {foreignKey: 'id_cure'});
 Product.belongsTo(Cure, {foreignKey: 'id_cure'});
+
+Product.hasOne(Vehicule, {foreignKey: 'id_product'});
+Vehicule.belongsTo(Product, {foreignKey: 'id_product'});
 
 Product.belongsTo(Molecule, {foreignKey: 'id_molecule'});
 

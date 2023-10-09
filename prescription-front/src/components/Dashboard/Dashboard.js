@@ -6,28 +6,57 @@ import PatientsBody from './Patients/PatientsBody'
 import Cookies from 'js-cookie';
 import Planning from './Planning/Planning'
 import Prescription from './Prescription/Prescription'
+import axios from 'axios'
+import PharmacienBody from './Pharmacien/PharmacienBody'
 
 export function Dashboard({ path }){
     const navigate = useNavigate()
+    let [user, setUser] = useState({})
 
     let { patientId, presId } = useParams();
 
     useEffect(()=>{
         let token = Cookies.get('token');
         if(token){
-
+            axios.post(process.env.REACT_APP_SERVER_URL + '/checkToken', { token })
+                .then((res)=>{
+                    setUser(res.data.tokenUser)
+                })
+                .catch((err)=>{
+                    navigate('/')
+                })
         }else{
             navigate('/')
         }      
     }, [])
 
+    const getComponent = ()=>{
+        if(user.type == 'medecin'){
+            switch(path){
+                case 'patients':
+                    return (<PatientsBody />);
+                case 'planning':
+                    return (<Planning patientId={patientId} />);
+                case 'prescription':
+                    return (<Prescription user={user} presId={presId} />);
+                default:
+                    return (<PatientsBody />);
+            }
+        }else if(user.type == 'pharmacien'){
+            switch(path){
+                case 'patients':
+                    return (<PharmacienBody />);
+                case 'prescription':
+                    return (<Prescription user={user} presId={presId} />);
+            }
+        }
+    }
+
     return(
         <div className="dashboard-container">
             <Header />
             <div className="dashbaord-body">
-                {path == 'patients' && <PatientsBody />}
-                {path == 'planning' && <Planning patientId={patientId} /> }
-                {path == 'prescription' && <Prescription presId={presId} /> }
+                {getComponent()}
             </div>
         </div>
     )

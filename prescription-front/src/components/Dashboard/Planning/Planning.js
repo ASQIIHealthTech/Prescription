@@ -1,4 +1,4 @@
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Divider, Fab } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,13 +8,15 @@ export default function Planning({ patientId }) {
   const navigate = useNavigate();
   let [loading, setLoading] = useState(true);
   let [data, setData] = useState([]);
+  let [patient, setPatient] = useState([]);
 
   useEffect(() => {
     axios
       .post(process.env.REACT_APP_SERVER_URL + "/getPlanning", { patientId })
       .then((res) => {
-        console.log('response from /getPlanning', res.data);
-        setData(res.data);
+        console.log(res.data);
+        setData(res.data[0]);
+        setPatient(res.data[1]);
         setLoading(false);
       })
       .catch((err) => {
@@ -22,18 +24,92 @@ export default function Planning({ patientId }) {
       });
   }, []);
 
+  const getAge = (birthdate) => {
+    const currentDate = new Date();
+    const birthDate = new Date(birthdate);
+
+    const yearsDiff = currentDate.getFullYear() - birthDate.getFullYear();
+
+    // Adjust age if the birthdate hasn't occurred yet this year
+    if (
+      currentDate.getMonth() < birthDate.getMonth() ||
+      (currentDate.getMonth() === birthDate.getMonth() &&
+        currentDate.getDate() < birthDate.getDate())
+    ) {
+      return yearsDiff - 1;
+    }
+
+    return yearsDiff;
+  };
+
+  const addPres = ()=>{
+    navigate('/dashboard?addpres=' + patientId)
+  }
+
   if (loading) {
     return <CircularProgress />;
   }
 
   return (
     <div className="planning-container">
-      <h1>PLANNING DES PRESCRIPTIONS</h1>
-      <div className="prescriptions">
-        {data.length > 0 &&
-          data.map((pres, index) => (
-            <Prescription pres={pres} index={index} />
-          ))}
+      <div className="list-container">
+        <h1>PLANNING DES PRESCRIPTIONS</h1>
+        <div className="prescriptions">
+          {data.length > 0 &&
+            data.map((pres, index) => (
+              <Prescription pres={pres} index={index} />
+            ))}
+        </div>
+      </div>
+      <div className="fiche-patient">
+        <Fab title="Ajouter une prescription" color="2663EE" aria-label="add" className="addPresBtn" onClick={()=>addPres()}>
+            <img src="/icons/plus.png" alt="+" />
+        </Fab>
+        <div className="fiche-header">
+          <label>PATIENT: { patient.prenom + ' ' + patient.nom}</label>
+        </div>
+        <div className="fiche-body">
+          <div className="block">
+            <div className="row">
+              <label className="main-label">Genre : </label>
+              <label className="info-label">{ patient.sexe } </label>
+            </div>
+            <div className="row">
+              <label className="main-label">Age : </label>
+              <label className="info-label">{ getAge(patient.birthDate) } ans </label>
+            </div>
+            <div className="row">
+              <label className="main-label">Poids : </label>
+              <label className="info-label">{ patient.poids } kg </label>
+            </div>
+            <div className="row">
+              <label className="main-label">Taille : </label>
+              <label className="info-label">{ patient.taille } cm </label>
+            </div>
+            <div className="row">
+              <label className="main-label">Surface Corporelle : </label>
+              <label className="info-label">{ patient.surfCorp } </label>
+            </div>
+            <div className="separator"></div>
+          </div>
+          <div className="block">
+            <div className="row">
+              <label className="main-label">Traitement en cours : </label>
+              <label className="info-label">{data[0]?.Protocole?.protocole} </label>
+            </div>
+            <div className="row">
+              <label className="main-label">Cure en cours : </label>
+              <label className="info-label">Cure 1 </label>
+            </div>
+            <div className="separator"></div>
+          </div>
+          <div className="block">
+            <div className="row">
+              <label className="main-label">Commentaires : </label>
+              <label className="info-label"> { patient.commentaire } </label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -77,7 +153,7 @@ export function Prescription({ pres, index }){
           Prescription-{index + 1} :{" "}
         </label>
         <label className="label2">
-          Protocole {pres.Protocole.protocole}
+          Protocole {pres?.Protocole?.protocole}
         </label>
       </div>
     </div>
@@ -100,8 +176,16 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
     return moment.duration(start.diff(end)).asDays();
   }
 
+  const removeBtn = ()=>{
+
+    return (
+      <Fab title="Ajouter une prescription" color="2663EE" aria-label="add" className="addPresBtn" onClick={()=>addPres()}>
+          <img src="/icons/plus.png" alt="+" />
+      </Fab>
+      )
+  }
+
   useEffect(()=>{
-    console.log(currentDay, cure, cure.startDate)
     if(currentDay != cure.startDate){
       setAddDay(true)
       setCurrentDay(cure.startDate)
@@ -109,15 +193,15 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
 
     let firstDate = cure.startDate;
 
-    for(const prod of cure.Products){
-      let diff = getDateDifference(firstDate, prod.startDate) + 1;
-      if(!groupedProducts[diff]){
-        groupedProducts[diff] = [];
+    if(groupedProducts.length == 0){
+      for(const prod of cure.Products){
+        let diff = getDateDifference(firstDate, prod.startDate) + 1;
+        if(!groupedProducts[diff]){
+          groupedProducts[diff] = [];
+        }
+        groupedProducts[diff].push(prod)
       }
-      groupedProducts[diff].push(prod)
     }
-    
-    console.log(groupedProducts)
     
   }, [])
 
@@ -158,6 +242,9 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
   return(
     <>
     <div key={cureIndex} className="block child-block" pres={presIndex}>
+      <Fab title="Supprimer la cure" color="2663EE" aria-label="add" className="removeCureBtn" onClick={()=>addPres()}>
+          <img src="/icons/trash.png" alt="+" />
+      </Fab>
       <img className="open-icon" onClick={(e)=>showJours(e, cure.id)} shown={0} src="/icons/plus_blue.png" />
       <div className="details">
         <img className="icon-24" src="/icons/cure.png" />

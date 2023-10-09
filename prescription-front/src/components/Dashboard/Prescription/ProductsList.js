@@ -8,7 +8,7 @@ import Paper from '@mui/material/Paper';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 
-export default function ProductsList({ rows, setRows, products, cure, patient, validateAll, setValidateAll }) {
+export default function ProductsList({ user, rows, setRows, products, cure, patient, validateAll, setValidateAll }) {
   let [currentDay, setCurrentDay] = useState('')
   let [dates, setDates] = useState([])
 
@@ -35,13 +35,11 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
     for(const prod of products){
       let diff = getDateDifference(firstDate, prod.startDate) + 1;
       if(!groupedData[diff]){
-        console.log('diff', diff)
         groupedData[diff] = [];
       }
       groupedData[diff].push(prod)
     }
     
-    console.log(groupedData)
     setRows(groupedData)
   }, [products])
 
@@ -58,14 +56,14 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
     }
   }, [validateAll])
 
-  const getAdaptedDose = (row)=>{
+  const getAdaptedDose = (unite, row)=>{
     let val = 0;
-    switch (row.unite){
+    switch (unite){
       case 'mg/kg':
         return parseInt(row.dose * patient.poids).toFixed(2);
       case 'mg':
         return parseInt(row.dose).toFixed(2);
-      case 'mg/m2':
+      case 'mg/m²':
         return parseInt(row.dose * patient.surfCorp).toFixed(2);
       case 'AUC':
         return parseInt(row.dose * (patient.clairance + 25)).toFixed(2) ;
@@ -75,10 +73,23 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
   }
 
   const toggleValidate = (changedRow, event, jourIndex)=>{
+    if(cure.state == 'Prévu'){
+      return;
+    }
+    let value = 0;
+    if(user.type == "medecin"){
+      value = changedRow.validation == 0 ? 1 : 0;
+    }else if(changedRow.validation == 1){
+      value = changedRow.validation == 1 ? 2 : 1;
+    }else{
+      return;
+    }
+
+
     const updatedData = rows.map((jour, index) => {
       if (index === jourIndex) {
         const updatedJour = jour.map((row) =>
-          row === changedRow ? { ...row, validation: changedRow.validation == 0 ? 1 : 0 } : row
+          row === changedRow ? { ...row, validation: value } : row
         );
         return updatedJour;
       }
@@ -100,23 +111,43 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
     });
     
     setRows(updatedData);
-    console.log(updatedData)
   }
 
   const getPercentage = (row)=>{
     return (parseInt(row.dose) * 100)/parseInt(row.Molecule.dose)
   }
 
-  const changePercentage = (e, row, jourIndex)=>{
-    // let percentage = e.target.value;
-    // let doseTheo = row.Molecule.dose;
+  function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
 
-    // let event = []
-    // event['target'] = [];
-    // row.dose = (percentage * doseTheo)/100
-    // event.target.value = row.dose;
-    // console.log(row.dose)
-    // changeAdaptedDose(row, event, jourIndex)
+  const changeDate = (type, changedRow, jourIndex, i)=>{
+    let daysToAdd = type === 0 ? -1 : 1;
+    if(jourIndex + daysToAdd < 1){
+      return;
+    }
+    var new_date = moment(addDays(changedRow.startDate, daysToAdd)).format('YYYY-MM-DD');
+
+    const updatedData = rows.map((jour, index) => {
+      if (index === jourIndex) {
+        const updatedJour = jour.map((row) =>
+          row === changedRow ? { ...row, startDate: new_date } : { ...row } // Create a new copy of the row
+        );
+        return updatedJour;
+      }
+      return jour;
+    });
+
+    changedRow.startDate = new_date;
+    updatedData[jourIndex].splice(i, 1);
+    if(updatedData[jourIndex + daysToAdd]){
+      updatedData[jourIndex + daysToAdd].push(changedRow)
+    }else{
+      updatedData[jourIndex + daysToAdd] = [changedRow]
+    }
+    setRows(updatedData);
   }
 
   return (
@@ -150,15 +181,15 @@ export default function ProductsList({ rows, setRows, products, cure, patient, v
                       </TableCell>
                     </>
                   )}
-                  <TableCell align="left">{row.startDate}</TableCell>
+                  <TableCell align="left"><label className={'date-controls prevent-selection' + (index == 1 ? ' date-controls-disabled' : '')} onClick={(e)=>changeDate(0, row, index, j)}>-</label> {row.startDate} <label className='date-controls prevent-selection' onClick={(e)=>changeDate(1, row, index, j)}>+</label></TableCell>
                   <TableCell align="left">{row.Molecule.molecule}</TableCell>
                   <TableCell align="left">{row.Molecule.dose + ' ' + row.Molecule.unite}</TableCell>
-                  <TableCell align="left">{getAdaptedDose(row.Molecule) + ' ' + row.Molecule.unite}</TableCell>
-                  <TableCell align="left"><input type='number' disabled={row.validation == 1} onChange={(e)=>changeDose(row, e, index)} value={row.dose} className='main-input' /></TableCell>
-                  <TableCell align="left"><input type='number' disabled={row.validation == 1}  value={getAdaptedDose(row.Molecule)} className='main-input' /></TableCell>
-                  <TableCell align="left"><div className='percentage-input-container'><input disabled={row.validation == 1} onChange={(e)=>changePercentage(e, row, index)} type='number' value={getPercentage(row).toFixed(2)} className='main-input' /></div></TableCell>
+                  <TableCell align="left">{getAdaptedDose(row.Molecule.unite, row.Molecule) + ' ' + row.Molecule.unite}</TableCell>
+                  <TableCell align="left"><input type='number' disabled={row.validation != 0} onChange={(e)=>changeDose(row, e, index)} value={row.dose} className='main-input' /></TableCell>
+                  <TableCell align="left"><input type='number' disabled={row.validation != 0}  value={getAdaptedDose(row.Molecule.unite, row)} className='main-input' /></TableCell>
+                  <TableCell align="left"><div className='percentage-input-container'><input disabled={row.validation != 0} onChange={(e)=>changePercentage(e, row, index)} type='number' value={getPercentage(row).toFixed(2)} className='main-input' /></div></TableCell>
                   <TableCell align="left">
-                    <div onClick={(e)=>toggleValidate(row, e, index)} className={( row.validation == 1 ? 'validationCircle valid-medecin' : 'validationCircle') }></div>
+                    <div onClick={(e)=>toggleValidate(row, e, index)} className={'validationCircle' + ( row.validation == 1 ? ' valid-medecin' : '') + ( row.validation == 2 ? ' valid-pharmacien' : '') }></div>
                   </TableCell>
                 </TableRow>
               ))}

@@ -5,6 +5,7 @@ const Molecule = require('./models/Molecule');
 const Prescription = require('./models/Prescription');
 const Cure = require('./models/Cure');
 const Product = require('./models/Product');
+const Vehicule = require('./models/Vehicule');
 var express = require('express');
 var router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -62,6 +63,61 @@ router.post('/login', async (req,res)=>{
     }
 })
 
+router.post('/signup', async (req,res)=>{
+    try{
+        if(!req.body){
+            return res.status(400).send('Missing Fields!')    
+        }
+
+        let { name, username, password, type } = req.body;
+        
+        if(!(name && username && password && type)){
+            return res.status(400).send('Missing Fields!')    
+        }
+
+        let oldUser = await User.findOne({
+            where: {
+                username
+            }
+        })
+
+        const hashedPass = await bcrypt.hash(password, 10);
+
+        if(!oldUser){
+            let user = await User.create({
+                name,
+                username,
+                password: hashedPass,
+                type
+            })
+
+            let tokenUser = user;
+            delete tokenUser.dataValues.password;
+            const token = jwt.sign({ tokenUser }, process.env.JWT_KEY, { expiresIn: '3d' })
+            return res.status(200).send({ user: tokenUser, token })
+        }else{
+            return res.status(400).send('User already exists!')    
+        }
+
+    }catch(err){
+        console.log(err)
+    }
+})
+
+router.post('/checkToken', async (req,res)=>{
+    const { token } = req.body;
+
+    let data = jwt.verify(token, process.env.JWT_KEY)
+
+    if(data){
+        return res.status(200).send(data)
+    }else{
+        return res.sendStatus(400);
+    }
+
+})
+
+
 ///////////////////////////////
 ////////////////// PATIENT ///
 router.post('/addPatient', async (req,res)=>{
@@ -76,7 +132,20 @@ router.post('/addPatient', async (req,res)=>{
 router.post('/getAllPatients', async (req,res)=>{
     try{
         const patients = await Patient.findAll({
-            attributes: ['id', 'DDN', 'DMI', 'nom', 'prenom', 'birthDate', 'sexe']
+            attributes: ['id', 'matrimonial', 'DMI', 'nom', 'prenom', 'birthDate', 'sexe']
+        })
+        return res.status(200).send(patients);
+    }catch(err){
+        console.log(err)
+        return res.sendStatus(500)
+    }
+})
+
+router.post('/getAllPatientsWithPres', async (req,res)=>{
+    try{
+        const patients = await Patient.findAll({
+            attributes: ['id', 'matrimonial', 'DMI', 'nom', 'prenom', 'birthDate', 'sexe'],
+            include: [Prescription]
         })
         return res.status(200).send(patients);
     }catch(err){
@@ -175,7 +244,8 @@ router.post('/addPrescription', async (req,res)=>{
         id_protocole: data.protocole,
         prescripteur: data.prescripteur,
         startDate: data.date,
-        nbrCures: data.nbrCures
+        nbrCures: data.nbrCures,
+        essaiClin: data.essaiClin
     })
 
     for(let i=0; i < data.nbrCures ; i++){
@@ -211,6 +281,21 @@ router.post('/getPrescription', async (req, res)=>{
             id: presId
         },
         include: { all: true, nested: true }
+    })
+
+    return res.status(200).send(data)
+
+})
+
+router.post('/getLatestPrescription', async (req, res)=>{
+    const { patientId } = req.body;
+
+    let data = await Prescription.findOne({
+        where: {
+            id_patient: patientId
+        },
+        include: { all: true, nested: true },
+        order: [ [ 'createdAt', 'DESC' ]]
     })
 
     return res.status(200).send(data)
@@ -267,7 +352,7 @@ router.post('/updateCure', async (req,res)=>{
     cure.forEach(el=>{
         if(el){
             el.forEach(prod=>{
-                Product.update({ dose: prod.dose, validation: prod.validation }, {
+                Product.update({ dose: prod.dose, validation: prod.validation, startDate: prod.startDate }, {
                     where:{
                         id: prod.id
                     }
@@ -277,6 +362,16 @@ router.post('/updateCure', async (req,res)=>{
     })
 
     return res.status(200).send('DONE')
+})
+
+router.post('/getAllCures', async (req,res)=>{1
+    const { medecin } = req.body;
+
+    let cures = await Prescription.findAll({
+        include: { all: true, nested: true },
+    })
+
+    return res.status(200).send(cures);
 })
 
 ///////////////////////////////
@@ -291,14 +386,89 @@ router.post('/getPlanning', async (req, res)=>{
         include: { all: true, nested: true }
     })
 
-    return res.status(200).send(data)
+    let ss = await Protocole.findOne({ 
+        where: {
+            id: data[0].id_protocole
+        }
+    })
+
+
+    let patient = await Patient.findOne({
+        where: {
+            id: patientId
+        }
+    })
+
+    return res.status(200).send([data, patient])
 
 })
 
 ///////////////////////////////
-////////////// DataHistory ///
-router.post('/addDataHistory', async(req,res)=>{
+//////////////// Pharmacie ///
+router.post('/changeProductValidation', async (req,res)=>{
+    let { row } = req.body;
 
+    let product = await Product.update({ validation: row.validation }, {
+        where: {
+            id: row.id
+        }
+    })
+
+    return res.sendStatus(200)
+})
+router.post('/getAjustementData', async(req,res)=>{
+    const { prodId } = req.body;
+
+    let product = await Product.findOne({
+        where: {
+            id: prodId
+        },
+        include: [Molecule, Vehicule]
+    })
+    let cure = await Cure.findOne({
+        where: {
+            id: product.id_cure
+        }
+    })
+    let prescription = await Prescription.findOne({
+        where: {
+            id: cure.id_prescription
+        },
+        include: [Patient, Protocole]
+    })
+
+    res.status(200).send([prescription, cure, product])
+})
+
+router.post('/saveVehicule', async (req,res)=>{
+    const { data } = req.body;
+
+    let veh = await Vehicule
+        .findOne({ where: { id_product: data.id_product } })
+        .then(function(obj) {
+            // update
+            if(obj)
+                return obj.update(data);
+            // insert
+            return Vehicule.create(data);
+        })
+
+    res.sendStatus(200)
+})
+
+///////////////////////////////
+////////////////////// FAB ///
+router.post('/getFABData', async (req,res)=>{
+    const { ids } = req.body;
+
+    let products = await Product.findOne({
+        where:{
+            id: ids
+        },
+        include: { all: true, nested: true }
+    })
+
+    res.status(200).send(products)
 })
 
 module.exports = router;

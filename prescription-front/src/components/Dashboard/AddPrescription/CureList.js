@@ -20,7 +20,7 @@ export default function CureList({ molecules, patient }) {
         return row.dose * patient.poids;
       case 'mg':
         return row.dose;
-      case 'mg/m2':
+      case 'mg/m²':
         return row.dose * patient.surfCorp;
       case 'AUC':
         return row.dose * (patient.clairance + 25) ;
@@ -36,9 +36,9 @@ export default function CureList({ molecules, patient }) {
           <TableRow>
             <TableCell align="center">Jour</TableCell>
             <TableCell align="left">Produit</TableCell>
+            <TableCell align="left">Dose</TableCell>
             <TableCell align="left">Unité</TableCell>
-            <TableCell align="left">Dose Théorique</TableCell>
-            <TableCell align="left">Dose Adaptée</TableCell>
+            <TableCell align="left">Dose Totale</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -51,8 +51,8 @@ export default function CureList({ molecules, patient }) {
                 J{row.jour_prod}
               </TableCell>
               <TableCell align="left">{row.molecule}</TableCell>
-              <TableCell align="left">{row.unite}</TableCell>
               <TableCell align="left">{row.dose}</TableCell>
+              <TableCell align="left">{row.unite}</TableCell>
               <TableCell align="left">{getAdaptedDose(row)}</TableCell>
             </TableRow>
           ))}
