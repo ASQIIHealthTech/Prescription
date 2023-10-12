@@ -4,9 +4,9 @@ services:
     container_name: prescription-front
     networks:
       - mynet
-    image: azizhassen01/prescription-front:1.0.0
+    image: azizhassen01/prescription-front:2.0.1
     environment:
-      REACT_APP_SERVER_URL: backend-service:3030
+      REACT_APP_SERVER_URL: http://localhost:3030
     ports:
       - 80:3000
     
@@ -29,7 +29,7 @@ services:
     restart: always
     depends_on:
       - db-service
-    image: azizhassen01/prescription-back:latest
+    image: azizhassen01/prescription-back:2.0.1
     networks:
       - mynet
     environment:
