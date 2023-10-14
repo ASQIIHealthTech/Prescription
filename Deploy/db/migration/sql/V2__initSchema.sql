@@ -2040,24 +2040,35 @@ VALUES (
     '0000-00-00 00:00:00',
     ''
   );
+
+
+
+--- Insert data into Users
 INSERT INTO `Users` (
-    `id`,
-    `name`,
-    `username`,
-    `password`,
-    `createdAt`,
-    `updatedAt`,
-    `type`
-  )
-VALUES (
-    1,
-    'Amin baklouti',
-    'aminbk',
-    '$2b$10$Bqj2p8MvFwvv..9BvTTpEO4rZgvHUFaAeQ5JuI5gj6v.BsKsHACbG',
+  `name`, 
+  `username`,
+  `password`,
+  `createdAt`,
+  `updatedAt`,
+  `type`
+)
+ VALUES (
+  'asqii',
+  'asqii',
+  '$2a$12$l.mNBKJ4c5tZvlu5O0XrWe1Om55Hry4Lf4f.sPO3IlNaahoXytj32',
+  '2023-08-19 15:12:50', 
+  '2023-08-19 15:12:50',
+  'medecin'
+  ), 
+  (
+    'user',
+    'user',
+    '$2a$12$tnrfUCOjE1PBh3ci43enM.tW6GkizWlichAsGGBKTR2nxAS8/Wmx.',
     '2023-08-19 15:12:50',
     '2023-08-19 15:12:50',
-    'medecin'
+    'pharmacien'
   );
+
 SET FOREIGN_KEY_CHECKS = 1;
 --
 
