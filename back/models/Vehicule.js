@@ -22,7 +22,11 @@ const Vehicule = sequelize.define('Vehicule', {
   volume: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
-});
+  }
+},{
+  tableName: 'Vehicule',
+  timestamps: true
+},
+);
 
 module.exports = Vehicule;

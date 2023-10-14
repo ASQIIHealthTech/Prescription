@@ -10,23 +10,10 @@ var express = require('express');
 var router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const moment = require('moment');
-const sequelize = require('./config/db');
+const moment = require('moment')
 
 router.get('/', (req,res)=>{
     res.send('hey')
-})
-
-
-router.get('/health', (req, res) => {
-    sequelize.sync()
-    .then(() => {
-        res.status(200).send('Ok');
-    })
-    .catch((error) => {
-        console.log('Error checking the database health', error);
-        res.status(403).send('Forbidden');
-    })
 })
 
 ///////////////////////////////
@@ -385,13 +372,6 @@ router.post('/getPlanning', async (req, res)=>{
         },
         include: { all: true, nested: true }
     })
-
-    let ss = await Protocole.findOne({ 
-        where: {
-            id: data[0].id_protocole
-        }
-    })
-
 
     let patient = await Patient.findOne({
         where: {

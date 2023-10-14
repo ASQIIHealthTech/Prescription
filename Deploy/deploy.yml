@@ -29,7 +29,7 @@ services:
     restart: always
     depends_on:
       - db-service
-    image: azizhassen01/prescription-back:2.0.1
+    image: azizhassen01/prescription-back:2.0.5
     networks:
       - mynet
     environment:
