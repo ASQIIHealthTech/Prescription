@@ -17,6 +17,8 @@ function App() {
           {/* Pharmacien */}
           <Route path="/*" element={<Navigate to='/dashboard' />} />
           <Route path="/FAB" element={<FAB />} />
+          {/* Admin */}
+          <Route path="/addProtocole" element={<Dashboard path={'addProtocole'} />} />
         </Routes>
       </BrowserRouter>
   );

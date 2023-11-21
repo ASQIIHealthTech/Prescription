@@ -14,14 +14,33 @@ export default function AddPrescriptionSecond({ patient, prescriptionData, setPr
             })
     }, [])
 
+    const getProtocoleNbrCures = (id)=>{
+        
+        axios.post(process.env.REACT_APP_SERVER_URL+'/getProtocole', {id})
+            .then(res=>{
+                const data = res.data;
+                setPrescriptionData({
+                    ...prescriptionData,
+                    'protocole': data?.id,
+                    'nbrCures': data?.nb_cures
+                })
+            })
+
+    }
+
     const changeData = (e)=>{
         let field = e.target.attributes.name.nodeValue;
         let value = e.target.value;
 
+        if(field == 'protocole'){
+            getProtocoleNbrCures(value);
+            return;
+        }
+        
         if(field == 'essaiClin'){
             value = (e.target.checked ? 1 : 0);
         }
-
+        
         setPrescriptionData({
             ...prescriptionData,
             [field]: value

@@ -164,6 +164,7 @@ export function Prescription({ pres, index }){
 }
 
 export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
+  const navigate = useNavigate();
   let [addDay, setAddDay] = useState(false);
   let [groupedProducts, setgroupedProducts] = useState([])
 
@@ -238,6 +239,10 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
     }
   }
 
+  const navigateCure = (pres, cure)=>{
+    navigate('/prescription/'+pres + '?cure=' + cure);
+  }
+
   return(
     <>
     <div key={cureIndex} className="block child-block" pres={presIndex}>
@@ -245,7 +250,7 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
           <img src="/icons/trash.png" alt="+" />
       </Fab>
       <img className="open-icon" onClick={(e)=>showJours(e, cure.id)} shown={0} src="/icons/plus_blue.png" />
-      <div className="details">
+      <div className="details" onClick={()=>navigateCure(presIndex, cureIndex)}>
         <img className="icon-24" src="/icons/cure.png" />
         <label className="bold label1">{cure.name} : </label>
         <label className="label2">{cure.startDate}</label>
@@ -273,12 +278,13 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
 }
 
 export function Product({ product, index, cureIndex, jour }){
+  console.log(product)
   return(
     <div cure={cureIndex} key={index} shown={0} jour={jour} className="block products-block">
       <div className="details details-product">
         <img className="icon-24" src="/icons/product.png" />
         <label className="bold label1">{product.name} : </label>
-        <label className="label2">{product.startDate}</label>
+        <label className="label2">{product.startDate + ' - Dose: ' + product.dose + ' ' + product.Molecule.unite}</label>
       </div>
     </div>
   )

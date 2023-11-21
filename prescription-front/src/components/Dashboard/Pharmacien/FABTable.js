@@ -31,6 +31,7 @@ export default function FABTable({ data, adaptedDose }) {
             <TableCell>Spécialité</TableCell>
             <TableCell align="right">Dosage</TableCell>
             <TableCell align="right">Quantité</TableCell>
+            <TableCell align="right">Solvant</TableCell>
             <TableCell align="right">Volume/Unité (ml)</TableCell>
             <TableCell align="right">Volume Total (ml)</TableCell>
             <TableCell align="right">Masse Totale (mg)</TableCell>
@@ -41,6 +42,7 @@ export default function FABTable({ data, adaptedDose }) {
             <TableCell align="left">{data.name} 50 mg</TableCell>
             <TableCell align="right">50 mg</TableCell>
             <TableCell align="right">{number}</TableCell>
+            <TableCell align="right"></TableCell>
             <TableCell align="right">5 ml</TableCell>
             <TableCell align="right">{5*number} ml</TableCell>
             <TableCell align="right">{50*number} mg</TableCell>
@@ -49,6 +51,7 @@ export default function FABTable({ data, adaptedDose }) {
             <TableCell align="left">{data.name} 50 mg</TableCell>
             <TableCell align="right">50 mg</TableCell>
             <TableCell align="right">1/n</TableCell>
+            <TableCell align="right"></TableCell>
             <TableCell align="right">5 ml</TableCell>
             <TableCell align="right">{( getAdjustedDose(adaptedDose) - Math.floor(adaptedDose/50)*50 ).toFixed(2)} ml</TableCell>
             <TableCell align="right">{( getAdjustedDose(adaptedDose) - Math.floor(adaptedDose/50)*50 ).toFixed(2)} mg</TableCell>

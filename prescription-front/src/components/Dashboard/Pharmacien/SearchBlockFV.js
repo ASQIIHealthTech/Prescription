@@ -1,4 +1,4 @@
-export default function SearchBlock({ searchArgs, setSearch }){
+export default function SearchBlockFV({ searchArgs, setSearch }){
 
     const addSearchArg = (event)=>{
         let input = event.target;   
@@ -14,7 +14,6 @@ export default function SearchBlock({ searchArgs, setSearch }){
     
     return(
         <div className="search-block">
-            <h1>Recherche</h1>
             <div className="filters">
                 <div className="filter">
                     <label className="main-label">DMI</label>

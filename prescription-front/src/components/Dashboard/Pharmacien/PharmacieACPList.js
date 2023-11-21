@@ -3,16 +3,15 @@ import { useEffect, useState } from 'react';
 import moment from 'moment';
 import axios from 'axios';
 import AjustementModal from "./AjustementModal";
-import PocheModal from "./PocheModal";
 import { useNavigate } from "react-router-dom";
 
-export default function PharmacieACPList({  }) {
+export default function PharmacieACPList({ search, searchArgs }) {
   const navigate = useNavigate();   
   let [rows, setRows] = useState([])
-  let [changedRows, setChangedRows] = useState([])
   let [loading, setLoading] = useState(true)
   let [ajustement, setAjustement] = useState(0)
-  let [poche, setPoche] = useState(0)
+  let [filteredRows, setFilteredRows] = useState([]);
+  let [constData, setConstData] = useState([]);
 
   function getDateDifference(date1Str, date2Str) {
     var start = moment(date2Str, "YYYY-MM-DD");
@@ -24,25 +23,23 @@ export default function PharmacieACPList({  }) {
 
   const openAjustement = (e)=>{
     setAjustement(e.row.id);
-    e.row.adjusted = 1;
   }
   
-  const openPoche = (e)=>{
-    setPoche(e.row.id);
-    e.row.poche = 1;
+  const ajustementBtn = (e)=>{
+    if(e.row.adjusted == 1){
+      return (<img className="gear-icon" src="/icons/gear-active.png" onClick={()=>openAjustement(e)} />)
+    }else{
+      return (<img className="gear-icon" src="/icons/gear.png" onClick={()=>openAjustement(e)} />)
+    }
   }
   
-  const ajustementBtn = (e)=>(
-    <img className="gear-icon" src="/icons/gear.png" onClick={()=>openAjustement(e)} />
-  )
-  
-  const flaskBtn = (e)=>(
-    <img className="gear-icon" src="/icons/flask.png" onClick={()=>openPoche(e)} />
-  )
-  
-  const fabBtn = (e)=>(
-    <img className="gear-icon" src="/icons/clipboard.png" onClick={()=>navigate('/FAB?ids=' + e.row.id)} />
-  )
+  const fabBtn = (e)=>{
+    if(e.row.adjusted == 1){
+      return (<img className="gear-icon" src="/icons/clipboard-active.png" onClick={()=>navigate('/FAB?ids=' + e.row.id)} /> )
+    }else{
+      return (<img className="gear-icon" src="/icons/clipboard.png" /> )
+    }
+  }
   
 
   useEffect(() => {
@@ -52,6 +49,7 @@ export default function PharmacieACPList({  }) {
         console.log(res)
         let data = res.data;
         setRows([])
+        setConstData([])
         data.forEach(pres=>{
           pres.Cures.forEach(cure=>{
             cure.Products.forEach(prod=>{
@@ -66,9 +64,9 @@ export default function PharmacieACPList({  }) {
                 patient: pres.Patient.nom + ' ' + pres.Patient.prenom,
                 protocole: (pres.Protocole != undefined ? pres.Protocole.protocole : null),
                 validation: prod.validation,
-                adjusted: 0,
-                poche: 0
+                adjusted: prod.adjusted
               }
+              setConstData(prev=>[ ...prev, obj])
               setRows(prev=>[ ...prev, obj])
             })
           })
@@ -103,26 +101,55 @@ export default function PharmacieACPList({  }) {
     }
   }
 
+  useEffect(()=>{
+    filterRows();
+  }, [search])
+
+  function filterRows(){
+    console.log(rows)
+    if(Object.keys(searchArgs).length == 0){
+      setRows(constData)
+      return;
+    }
+
+    let searchKeys = Object.keys(searchArgs);
+    filteredRows = []
+    let valid = true;
+    let done = false;
+
+    constData.forEach(el=>{
+      valid = true;
+      done = false;
+      while(!done){
+        searchKeys.forEach(key=>{
+          if(!el[key].toString().toLowerCase().includes(searchArgs[key].toLowerCase())){
+            valid = false;
+            done = true;
+          }
+        })
+        done = true
+      }
+      if(valid){
+        filteredRows.push(el)
+      }
+    })
+    setRows(filteredRows);
+  }
+
   const columns = [
     { field: "startDate", headerName: "Date", flex:3 },
     { field: "name", headerName: "Produit", flex:3 },
     { field: "dose", headerName: "Dose Prs", flex:3 },
     { field: "patient", headerName: "Patient", flex:3 },
     { field: "protocole", headerName: "Protocole", flex:3 },
-    { field: "flask", headerName: "Véhicule", flex:1, renderCell: flaskBtn },
     { field: "ajustement", headerName: "Ajustement", flex:1, renderCell: ajustementBtn },
     { field: "ss", headerName: "Fiche", flex:1, renderCell: fabBtn },
   ];
 
-  const handleChange = (ids)=>{
-    console.log(ids)
-  }
-
   if(!loading){
     return (
       <>
-        {ajustement != 0 ? <AjustementModal ajustement={ajustement} setAjustement={setAjustement} /> : null}
-        {poche != 0 ? <PocheModal poche={poche} setPoche={setPoche} /> : null}
+        {ajustement != 0 ? <AjustementModal ajustement={ajustement} setAjustement={setAjustement} rows={rows} /> : null}
         <DataGrid
           rows={rows} 
           columns={columns}
@@ -133,6 +160,7 @@ export default function PharmacieACPList({  }) {
           }}
           pageSizeOptions={[5, 10, 25, 50, 100]}
           checkboxSelection
+          className="main-table"
           disableRowSelectionOnClick
           onRowSelectionModelChange={(ids)=>{
             console.log(55)

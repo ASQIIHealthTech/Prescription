@@ -1,0 +1,26 @@
+services:
+  frontend:
+    build:
+      context: ./prescription-front
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./back
+    ports:
+      - "3030:3030"
+    depends_on:
+      - database
+    volumes:
+      - ./presDB.sql:/docker-entrypoint-initdb.d/database.sql
+
+  database:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: prescription
+    ports:
+      - "3306:3306"

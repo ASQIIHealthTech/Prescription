@@ -4,11 +4,12 @@ import moment from 'moment';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
-export default function PharmacieProductsList({  }) {
+export default function PharmacieProductsList({ search, searchArgs }) {
   const navigate = useNavigate();
   let [currentDay, setCurrentDay] = useState('')
   let [rows, setRows] = useState([])
-  let [changedRows, setChangedRows] = useState([])
+  let [constData, setConstData] = useState([])
+  let [filteredRows, setFilteredRows] = useState([])
   let [loading, setLoading] = useState(true)
   let [dates, setDates] = useState([])
 
@@ -32,6 +33,7 @@ export default function PharmacieProductsList({  }) {
       .then(res=>{
         let data = res.data;
         setRows([])
+        setConstData([])
         data.forEach(pres=>{
           pres.Cures.forEach(cure=>{
             cure.Products.forEach(prod=>{
@@ -46,6 +48,7 @@ export default function PharmacieProductsList({  }) {
                 validation: prod.validation
               }
               setRows(prev=>[ ...prev, obj])
+              setConstData(prev=>[ ...prev, obj])
             })
           })
 
@@ -78,6 +81,42 @@ export default function PharmacieProductsList({  }) {
     }
   }
 
+  
+  useEffect(()=>{
+    filterRows();
+  }, [search])
+
+  function filterRows(){
+    console.log(rows)
+    if(Object.keys(searchArgs).length == 0){
+      setRows(constData)
+      return;
+    }
+
+    let searchKeys = Object.keys(searchArgs);
+    filteredRows = []
+    let valid = true;
+    let done = false;
+
+    constData.forEach(el=>{
+      valid = true;
+      done = false;
+      while(!done){
+        searchKeys.forEach(key=>{
+          if(!el[key].toString().toLowerCase().includes(searchArgs[key].toLowerCase())){
+            valid = false;
+            done = true;
+          }
+        })
+        done = true
+      }
+      if(valid){
+        filteredRows.push(el)
+      }
+    })
+    setRows(filteredRows);
+  }
+
   const columns = [
     { field: "startDate", headerName: "Date", flex:2 },
     { field: "name", headerName: "Produit", flex:2 },
@@ -100,6 +139,7 @@ export default function PharmacieProductsList({  }) {
         }}
         pageSizeOptions={[5, 10, 25, 50, 100]}
         checkboxSelection
+        className='main-table'
       />
   ); }
 }

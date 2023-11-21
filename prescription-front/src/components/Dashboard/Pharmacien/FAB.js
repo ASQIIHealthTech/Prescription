@@ -210,6 +210,33 @@ export default function FAB(){
                         </div>
                     </div>
                 </div>
+
+                {/* <div className="row fab-bg sticker-data">
+                    <div className="section header-section">
+                        <div className="field">
+                            <label className="main-label">Centre Hospitalier : </label>
+                            <label className="info-label">adresse</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">N° Ordonnancier : </label>
+                            <label className="info-label">adresse</label>
+                        </div>
+                    </div>
+                    <div className="fields">
+                        <div className="field">
+                            <label className="main-label">Véhicule : </label>
+                            <label className="info-label">{data.Vehicule.contenu}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Volume : </label>
+                            <label className="info-label">{data.Vehicule.volume} ml</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label conc-label">Volume a retirer : </label>
+                            <label className="info-label conc-info">--</label>
+                        </div>
+                    </div>
+                </div> */}
             </div>
         </div>
     )

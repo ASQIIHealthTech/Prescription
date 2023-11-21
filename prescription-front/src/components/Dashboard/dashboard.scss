@@ -23,13 +23,25 @@
         align-items: center;
         padding-right: 1rem;
 
-        label{
-            color: white;
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 20px;
-            letter-spacing: 0em;
-            text-align: left;
+        .name-box{
+            display: flex;
+            flex-direction: column;
+            .userName{
+                color: white;
+                font-size: 16px;
+                font-weight: 500;
+                line-height: 20px;
+                letter-spacing: 0em;
+                text-align: left;
+            }
+            .userType{
+                color: white;
+                font-size: 12px;
+                text-align: right;
+            }
+        }
+        img{
+            cursor: pointer;
         }
     }
 }
@@ -545,6 +557,9 @@
             .field{
                 flex: 3;
 
+                .field-changed{
+                    border: green 1.5px solid;
+                }
                 &.clcr-field{
                     display: flex;
                     align-items: center;
@@ -607,6 +622,12 @@
     }
     .prescription{
         flex: 3;
+
+        .essaiClin-label{
+            color: red;
+            font-weight: bold;
+
+        }
         .field-row{
             flex-direction: column;
             row-gap: 1rem;
@@ -749,6 +770,20 @@
         padding: 1rem;
     }
 }
+.molecule-modal-box{
+    height: 400px;
+
+    .main-label{
+        color: var(--main-dark-blue);
+    }
+    .field{
+        display: flex;
+        align-items: center;
+    }
+    label{
+        padding: 1rem;
+    }
+}
 .poche-modal-box{
     padding: 0 2rem;
     height: 440px;
@@ -785,6 +820,9 @@
             column-gap: 2rem;
         }
     }
+    .float-left{
+        margin-right: auto;
+    }
 }
 .date-controls{
     color: rgb(0, 189, 0);
@@ -812,7 +850,7 @@
         row-gap: 2rem;
 
         .fab-bg{
-            background-color: rgb(215, 215, 215);
+            border: rgb(215, 215, 215) 2px solid;
         }
         .row{
             width: 950px;
@@ -912,6 +950,30 @@
                 justify-content: space-around;
             }
         }
+        .sticker-data{
+            border-radius: 25px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-direction: column;
+            padding: 0;
+            padding-bottom: 1.5rem;
+            width: 100%;
+
+            .fields{
+                width: 100%;
+                justify-content: space-around;
+            }
+            .section{
+                width: 100%;
+            }
+            .header-section{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                border-bottom: gray 1px solid;
+            }
+        }
         .last-details{
             display: flex;
             flex-direction: row;
@@ -947,6 +1009,42 @@
                     justify-content: space-around;
                 }
             }
+        }
+    }
+}
+.addProtocole-container{
+    
+    .protocole-planning{
+        padding-left: 5rem;
+
+        .planning-table{
+            margin-bottom: 2rem;
+
+            thead{
+                background: #233368;
+                
+                th{
+                    color: white;
+                }
+            }
+            .protocole-icon{
+                cursor: pointer;
+                width: 25px;
+            }
+        }    
+        .add-btn{
+            margin-bottom: 2rem;
+            float: right;
+        }
+        h1{
+            color: var(--main-h1-color);
+            font-size: 2.5em;
+        }
+        .planning-small-input{
+            width: 50px;
+        }
+        .MuiAutocomplete-root{
+            width: 200px;
         }
     }
 }

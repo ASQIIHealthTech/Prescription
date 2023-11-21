@@ -50,6 +50,10 @@ body {
   transition: 0.3s;
 }
 
+.main-btn:disabled{
+  background-color: #13315d;
+}
+
 .main-btn:hover{
   background-color: #1d52a2;
 }
@@ -74,6 +78,18 @@ body {
   border-radius: 12px;
   background-color: #DCEBFD;
   color: var(--main-input-color);
+}
+
+.main-table .MuiDataGrid-columnHeaders{
+  background-color: var(--main-dark-blue)
+}
+
+.main-table .MuiDataGrid-columnHeader{
+  border-left: white 3px solid;
+}
+
+.main-table .MuiDataGrid-columnHeaderTitle{
+  color: white;
 }
 
 .percentage-input-container{

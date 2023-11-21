@@ -132,7 +132,7 @@ router.post('/getAllPatientsWithPres', async (req,res)=>{
     try{
         const patients = await Patient.findAll({
             attributes: ['id', 'matrimonial', 'DMI', 'nom', 'prenom', 'birthDate', 'sexe'],
-            include: [Prescription]
+            include: { all: true, nested: true }
         })
         return res.status(200).send(patients);
     }catch(err){
@@ -156,11 +156,43 @@ router.post('/getPatientById', async (req,res)=>{
     }
 })
 
+router.post('/changePatientData', async (req,res)=>{
+    const { id, type, value, surfCorp, clairance } = req.body;
+    const patient = await Patient.update({ [type]: value, surfCorp, clairance }, {
+        where:{
+            id
+        }
+    })
+    return res.status(200).send(patient);
+})
+
 ///////////////////////////////
 //////////////// PROTOCOLE ///
 router.post('/getAllProtocoles', async (req,res)=>{
     const Protocoles = await Protocole.findAll({});
     return res.status(200).send(Protocoles);
+})
+
+router.post('/getProtocole', async (req,res)=>{
+    const { id } = req.body;
+
+    const protocole = await Protocole.findOne({
+        where: {
+            id
+        }
+    });
+    return res.status(200).send(protocole);
+})
+
+router.post('/getAllMolecules', async (req,res)=>{
+
+    const molecules = await Molecule.findAll({
+        attributes: ['molecule'],
+        group: ['molecule'],
+    })
+
+    return res.status(200).send(molecules)
+
 })
 
 router.post('/getMolecules', async (req,res)=>{
@@ -184,6 +216,32 @@ router.post('/getMolecules', async (req,res)=>{
     })
 
     return res.status(200).send([protocole, molecules])
+
+})
+
+router.post('/addProtocole', async (req,res)=>{
+    const { protData, rows } = req.body;
+
+    let prot = await Protocole.create(protData);
+
+    prot.id_protocole = prot.id;
+    await prot.save();
+
+    rows.forEach(el=>{
+        for(let i=1;i<parseInt(prot.intercure)+1;i++ ){
+            if(el['j'+i] && el['j'+i] == 1 && el.name != ''){
+                Molecule.create({
+                    id_protocole: prot.id_protocole,
+                    molecule: el.name,
+                    dose: el.dose,
+                    unite: el.unite,
+                    jour_prod: i,
+                })
+            }
+        }
+    })
+
+    return res.status(200).send(prot)
 
 })
 
@@ -234,7 +292,8 @@ router.post('/addPrescription', async (req,res)=>{
         nbrCures: data.nbrCures,
         essaiClin: data.essaiClin
     })
-
+    
+    let keys = Object.keys(molecules);
     for(let i=0; i < data.nbrCures ; i++){
         let date = addDaysToDate(prescription.startDate, parseInt(protocole.intercure) * i);
         let cure = await Cure.create({
@@ -243,7 +302,6 @@ router.post('/addPrescription', async (req,res)=>{
             startDate: date,
             state: (i==0 ? 'En Cours' : 'Prévu')
         })
-        let keys = Object.keys(molecules);
         keys.forEach(async (key)=>{
             let mol = molecules[key];
             let molDate = addDaysToDate(cure.startDate, parseInt(mol.jour_prod) - 1);
@@ -253,7 +311,8 @@ router.post('/addPrescription', async (req,res)=>{
                 name: mol.molecule,
                 dose: mol.dose,
                 startDate: molDate,
-                validation: 0
+                validation: 0,
+                adjusted: 0
             })
         })
     }
@@ -330,23 +389,35 @@ router.post('/changeCureDate', async (req,res)=>{
 })
 
 router.post('/updateCure', async (req,res)=>{
-    const { pass, cure } = req.body;
+    const { pass, cure, user } = req.body;
 
-    if(!pass){
+    const currentUser = await User.findOne({ 
+        where: {
+            id: user.id
+        }
+    }) 
+
+    if(!pass || !currentUser){
         return res.status(400).send('Missing Fields!')
     }
 
-    cure.forEach(el=>{
-        if(el){
-            el.forEach(prod=>{
-                Product.update({ dose: prod.dose, validation: prod.validation, startDate: prod.startDate }, {
-                    where:{
-                        id: prod.id
-                    }
+    let verified = await bcrypt.compare(pass, currentUser.password);
+
+    if(verified){
+        cure.forEach(el=>{
+            if(el){
+                el.forEach(prod=>{
+                    Product.update({ dose: prod.dose, validation: prod.validation, startDate: prod.startDate }, {
+                        where:{
+                            id: prod.id
+                        }
+                    })
                 })
-            })
-        }
-    })
+            }
+        })
+    }else{
+        return res.status(400).send('Wrong Credentials')
+    }
 
     return res.status(200).send('DONE')
 })
@@ -371,12 +442,6 @@ router.post('/getPlanning', async (req, res)=>{
             id_patient: patientId
         },
         include: { all: true, nested: true }
-    })
-
-    let ss = await Protocole.findOne({ 
-        where: {
-            id: data[0].id_protocole
-        }
     })
 
 
@@ -425,6 +490,18 @@ router.post('/getAjustementData', async(req,res)=>{
     })
 
     res.status(200).send([prescription, cure, product])
+})
+
+router.post('/setAdjusted', async(req,res)=>{
+    const { id, value } = req.body;
+
+    let product = await Product.update({ adjusted: value }, {
+        where: {
+            id
+        }
+    })
+
+    res.status(200).send(product)
 })
 
 router.post('/saveVehicule', async (req,res)=>{

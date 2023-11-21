@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"
+import { useState, useEffect, useRef } from "react";
+import { useParams, useSearchParams } from "react-router-dom"
 import CureList from '../AddPrescription/CureList'
 import axios from 'axios';
 import ProductsList from "./ProductsList";
@@ -9,12 +9,16 @@ import ConfirmChangesModal from "./ConfirmChangesModal";
 
 export default function Prescription({user}){
     const { presId } = useParams();
+    const [params] = useSearchParams();
     let [loading, setLoading] = useState(true);
     let [selectedCure, setSelectedCure] = useState(0);
     let [data, setData] = useState([]);
     let [validateAll, setValidateAll] = useState(false);
     let [confirmChanges, setConfirmChanges] = useState(false);
     let [rows, setRows] = useState([])
+
+    let clcrRef = useRef(null);
+    let surfCorpRef = useRef(null);
 
     const refreshData = ()=>{
         setTimeout(()=>{
@@ -27,7 +31,9 @@ export default function Prescription({user}){
     }
 
     useEffect(()=>{
-        console.log(user)
+        if(params.get('cure')){
+            setSelectedCure(parseInt(params.get('cure')));
+        }
         refreshData()
     }, [])
 
@@ -49,10 +55,48 @@ export default function Prescription({user}){
         return yearsDiff;
     };
 
-    const showCure = (id, prevu)=>{
+    
+    const getClairance = () => {
+        let clcr = 0;
+        let sexe = data.Patient.sexe;
+        let creatinine = parseInt(data.Patient.creatinine);
+        let age = getAge(data.Patient.birthDate);
+        let poids = data.Patient.poids;
+        let formule = data.Patient.formuleClair;
 
-            setSelectedCure(id)
-        
+        if (!(sexe && creatinine && age && poids)) {
+        return;
+        }
+
+        if (formule == "mdrd") {
+            if (sexe == "Homme") {
+                clcr = (
+                186 * Math.pow(creatinine / 88.4, -1.154) * Math.pow(age, -0.203)
+                ).toFixed(2);
+            } else if(sexe == "Femme") {
+                clcr = (
+                186 * Math.pow(creatinine / 88.4, -1.154) * Math.pow(age, -0.203) * 0.742
+                ).toFixed(2);
+            }
+        } else if (formule == "cockroft") {
+            if (sexe == "Homme") {
+                clcr = ((1.23 * poids * (140 - age)) / creatinine).toFixed(2);
+            } else if(sexe == "Femme") {
+                clcr = ((1.04 * poids * (140 - age)) / creatinine).toFixed(2);
+            }
+        }else{
+            clcr = 0;
+        }
+
+        return clcr;
+    };
+
+    let getSurfCorp = (poids, taille) => {
+        return Math.sqrt((taille * poids) / 3600).toFixed(2);
+    };
+
+    const showCure = (id, prevu)=>{
+        setSelectedCure(id)
     }
 
     const changeCureDate = (e)=>{
@@ -79,14 +123,44 @@ export default function Prescription({user}){
         });
       };
 
-      const changeCommentaire = (e)=>{
+    const changeCommentaire = (e)=>{
         let commentaire = e.target.value;
         setData({
             ...data,
             commentaire
         })
         axios.post(process.env.REACT_APP_SERVER_URL + '/changePrescriptionCommentaire', { presId: data.id, commentaire})
-      }
+    }
+
+    function isNumber(value) {
+        return typeof value === 'number';
+    }
+
+    const changePatientData = (e, type)=>{
+        let value = e.target.value;
+        if(isNumber(data.Patient[type])){
+            value = parseInt(value);
+        }
+
+        console.log(1, data.Patient)
+        data.Patient[type] = value;
+        console.log(2, data.Patient)
+
+        let surfCorp = getSurfCorp(data.Patient.poids, data.Patient.taille);
+
+        if(type == 'poids' || type == 'taille'){
+            surfCorpRef.current.value = surfCorp
+            data.Patient.surfCorp = surfCorp
+        }
+        
+        clcrRef.current.innerHTML = getClairance() + ' ml/m'; 
+        data.Patient.clairance = getClairance();
+
+        axios.post(process.env.REACT_APP_SERVER_URL + '/changePatientData', { id: data.Patient.id, type, value, surfCorp, clairance: getClairance()})
+            .then(res => {
+                e.target.classList.add('field-changed');
+            })
+    }
 
     if(loading){
         return <CircularProgress />;
@@ -109,35 +183,35 @@ export default function Prescription({user}){
                     </div>
                     <div className="field">
                         <label className="main-label">Poids: </label>
-                        <input type="number" readOnly className="main-input" value={data.Patient.poids} />
+                        <input type="number" className="main-input" onBlur={(e)=>changePatientData(e, 'poids')} defaultValue={data.Patient.poids} />
                     </div>
                 </div>
                 <div className="field-row">
                     <div className="field">
                         <label className="main-label">Taille: </label>
-                        <input type="number" readOnly className="main-input" value={data.Patient.taille} />
+                        <input type="number" className="main-input" onBlur={(e)=>changePatientData(e, 'taille')} defaultValue={data.Patient.taille} />
                     </div>
                     <div className="field">
                         <label className="main-label">Créatinine: </label>
-                        <input type="number" readOnly className="main-input" value={data.Patient.creatinine} />
+                        <input type="number" className="main-input" onBlur={(e)=>changePatientData(e, 'creatinine')} defaultValue={data.Patient.creatinine} />
                     </div>
                     <div className="field">
                         <label className="main-label">Formule: </label>
-                        <select readOnly name="formuleClair" id="formuleClair" className="main-input" value={data.Patient.formuleClair}>
+                        <select name="formuleClair" id="formuleClair" className="main-input" onChange={(e)=>changePatientData(e, 'formuleClair')} defaultValue={data.Patient.formuleClair}>
                             <option value=""></option>
                             <option value="mdrd">MDRD</option>
-                            <option value="Cockroft">Cockroft</option>
+                            <option value="cockroft">Cockroft</option>
                         </select>
                     </div>
                 </div>
                 <div className="field-row">
                     <div className="field">
                         <label className="main-label">Surface Corporelle: </label>
-                        <input type="number" readOnly className="main-input" value={data.Patient.surfCorp} />
+                        <input type="number" ref={surfCorpRef} className="main-input" onBlur={(e)=>changePatientData(e, 'surfCorp')} defaultValue={data.Patient.surfCorp} />
                     </div>
                     <div className="field clcr-field">
                         <label className="main-label">Clcr: </label>
-                        <label className="field-detail">{data.Patient.clairance} ml/m</label>
+                        <label className="field-detail" ref={clcrRef} >{data.Patient.clairance} ml/m</label>
                     </div>
                 </div>
             </div>
@@ -161,6 +235,11 @@ export default function Prescription({user}){
             <div className="prescription">
                 <h1>PRESCRIPTION / CURE</h1>
                 <div className="field-row">
+                    {data.essaiClin && (
+                        <div className="field">
+                            <label className="essaiClin-label"> Essai Clinique </label>
+                        </div>
+                    )}
                     <div className="field">
                         <label className="main-label">Protocole : </label>
                         <label className="field-detail">{ data.Protocole.protocole }</label>

@@ -6,7 +6,10 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import PharmacieProductsList from './PharmacieProductsList';
 import PharmacieACPList from './PharmacieACPList';
-import FeuVertList from './FeuVertList';
+import ValidationList from './ValidationList';
+import SearchBlockFV from './SearchBlockFV';
+import SearchBlockACP from './SearchBlockACP';
+import SearchBlockPlanning from './SearchBlockPlanning';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -43,6 +46,12 @@ function a11yProps(index) {
 
 export default function PharmacienBody() {
   const [value, setValue] = React.useState(0);
+  let [searchArgs, setSearchArgs] = React.useState({});
+  let [search, setSearch] = React.useState(false);
+  let [searchArgsACP, setSearchArgsACP] = React.useState({});
+  let [searchACP, setSearchACP] = React.useState(false);
+  let [searchPlanning, setSearchPlanning] = React.useState(false);
+  let [searchArgsPlanning, setSearchArgsPlanning] = React.useState({});
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -52,19 +61,22 @@ export default function PharmacienBody() {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="tabs">
-          <Tab label="Feu vert" {...a11yProps(0)} />
+          <Tab label="Validation" {...a11yProps(0)} />
           <Tab label="Ajustement" {...a11yProps(1)} />
           <Tab className="planning-tab" label="Planning" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <FeuVertList />
+        <SearchBlockFV searchArgs={searchArgs} setSearch={setSearch} />
+        <ValidationList searchArgs={searchArgs} search={search} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <PharmacieACPList />
+        <SearchBlockACP searchArgs={searchArgsACP} setSearch={setSearchACP} />
+        <PharmacieACPList searchArgs={searchArgsACP} search={searchACP} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <PharmacieProductsList />
+        <SearchBlockPlanning searchArgs={searchArgsPlanning} setSearch={setSearchPlanning} />
+        <PharmacieProductsList searchArgs={searchArgsPlanning} search={searchPlanning} />
       </CustomTabPanel>
     </Box>
   );

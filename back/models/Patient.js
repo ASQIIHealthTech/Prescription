@@ -49,7 +49,7 @@ const Patient = sequelize.define('Patient', {
   },
   formuleClair: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   clairance: {
     type: DataTypes.FLOAT,

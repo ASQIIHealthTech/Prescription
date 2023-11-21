@@ -5,16 +5,40 @@ import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 
-export default function FeuVertList() {
+export default function ValidationList({ searchArgs, search }) {
   const navigate = useNavigate();
   let [loading, setLoading] = useState(true);
   let [data, setData] = useState([]);
   let [rows, setRows] = useState([]);
   let [filteredRows, setFilteredRows] = useState([]);
 
+  const getLastCure = (Prescriptions)=>{
+    console.log(Prescriptions)
+    if(!Prescriptions || Prescriptions.length == 0){
+      return null;
+    }
+    let addr = '';
+    console.log(Prescriptions)
+    Prescriptions.forEach(pres=>{
+      pres.Cures.forEach(cure=>{
+        if(cure.state == "En Cours"){
+          let cureN = parseInt(cure.name.split(' ')[1]) - 1
+          addr = '/prescription/'+ pres.id + '?cure='+ cureN;
+          return;
+        }
+      })
+      if(addr != ''){
+        return;
+      }
+    })
+    return addr;
+  }
+
   const presBtn = (e)=>{
+    let addr = getLastCure(e.row.Prescriptions);
+    console.log(addr)
     return (
-      <Fab className="planning-btn" color="2663EE" aria-label="planning" onClick={()=>navigate((e.row.Prescriptions.length > 0 ? ('/prescription/'+ e.row.Prescriptions[0].id) : null))}>
+      <Fab className="planning-btn" color="2663EE" aria-label="planning" onClick={()=>navigate(addr)}>
           <img src="/icons/list.svg" alt="+" />
       </Fab>
     )
@@ -43,6 +67,42 @@ export default function FeuVertList() {
 
   }, [])
 
+  useEffect(()=>{
+    console.log('searching')
+    filterRows();
+    console.log(search)
+  }, [search])
+
+  function filterRows(){
+    if(Object.keys(searchArgs).length == 0){
+      setRows(data)
+      return;
+    }
+
+    let searchKeys = Object.keys(searchArgs);
+    filteredRows = []
+    let valid = true;
+    let done = false;
+
+    data.forEach(el=>{
+      valid = true;
+      done = false;
+      while(!done){
+        searchKeys.forEach(key=>{
+          if(!el[key].toString().toLowerCase().includes(searchArgs[key].toLowerCase())){
+            valid = false;
+            done = true;
+          }
+        })
+        done = true
+      }
+      if(valid){
+        filteredRows.push(el)
+      }
+    })
+    setRows(filteredRows);
+  }
+
   return (
     <div className="patient-list">
       {!loading ?
@@ -54,6 +114,7 @@ export default function FeuVertList() {
             paginationModel: { page: 0, pageSize: 10 },
           },
         }}
+        className='main-table'
         pageSizeOptions={[5, 10, 25, 50]}
         checkboxSelection
       /> : <CircularProgress /> }

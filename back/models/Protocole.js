@@ -24,6 +24,18 @@ const Protocole = sequelize.define('Protocole', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  details: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  indications: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  type_histo: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
 });
 
 module.exports = Protocole;

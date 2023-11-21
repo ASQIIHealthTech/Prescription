@@ -61,7 +61,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
     let age = getAge(formData.birthDate);
     let poids = formData.poids;
 
-    if (!(formule && sexe && creatinine && age && poids)) {
+    if (!(sexe && creatinine && age && poids)) {
       return;
     }
 
@@ -81,6 +81,8 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
       } else if(sexe == "Femme") {
         clcr = ((1.04 * poids * (140 - age)) / creatinine).toFixed(2);
       }
+    }else{
+      clcr = 0;
     }
 
     return clcr;

@@ -3,12 +3,15 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import RepartitionTable from './RepartitionTable';
 import FractionTable from './FractionTable';
+import PocheModal from "./PocheModal";
 
 
-export default function AjustementModal({ setAjustement, ajustement }) {
+export default function AjustementModal({ setAjustement, ajustement, rows }) {
   const navigate = useNavigate();
   let [data, setData] = useState([])
   let [loading, setLoading] = useState(true)
+  let [poche, setPoche] = useState(0)
+  let [vehData, setVehData] = useState(null)
 
   const getAdaptedDose = (row)=>{
     // return 55.32;
@@ -32,6 +35,7 @@ export default function AjustementModal({ setAjustement, ajustement }) {
       .then((res) => {
         console.log(res)
         setData(res.data)
+        setVehData(res.data[2].Vehicule)
         setLoading(false);
       })
       .catch(err=>{
@@ -40,10 +44,10 @@ export default function AjustementModal({ setAjustement, ajustement }) {
   }, [])
 
   const getVehicule = ()=>{
-    if(!data[2].Vehicule){
+    if(!vehData){
       return;
     }
-    let D = data[2].Vehicule;
+    let D = vehData;
     return D.contenu + ' ' + D.type + ' ' + D.volume + ' ml';
   }
 
@@ -52,8 +56,35 @@ export default function AjustementModal({ setAjustement, ajustement }) {
       return val.toFixed(2);
   }
 
+  const flaskBtn = (id)=>(
+    <img className="gear-icon" src="/icons/flask.png" onClick={()=>openPoche(id)} />
+  )
+    
+  const openPoche = (id)=>{
+    setPoche(id);
+  }
+
+  const submit = ()=>{
+    axios.post(process.env.REACT_APP_SERVER_URL+'/setAdjusted', { id: data[2].id, value: 1 })
+      .then(res=>{
+        console.log(res)
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+    
+    for(let el of rows){
+      if(el.id == ajustement){
+        el.adjusted = 1;
+      }
+    }
+    setAjustement(0);
+  }
+
   if(!data || loading){
     return '';
+  }else if(poche != 0){
+    return <PocheModal poche={poche} setPoche={setPoche} setVehData={setVehData} vehData={vehData} getAdjustedDose={getAdjustedDose} getAdaptedDose={getAdaptedDose} />;
   }else{
   return (
     <div className="modal-container">
@@ -69,14 +100,20 @@ export default function AjustementModal({ setAjustement, ajustement }) {
               <label>Produit: </label>
               <label className='main-label'>{data[2].name} </label>
             </div>
-            <div className="field">
-              <label>Vehicule: </label>
-              <label className='main-label'>{getVehicule()} </label>
-            </div>
-            <div className="field">
-              <label>Concentration: </label>
-              <label className='main-label'>{( getAdjustedDose(getAdaptedDose()) / parseInt(data[2]?.Vehicule?.volume) ).toFixed(2) } </label>
-            </div>
+              {flaskBtn(data[2].id)}
+              { !vehData ? null : (
+                <>
+                  <div className="field">
+                    <label>Vehicule: </label>
+                      <label className='main-label'>{getVehicule()} </label>
+                    </div>
+                    <div className="field">
+                      <label>Concentration: </label>
+                      <label className='main-label'>{( getAdjustedDose(getAdaptedDose()) / parseInt(vehData?.volume) ).toFixed(2) } </label>
+                    </div>
+                </>
+              )
+            }
           </div>
           <div className="field">
             <label>date: </label>
@@ -85,11 +122,11 @@ export default function AjustementModal({ setAjustement, ajustement }) {
           <div className="doses">
             <div className="field">
               <label>Dose Prescrite: </label>
-              <label className='main-label'>{getAdaptedDose() + ' ' + data[2].Molecule.unite} </label>
+              <label className='main-label'>{getAdaptedDose() } mg </label>
             </div>
             <div className="field">
               <label>Dose Ajustée: </label>
-              <label className='main-label'>{getAdjustedDose(getAdaptedDose()) + ' ' + data[2].Molecule.unite} </label>
+              <label className='main-label'>{getAdjustedDose(getAdaptedDose()) } mg </label>
             </div>
             <div className="field">
               <label>Volume Ajusté: </label>
@@ -101,13 +138,13 @@ export default function AjustementModal({ setAjustement, ajustement }) {
             </div>
           </div>
         </div>
-        <h2>Repartition</h2>
+        <h2 className='float-left'>Repartition</h2>
         <RepartitionTable data={data} adaptedDose={getAdaptedDose()} />
-        <h3>Fraction</h3>
+        <h2 className='float-left'>Fraction</h2>
         <FractionTable data={data} adaptedDose={getAdaptedDose()} />
         <div className="btn-container">
           <button className="main-btn" onClick={()=>setAjustement(0)}>Annuler</button>
-          <button className="main-btn" onClick={()=>setAjustement(0)}>Valider</button>
+          <button className="main-btn" disabled={!vehData} onClick={()=>submit()}>Valider</button>
         </div>
       </div>
     </div>

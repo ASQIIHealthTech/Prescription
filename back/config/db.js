@@ -9,4 +9,13 @@ const sequelize = new Sequelize({
     dialect: 'mysql'
 });
 
+// const sequelize = new Sequelize({
+//     username: 'root',
+//     password: 'pass',
+//     database: 'prescription',
+//     host: 'database',
+//     port: 3306,
+//     dialect: 'mysql'
+// });
+
 module.exports = sequelize;;

@@ -13,7 +13,7 @@ import moment from 'moment';
 
 const steps = ['1', '2', '3'];
 
-export default function AddPrescription({ setAddPrescription, addPrescription }) {
+export default function AddPrescription({ setAddPrescription, addPrescription, user }) {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
@@ -119,7 +119,7 @@ export default function AddPrescription({ setAddPrescription, addPrescription })
             ))}
         </Stepper>
         { Object.keys(patient).length== 0 && <CircularProgress /> }
-        { activeStep == 0 && Object.keys(patient).length != 0 && <AddPrescriptionFirst patient={patient} prescriptionData={prescriptionData} setPrescriptionData={setPrescriptionData} /> }
+        { activeStep == 0 && Object.keys(patient).length != 0 && <AddPrescriptionFirst user={user} patient={patient} prescriptionData={prescriptionData} setPrescriptionData={setPrescriptionData} /> }
         { activeStep == 1 && Object.keys(patient).length != 0 && <AddPrescriptionSecond patient={patient} prescriptionData={prescriptionData} setPrescriptionData={setPrescriptionData} /> }
         { activeStep == 2 && Object.keys(patient).length != 0 && <AddPrescriptionFourth patient={patient} prescriptionData={prescriptionData} setPrescriptionData={setPrescriptionData} /> }
         {/* { activeStep == 3 && Object.keys(patient).length != 0 && <AddPrescriptionFourth patient={patient} prescriptionData={prescriptionData} setPrescriptionData={setPrescriptionData} /> } */}

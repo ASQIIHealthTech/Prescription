@@ -8,6 +8,7 @@ import Planning from './Planning/Planning'
 import Prescription from './Prescription/Prescription'
 import axios from 'axios'
 import PharmacienBody from './Pharmacien/PharmacienBody'
+import AddProtocole from './Admin/AddProtocole';
 
 export function Dashboard({ path }){
     const navigate = useNavigate()
@@ -34,11 +35,13 @@ export function Dashboard({ path }){
         if(user.type == 'medecin'){
             switch(path){
                 case 'patients':
-                    return (<PatientsBody />);
+                    return (<PatientsBody user={user} />);
                 case 'planning':
                     return (<Planning patientId={patientId} />);
                 case 'prescription':
                     return (<Prescription user={user} presId={presId} />);
+                case 'addProtocole':
+                    return (<AddProtocole />);
                 default:
                     return (<PatientsBody />);
             }
@@ -54,7 +57,7 @@ export function Dashboard({ path }){
 
     return(
         <div className="dashboard-container">
-            <Header />
+            <Header user={user} />
             <div className="dashbaord-body">
                 {getComponent()}
             </div>

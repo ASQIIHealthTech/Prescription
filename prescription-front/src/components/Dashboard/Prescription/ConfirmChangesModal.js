@@ -12,15 +12,17 @@ export default function ConfirmChangesModal({ setConfirmChanges, cure, refreshDa
   const confirm = ()=>{
     let pass = passRef.current.value;
 
-    axios.post(process.env.REACT_APP_SERVER_URL + '/updateCure', { pass, cure })
+    axios.post(process.env.REACT_APP_SERVER_URL + '/updateCure', { pass, cure, user })
         .then((res) => {
             console.log(res)
-            if(user.type == 'pharmacien'){
-              navigate('/dashboard')
-            }else{
-              refreshData()
-            }
-            setConfirmChanges(false)
+            setTimeout(()=>{
+              if(user.type == 'pharmacien'){
+                navigate('/dashboard')
+              }else{
+                  refreshData()
+                }
+              }, 200)
+              setConfirmChanges(false)
         })
         .catch((err) => {
             setAlertText(err.response.data);
