@@ -53,7 +53,7 @@ export default function CureList({ molecules, patient }) {
               <TableCell align="left">{row.molecule}</TableCell>
               <TableCell align="left">{row.dose}</TableCell>
               <TableCell align="left">{row.unite}</TableCell>
-              <TableCell align="left">{getAdaptedDose(row)}</TableCell>
+              <TableCell align="left">{parseFloat(getAdaptedDose(row)).toFixed(2)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

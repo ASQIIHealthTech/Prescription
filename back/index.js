@@ -33,6 +33,8 @@ const Cure = require('./models/Cure');
 const Product = require('./models/Product');
 const DataHistory = require('./models/DataHistory');
 const Vehicule = require('./models/Vehicule');
+const PrepMolecule = require('./models/PrepMolecule');
+const Flacon = require('./models/Flacon');
 
 Patient.hasMany(Prescription, {foreignKey: 'id_patient'});
 Prescription.belongsTo(Patient, {foreignKey: 'id_patient'});

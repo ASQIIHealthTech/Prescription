@@ -10,7 +10,9 @@ var express = require('express');
 var router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const moment = require('moment')
+const moment = require('moment');
+const PrepMolecule = require('./models/PrepMolecule');
+const Flacon = require('./models/Flacon');
 
 router.get('/', (req,res)=>{
     res.send('hey')
@@ -533,6 +535,74 @@ router.post('/getFABData', async (req,res)=>{
     })
 
     res.status(200).send(products)
+})
+
+router.post('/getPrepMolecule', async (req,res)=>{
+    const { dci } = req.body;
+
+    let prepMolecule = await PrepMolecule.findOne({
+        where:{
+            dci
+        },
+    })
+
+    res.status(200).send(prepMolecule)
+})
+
+///////////////////////////////
+////////////////// Flacons ///
+router.post('/getFlacons', async (req,res)=>{
+    const { dci } = req.body;
+
+    let flacons = await PrepMolecule.findAll({
+        where:{
+            dci
+        },
+        order: [['dosage', 'DESC']]
+    })
+
+    res.status(200).send(flacons)
+})
+
+router.post('/getSavedFlacons', async (req,res)=>{
+    const { productId } = req.body;
+
+    let flacons = await Flacon.findAll({
+        where:{
+            productId
+        },
+        order: [['dosage', 'DESC']]
+    })
+
+    res.status(200).send(flacons)
+})
+
+router.post('/saveFlacons', async (req,res)=>{
+    const { flacons } = req.body;
+
+    if(!flacons){
+        res.status(400).send('no flacons')
+    }
+
+    let oldFlacons = await Flacon.findAll({
+        where: {
+            productId: flacons[0].productId
+        }
+    }) 
+
+    oldFlacons.forEach(async (flac)=>{
+        await Flacon.destroy({
+            where: {
+                id: flac.id
+            }
+        })
+    })
+
+    flacons.forEach(async (flac)=>{
+        await Flacon.create(flac)
+    })
+
+    res.status(200).send('Done')
 })
 
 module.exports = router;

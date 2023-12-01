@@ -16,5 +16,8 @@ COPY . .
 # Expose the port on which the app runs
 EXPOSE 3000
 
+# After installing dependencies, remove unnecessary files
+RUN npm prune --production
+
 # Define the command to run your app
 CMD ["npm", "start"]

@@ -119,3 +119,7 @@ body {
   line-height: 20px;
   text-align: left;
 }
+
+.red-text{
+  color: red;
+}

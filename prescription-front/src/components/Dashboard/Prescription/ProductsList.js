@@ -164,7 +164,7 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
   }
 
   return (
-    <TableContainer id="toExportPDF" sx={{ height: 350 }} component={Paper}>
+    <TableContainer className='productsList' id="toExportPDF" sx={{ height: 350 }} component={Paper}>
       <Table aria-label="simple table">
         <TableHead className='cure-list-header'>
           <TableRow>
@@ -199,8 +199,8 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
                   <TableCell align="left">{row.Molecule.dose + ' ' + row.Molecule.unite}</TableCell>
                   <TableCell align="left">{getAdaptedDose(row.Molecule.unite, row.Molecule.dose) } mg</TableCell>
                   <TableCell align="left"><input id={"prod-dose-"+index+'-'+j} type='number' disabled={row.validation != 0} onChange={(e)=>changeDose(row, e.target.value, index, j)} value={row.dose} className='main-input' /></TableCell>
-                  <TableCell align="left"><input id={"prod-adaptedDose-"+index+'-'+j} type='number' disabled  defaultValue={getAdaptedDose(row.Molecule.unite, row.dose)} className='main-input' /></TableCell>
-                  <TableCell align="left"><div className='percentage-input-container'><input id={"prod-percentage-"+index+'-'+j} disabled onBlur={(e)=>changePercentage(e, row, index, j)} type='number' defaultValue={getPercentage(row.dose, row.Molecule.dose)} className='main-input' /></div></TableCell>
+                  <TableCell align="left"><input id={"prod-adaptedDose-"+index+'-'+j} type='number' disabled  value={getAdaptedDose(row.Molecule.unite, row.dose)} className='main-input' /></TableCell>
+                  <TableCell align="left"><div className='percentage-input-container'><input id={"prod-percentage-"+index+'-'+j} disabled onBlur={(e)=>changePercentage(e, row, index, j)} type='number' value={getPercentage(row.dose, row.Molecule.dose)} className='main-input' /></div></TableCell>
                   <TableCell align="left">
                     <div onClick={(e)=>toggleValidate(row, e, index)} className={'validationCircle' + ( row.validation == 1 ? ' valid-medecin' : '') + ( row.validation == 2 ? ' valid-pharmacien' : '') }></div>
                   </TableCell>

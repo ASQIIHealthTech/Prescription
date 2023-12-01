@@ -25,11 +25,11 @@ const Prescription = sequelize.define('Prescription', {
   },
   nbrCures: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   essaiClin: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
+    allowNull: true,
   },
   commentaire:{
     type: DataTypes.TEXT,

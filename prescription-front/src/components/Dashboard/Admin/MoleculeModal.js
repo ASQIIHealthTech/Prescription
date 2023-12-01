@@ -15,12 +15,13 @@ export default function MoleculeModal({ setMoleculeModal, moleculeModal }) {
         <h1>Details Du Medicaments</h1>
         <div className='field'>
             <label className='main-label'>Solvant: </label>
-            <input className='main-checkbox' type='checkbox' />
-            <label className='main-label'>sqd</label>
+            <select className='main-input'>
+            </select>
         </div>
         <div className='field'>
             <label className='main-label'>Volume</label>
-            <input className='main-checkbox' type='checkbox' />
+            <select className='main-input'>
+            </select>
         </div>
         <div className='field'>
             <label className='main-label'>CC min</label>

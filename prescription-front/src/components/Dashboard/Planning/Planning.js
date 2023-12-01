@@ -14,7 +14,6 @@ export default function Planning({ patientId }) {
     axios
       .post(process.env.REACT_APP_SERVER_URL + "/getPlanning", { patientId })
       .then((res) => {
-        console.log(res.data);
         setData(res.data[0]);
         setPatient(res.data[1]);
         setLoading(false);
@@ -278,7 +277,6 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
 }
 
 export function Product({ product, index, cureIndex, jour }){
-  console.log(product)
   return(
     <div cure={cureIndex} key={index} shown={0} jour={jour} className="block products-block">
       <div className="details details-product">

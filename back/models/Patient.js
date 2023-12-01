@@ -41,11 +41,11 @@ const Patient = sequelize.define('Patient', {
   },
   surfCorp: {
     type: DataTypes.FLOAT,
-    allowNull: false,
+    allowNull: true,
   },
   creatinine: {
     type: DataTypes.FLOAT,
-    allowNull: false,
+    allowNull: true,
   },
   formuleClair: {
     type: DataTypes.STRING,
@@ -53,11 +53,11 @@ const Patient = sequelize.define('Patient', {
   },
   clairance: {
     type: DataTypes.FLOAT,
-    allowNull: false,
+    allowNull: true,
   },
   commentaire: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: true,
   },
   
 });

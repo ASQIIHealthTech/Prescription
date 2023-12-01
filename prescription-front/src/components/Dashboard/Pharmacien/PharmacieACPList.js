@@ -32,12 +32,24 @@ export default function PharmacieACPList({ search, searchArgs }) {
       return (<img className="gear-icon" src="/icons/gear.png" onClick={()=>openAjustement(e)} />)
     }
   }
+
+  const openNewTab = (link)=>{
+    window.open(link, "_blank", "noreferrer");
+  }
   
   const fabBtn = (e)=>{
     if(e.row.adjusted == 1){
-      return (<img className="gear-icon" src="/icons/clipboard-active.png" onClick={()=>navigate('/FAB?ids=' + e.row.id)} /> )
+      return (<img className="gear-icon" src="/icons/clipboard-active.png" onClick={()=>openNewTab('/FAB?ids=' + e.row.id)} /> )
     }else{
       return (<img className="gear-icon" src="/icons/clipboard.png" /> )
+    }
+  }
+  
+  const doneBtn = (e)=>{
+    if(e.row.adjusted == 1){
+      return (<img className="gear-icon" src="/icons/checkNo.png" onClick={()=>openNewTab('/FAB?ids=' + e.row.id)} /> )
+    }else{
+      return (<img className="gear-icon" src="/icons/checkNo.png" /> )
     }
   }
   
@@ -143,7 +155,8 @@ export default function PharmacieACPList({ search, searchArgs }) {
     { field: "patient", headerName: "Patient", flex:3 },
     { field: "protocole", headerName: "Protocole", flex:3 },
     { field: "ajustement", headerName: "Ajustement", flex:1, renderCell: ajustementBtn },
-    { field: "ss", headerName: "Fiche", flex:1, renderCell: fabBtn },
+    { field: "fiche", headerName: "Fiche", flex:1, renderCell: fabBtn },
+    { field: "done", headerName: "Terminer", flex:1, renderCell: doneBtn },
   ];
 
   if(!loading){

@@ -11,12 +11,51 @@ function ccyFormat(num) {
   return `${num.toFixed(2)}`;
 }
 
-export default function FABTable({ data, adaptedDose }) {
+export default function FABTable({ data, adaptedDose, prepMolecule, flacons, totalVolume, setTotalVolume }) {
   let [number, setNumber] = React.useState(Math.floor(adaptedDose/50));
+  let [totalDose, setTotalDose] = React.useState(0);
+  let [loading, setLoading] = React.useState(true);
+  let [lowestFlac, setLowestFlac] = React.useState({});
 
   const changeNumber = (e)=>{
     setNumber(e.target.value)
   }
+
+  React.useEffect(() => {
+    if(flacons){
+
+      let dose = 0;
+      let volume = 0;
+      
+      let lowFlac = flacons[0];
+      flacons.forEach((flac, i)=>{
+        dose += flac.dosage * flac.quantity; 
+        volume += (flac.dosage / 10) * flac.quantity; 
+        if(lowFlac.dosage > flac.dosage){
+          lowFlac = flacons[i];
+        }
+      })
+      setLowestFlac(lowFlac);
+      setTotalDose(( (parseFloat(totalDose) + parseFloat( (getAdjustedDose(adaptedDose) - totalDose ) )) / 10 ).toFixed(2))
+      setTotalVolume(( (parseFloat(totalDose) + parseFloat( (getAdjustedDose(adaptedDose) - totalDose ) )) / 10 ).toFixed(2))
+  
+      setLoading(false);
+    
+    }
+  }, [flacons])
+  
+  const calculateTotal = ()=>{
+    let dose = 0;
+    let volume = 0;
+    
+    flacons.forEach((flac, i)=>{
+      dose += flac.dosage * flac.quantity; 
+      volume += (flac.dosage / 10) * flac.quantity; 
+    })
+    setTotalDose(dose + (getAdjustedDose(adaptedDose) - totalDose).toFixed(2) )
+    setTotalVolume(volume)
+  }
+  
 
   const getAdjustedDose = (num)=>{
     const val = Math.round(num / 0.2) * 0.2;
@@ -31,36 +70,47 @@ export default function FABTable({ data, adaptedDose }) {
             <TableCell>Spécialité</TableCell>
             <TableCell align="right">Dosage</TableCell>
             <TableCell align="right">Quantité</TableCell>
-            <TableCell align="right">Solvant</TableCell>
+            <TableCell align="right">Solvant de Reconstitution</TableCell>
+            <TableCell align="right">Volume de Reconstitution</TableCell>
+            <TableCell align="right">N° Lot</TableCell>
             <TableCell align="right">Volume/Unité (ml)</TableCell>
             <TableCell align="right">Volume Total (ml)</TableCell>
             <TableCell align="right">Masse Totale (mg)</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-        <TableRow key={0}>
-            <TableCell align="left">{data.name} 50 mg</TableCell>
-            <TableCell align="right">50 mg</TableCell>
-            <TableCell align="right">{number}</TableCell>
-            <TableCell align="right"></TableCell>
-            <TableCell align="right">5 ml</TableCell>
-            <TableCell align="right">{5*number} ml</TableCell>
-            <TableCell align="right">{50*number} mg</TableCell>
-        </TableRow>
+          {
+            !loading && flacons.map((flac, i)=>(
+              <TableRow key={i}>
+                  <TableCell align="left">{flac.name}</TableCell>
+                  <TableCell align="right">{flac.dosage} mg</TableCell>
+                  <TableCell align="right">{flac.quantity}</TableCell>
+                  <TableCell align="right">{prepMolecule.solvant_reconstitution}</TableCell>
+                  <TableCell align="right">{(prepMolecule.pretA == "prêt à l'emploi") ? "prêt à l'emploi" : (prepMolecule.volume_reconstitution ? prepMolecule.volume_reconstitution + ' ml' : null)}</TableCell>
+                  <TableCell align="right"></TableCell>
+                  <TableCell align="right">{flac.dosage / 10} ml</TableCell>
+                  <TableCell align="right">{(flac.dosage / 10) * flac.quantity} ml</TableCell>
+                  <TableCell align="right">{flac.dosage * flac.quantity} mg</TableCell>
+              </TableRow>
+
+            ))
+          }
         <TableRow key={1}>
-            <TableCell align="left">{data.name} 50 mg</TableCell>
-            <TableCell align="right">50 mg</TableCell>
+            <TableCell align="left">{lowestFlac.name}</TableCell>
+            <TableCell align="right">{lowestFlac.dosage} mg</TableCell>
             <TableCell align="right">1/n</TableCell>
+            <TableCell align="right">{prepMolecule.solvant_reconstitution}</TableCell>
+            <TableCell align="right">{prepMolecule.pretA == "prêt à l'emploi" ? "prêt à l'emploi" : (prepMolecule.volume_reconstitution ? prepMolecule.volume_reconstitution + ' ml' : null)}</TableCell>
             <TableCell align="right"></TableCell>
-            <TableCell align="right">5 ml</TableCell>
-            <TableCell align="right">{( getAdjustedDose(adaptedDose) - Math.floor(adaptedDose/50)*50 ).toFixed(2)} ml</TableCell>
-            <TableCell align="right">{( getAdjustedDose(adaptedDose) - Math.floor(adaptedDose/50)*50 ).toFixed(2)} mg</TableCell>
+            <TableCell align="right">{lowestFlac.dosage / 10} ml</TableCell>
+            <TableCell align="right">{( (getAdjustedDose(adaptedDose) - totalDose)/10 ).toFixed(2)} ml</TableCell>
+            <TableCell align="right">{( getAdjustedDose(adaptedDose) - totalDose ).toFixed(2)} mg</TableCell>
         </TableRow>
           <TableRow>
-            <TableCell colSpan={3}></TableCell>
+            <TableCell colSpan={6}></TableCell>
             <TableCell align="right">Total</TableCell>
-            <TableCell align="right">{ parseFloat(5*number) + parseFloat( (getAdjustedDose(adaptedDose) - Math.floor(adaptedDose/50)*50 ).toFixed(2) ) } ml</TableCell>
-            <TableCell align="right">{ parseFloat(50*number) + parseFloat( (getAdjustedDose(adaptedDose) - Math.floor(adaptedDose/50)*50 ).toFixed(2) )} mg</TableCell>
+            <TableCell align="right">{ ((parseFloat(totalDose) + parseFloat( getAdjustedDose(adaptedDose) - totalDose )) / 10).toFixed(2) } ml</TableCell>
+            <TableCell align="right">{ (parseFloat(totalDose) + parseFloat( getAdjustedDose(adaptedDose) - totalDose )).toFixed(2) } mg</TableCell>
           </TableRow>
         </TableBody>
       </Table>

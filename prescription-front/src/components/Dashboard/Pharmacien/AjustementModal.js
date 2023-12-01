@@ -9,6 +9,8 @@ import PocheModal from "./PocheModal";
 export default function AjustementModal({ setAjustement, ajustement, rows }) {
   const navigate = useNavigate();
   let [data, setData] = useState([])
+  let [prepMolecule, setPrepMolecule] = useState([])
+  let [flacons, setFlacons] = useState([])
   let [loading, setLoading] = useState(true)
   let [poche, setPoche] = useState(0)
   let [vehData, setVehData] = useState(null)
@@ -29,6 +31,35 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
     }
   }
 
+  const getPrepMolecule = (dci)=>{
+    axios.post(process.env.REACT_APP_SERVER_URL+'/getPrepMolecule', { dci})
+        .then(res=>{
+            console.log(res)
+            setPrepMolecule(res.data);
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+  }
+
+  const getFlacons = (dci, productId)=>{
+    setFlacons([]);
+    axios.post(process.env.REACT_APP_SERVER_URL+'/getFlacons', { dci })
+        .then(res=>{
+            console.log(res)
+            if(res.data.length == 0){
+              setFlacons(prev=>[...prev, { productId , prepId: null, name: dci + ' ' + 50 + ' mg', dosage: 50, volume: 5, quantity: 0 }])
+            }else{
+              res.data.forEach(flac=>{
+                setFlacons(prev=>[...prev, { productId  , prepId: flac.id, name: flac.dci + ' ' + flac.dosage + ' mg', dosage: flac.dosage, volume: flac.dosage / 10, quantity: 0 }])
+              })
+            }
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+  }
+
   useEffect(() => {
     //get all data
     axios.post(process.env.REACT_APP_SERVER_URL + '/getAjustementData', { prodId: ajustement })
@@ -36,6 +67,8 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
         console.log(res)
         setData(res.data)
         setVehData(res.data[2].Vehicule)
+        getPrepMolecule(res.data[2].name);
+        getFlacons(res.data[2].name, res.data[2].id);
         setLoading(false);
       })
       .catch(err=>{
@@ -72,6 +105,14 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
       .catch(err=>{
         console.log(err)
       })
+      
+    axios.post(process.env.REACT_APP_SERVER_URL+'/saveFlacons', { flacons })
+      .then(res=>{
+        console.log(res)
+      })
+      .catch(err=>{
+        console.log(err)
+      })
     
     for(let el of rows){
       if(el.id == ajustement){
@@ -84,7 +125,7 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
   if(!data || loading){
     return '';
   }else if(poche != 0){
-    return <PocheModal poche={poche} setPoche={setPoche} setVehData={setVehData} vehData={vehData} getAdjustedDose={getAdjustedDose} getAdaptedDose={getAdaptedDose} />;
+    return <PocheModal poche={poche} prepMolecule={prepMolecule} setPoche={setPoche} setVehData={setVehData} vehData={vehData} getAdjustedDose={getAdjustedDose} getAdaptedDose={getAdaptedDose} />;
   }else{
   return (
     <div className="modal-container">
@@ -109,7 +150,7 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
                     </div>
                     <div className="field">
                       <label>Concentration: </label>
-                      <label className='main-label'>{( getAdjustedDose(getAdaptedDose()) / parseInt(vehData?.volume) ).toFixed(2) } </label>
+                      <label className='main-label'>{( getAdjustedDose(getAdaptedDose()) / parseInt(vehData?.volume) ).toFixed(2) } mg/ml</label>
                     </div>
                 </>
               )
@@ -122,7 +163,7 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
           <div className="doses">
             <div className="field">
               <label>Dose Prescrite: </label>
-              <label className='main-label'>{getAdaptedDose() } mg </label>
+              <label className='main-label'>{getAdaptedDose().toFixed(2) } mg </label>
             </div>
             <div className="field">
               <label>Dose Ajustée: </label>
@@ -130,7 +171,7 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
             </div>
             <div className="field">
               <label>Volume Ajusté: </label>
-              <label className='main-label'>{getAdjustedDose(getAdaptedDose())} ml </label>
+              <label className='main-label'>{getAdjustedDose(getAdaptedDose()) / 10} ml </label>
             </div>
             <div className="field">
               <label>Ratio: </label>
@@ -139,12 +180,13 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
           </div>
         </div>
         <h2 className='float-left'>Repartition</h2>
-        <RepartitionTable data={data} adaptedDose={getAdaptedDose()} />
+        <RepartitionTable data={data} flacons={flacons} setFlacons={setFlacons} adaptedDose={getAdaptedDose()} />
         <h2 className='float-left'>Fraction</h2>
-        <FractionTable data={data} adaptedDose={getAdaptedDose()} />
+        <FractionTable flacons={flacons} setFlacons={setFlacons} data={data} adaptedDose={getAdaptedDose()} />
         <div className="btn-container">
           <button className="main-btn" onClick={()=>setAjustement(0)}>Annuler</button>
-          <button className="main-btn" disabled={!vehData} onClick={()=>submit()}>Valider</button>
+          <button className="main-btn" disabled={!vehData} onClick={()=>submit()}>Enregistrer</button>
+          <button className="main-btn" disabled={!vehData} >libérer</button>
         </div>
       </div>
     </div>

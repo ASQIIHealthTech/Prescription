@@ -23,6 +23,10 @@ const Vehicule = sequelize.define('Vehicule', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  volume_finale: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 module.exports = Vehicule;

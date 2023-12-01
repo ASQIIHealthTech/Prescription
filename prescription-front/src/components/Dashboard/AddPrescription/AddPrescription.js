@@ -88,7 +88,8 @@ export default function AddPrescription({ setAddPrescription, addPrescription, u
       setLoading(true)
       let patientId = patient.id;
       axios.post(process.env.REACT_APP_SERVER_URL + '/addPrescription', { patientId , data: prescriptionData })
-        .then((res)=>{
+      .then((res)=>{
+          console.log(res)
           if(res.status == 200){
             navigate('/planning/' + patient.id)
           }

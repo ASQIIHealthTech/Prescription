@@ -11,12 +11,43 @@ function ccyFormat(num) {
   return `${num.toFixed(2)}`;
 }
 
-export default function RepartitionTable({ data, adaptedDose }) {
-  let [number, setNumber] = React.useState(Math.floor(adaptedDose/50));
-  console.log(data)
+export default function RepartitionTable({ data, adaptedDose, flacons }) {
+  let [totalDose, setTotalDose] = React.useState(0);
+  let [totalVolume, setTotalVolume] = React.useState(0);
+  let [loading, setLoading] = React.useState(true);
+  console.log(flacons)
 
-  const changeNumber = (e)=>{
-    setNumber(e.target.value)
+  React.useEffect(() => {
+    let doseLeft = adaptedDose;
+    flacons.forEach(flac=>{
+      if(doseLeft >= flac.dosage){
+        let n = Math.floor(doseLeft/flac.dosage);
+        flac.quantity = n;
+        doseLeft -= n * flac.dosage;
+      }
+    })
+    setTimeout( ()=>{
+      calculateTotal();
+      setLoading(false);
+    }, 200)
+  }, [flacons])
+
+  const calculateTotal = ()=>{
+    let dose = 0;
+    let volume = 0;
+
+    flacons.forEach((flac, i)=>{
+      dose += flac.dosage * flac.quantity; 
+      volume += (flac.dosage / 10) * flac.quantity; 
+    })
+    setTotalDose(dose)
+    setTotalVolume(volume)
+  }
+
+  const changeNumber = (e, flac)=>{
+    let value = e.target.value;
+    flac.quantity = value;
+    calculateTotal()
   }
 
   return (
@@ -32,17 +63,21 @@ export default function RepartitionTable({ data, adaptedDose }) {
           </TableRow>
         </TableHead>
         <TableBody>
-        <TableRow key={0}>
-            <TableCell align="left">{data[2].name} 50 mg</TableCell>
-            <TableCell align="right">50 mg</TableCell>
-            <TableCell align="right"><input type='number' value={number} onChange={changeNumber} className='main-input' /></TableCell>
-            <TableCell align="right">50 mg</TableCell>
-            <TableCell align="right">5 ml</TableCell>
-        </TableRow>
+          {
+            !loading && flacons.map(flac=>(
+              <TableRow key={0}>
+                  <TableCell align="left">{flac.name}</TableCell>
+                  <TableCell align="right">{flac.dosage} mg</TableCell>
+                  <TableCell align="right"><input type='number' value={flac.quantity} onChange={(e)=>changeNumber(e, flac)} className='main-input' /></TableCell>
+                  <TableCell align="right">{flac.dosage} mg</TableCell>
+                  <TableCell align="right">{flac.volume} ml</TableCell>
+              </TableRow>
+            ))
+          }
           <TableRow>
             <TableCell colSpan={3}>Total</TableCell>
-            <TableCell align="right">{ccyFormat(50*number)} mg</TableCell>
-            <TableCell align="right">{ccyFormat(5*number)} ml</TableCell>
+            <TableCell align="right">{ccyFormat(totalDose)} mg</TableCell>
+            <TableCell align="right">{ccyFormat(totalVolume)} ml</TableCell>
           </TableRow>
         </TableBody>
       </Table>

@@ -30,6 +30,12 @@ export default function Prescription({user}){
         }, 500 )
     }
 
+    const handleEnter = (event) => {
+        if (event.key === 'Enter') {
+          handleLogin();
+        }
+    };
+
     useEffect(()=>{
         if(params.get('cure')){
             setSelectedCure(parseInt(params.get('cure')));
@@ -142,11 +148,13 @@ export default function Prescription({user}){
             value = parseInt(value);
         }
 
-        console.log(1, data.Patient)
         data.Patient[type] = value;
-        console.log(2, data.Patient)
 
         let surfCorp = getSurfCorp(data.Patient.poids, data.Patient.taille);
+
+        if(type == 'surfCorp'){
+            surfCorp = value;
+        }
 
         if(type == 'poids' || type == 'taille'){
             surfCorpRef.current.value = surfCorp
@@ -159,6 +167,7 @@ export default function Prescription({user}){
         axios.post(process.env.REACT_APP_SERVER_URL + '/changePatientData', { id: data.Patient.id, type, value, surfCorp, clairance: getClairance()})
             .then(res => {
                 e.target.classList.add('field-changed');
+                refreshData()
             })
     }
 
@@ -272,8 +281,8 @@ export default function Prescription({user}){
         <div className="products-container">
             <div className="list-header">
                 <h1>PRODUITS (CURE {selectedCure+1})</h1>
-                <button className="main-btn save-btn" onClick={()=>setConfirmChanges(true)}>Enregistrer</button>
-                <button className="main-btn validate-all-btn" onClick={()=>setValidateAll(true)}>Valider Tous Les Produits</button>
+                <button className="main-btn save-btn" id="saveBtn" onClick={()=>setConfirmChanges(true)}>Enregistrer</button>
+                {/* <button className="main-btn validate-all-btn" onClick={()=>setValidateAll(true)}>Valider Tous Les Produits</button> */}
                 <Fab className="pdf-btn" color="2663EE" aria-label="add" onClick={()=>exportPDF()}>
                     <img src="/icons/pdf.svg" alt="+" />
                 </Fab>

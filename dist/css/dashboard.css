@@ -1,0 +1,1569 @@
+.dashboard-container {
+  height: 100%;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.header {
+  background: var(--main-dark-blue);
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.header img {
+  padding: 0.5rem 1rem;
+}
+
+.header .user-box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-right: 1rem;
+}
+
+.header .user-box .name-box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.header .user-box .name-box .userName {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.header .user-box .name-box .userType {
+  color: white;
+  font-size: 12px;
+  text-align: right;
+}
+
+.header .user-box img {
+  cursor: pointer;
+}
+
+.dashbaord-body {
+  padding: 3rem;
+  padding-bottom: 0;
+  -webkit-box-flex: 9;
+      -ms-flex: 9;
+          flex: 9;
+}
+
+.search-block {
+  padding-left: 5rem;
+}
+
+.search-block .filters {
+  background-color: #F9F9F9;
+  padding: 2rem;
+  margin: 2rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  row-gap: 3rem;
+  -webkit-column-gap: 10rem;
+          column-gap: 10rem;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.search-block .filters .filter input, .search-block .filters .filter select {
+  margin-left: 1.5rem;
+  width: 170px;
+}
+
+.search-block h1 {
+  color: var(--main-h1-color);
+  font-size: 2.5em;
+}
+
+.PatientList-container {
+  padding-left: 5rem;
+}
+
+.PatientList-container .list-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.PatientList-container .list-header button {
+  z-index: 1;
+  background-color: #2663EE;
+}
+
+.PatientList-container .patient-list {
+  height: 400px;
+  padding: 2rem;
+}
+
+.PatientList-container .patient-list .MuiDataGrid-columnHeadersInner div:nth-child(1) {
+  border-left: unset !important;
+}
+
+.PatientList-container .patient-list .MuiDataGrid-columnHeader {
+  background: var(--main-dark-blue);
+  border-left: white solid 4px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 17px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.PatientList-container .patient-list .MuiDataGrid-columnHeader .MuiSvgIcon-root {
+  fill: white;
+}
+
+.PatientList-container h1 {
+  color: var(--main-h1-color);
+  font-size: 2.5em;
+}
+
+.details-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-radius: 20px;
+  background: #F5F5F5;
+  -webkit-box-shadow: -6px 8px 48px -5px rgba(0, 0, 0, 0.56);
+          box-shadow: -6px 8px 48px -5px rgba(0, 0, 0, 0.56);
+}
+
+.details-container h2 {
+  padding-bottom: 3rem;
+  color: var(--main-light-blue);
+  width: 100%;
+  text-align: center;
+  padding: 0;
+}
+
+.details-container label {
+  padding-right: 1rem;
+}
+
+.details-container input, .details-container select {
+  width: 200px;
+}
+
+.details-container .btn-container {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-column-gap: 2rem;
+          column-gap: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.admin-details {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  row-gap: 2rem;
+  -webkit-column-gap: 5rem;
+          column-gap: 5rem;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-column-gap: 12rem;
+          column-gap: 12rem;
+}
+
+.admin-details .field {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-bottom: 2rem;
+}
+
+.admin-details .field .main-label {
+  width: 200px;
+}
+
+.admin-details .field .main-input {
+  width: 300px;
+}
+
+.admin-details .field .age-label {
+  padding-left: 10px;
+  font-weight: bold;
+}
+
+.admin-details .input-commentaire {
+  width: 80%;
+  height: 80px;
+}
+
+.admin-details .MuiDivider-root {
+  height: 540px;
+  margin-top: 2rem;
+}
+
+.admin-details .surfCorp-label {
+  padding-left: 0.5rem;
+  color: red;
+  font-weight: bold;
+}
+
+.bio-details {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  row-gap: 2rem;
+  -webkit-column-gap: 5rem;
+          column-gap: 5rem;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.bio-details input[type=number] {
+  width: 60px;
+  margin-right: 1rem;
+}
+
+.add-prescription-btn {
+  width: 40px !important;
+  height: 40px !important;
+  background-color: #2663EE !important;
+}
+
+.planning-btn {
+  width: 40px !important;
+  height: 40px !important;
+  background-color: #2663EE !important;
+  margin-left: 1rem !important;
+}
+
+.planning-btn img {
+  width: 25px;
+}
+
+.modal-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: rgba(35, 51, 104, 0.8);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.modal-box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 690px;
+  height: 550px;
+  background-color: #fff;
+  border-radius: 40px;
+}
+
+.modal-box hr {
+  padding-top: 2rem;
+  width: 470px;
+}
+
+.modal-box h1 {
+  color: #233368;
+  padding-top: 2rem;
+}
+
+.modal-box .stepper {
+  padding-bottom: 1.5rem;
+  width: 500px;
+}
+
+.modal-box .row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-column-gap: 5rem;
+          column-gap: 5rem;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding-bottom: 1rem;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.modal-box .row .field-detail {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #2874E5;
+}
+
+.modal-box .prescription-details, .modal-box .prescription-second {
+  padding-top: 2rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.modal-box .prescription-details select, .modal-box .prescription-details input, .modal-box .prescription-second select, .modal-box .prescription-second input {
+  width: 220px;
+}
+
+.modal-box .prescription-details input[type=number], .modal-box .prescription-second input[type=number] {
+  width: 200px;
+  padding: 0 10px;
+}
+
+.modal-box .prescription-details .essai-row, .modal-box .prescription-second .essai-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-column-gap: 1rem;
+          column-gap: 1rem;
+}
+
+.modal-box .prescription-details .essai-row button, .modal-box .prescription-second .essai-row button {
+  margin-left: 3rem;
+}
+
+.modal-box .prescription-second {
+  padding-top: 1rem;
+}
+
+.modal-box .prescription-third {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 90%;
+  height: 285px;
+}
+
+.modal-box .prescription-third .row {
+  padding-bottom: 1.5rem;
+}
+
+.modal-box .prescription-third .MuiPaper-root {
+  max-height: 240px;
+}
+
+.modal-box .btn-container .main-btn {
+  margin: 1rem;
+}
+
+.modal-box .patient-details {
+  width: 480px;
+}
+
+.modal-box .btn-container {
+  padding-top: 1rem;
+}
+
+.cure-list-header {
+  background-color: var(--main-dark-blue) !important;
+}
+
+.cure-list-header tr th {
+  color: white !important;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.planning-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+.planning-container .fiche-patient {
+  background: #F9F9F9;
+  margin-left: auto;
+  width: 470px;
+  margin-right: -3em;
+  margin-top: -3em;
+}
+
+.planning-container .fiche-patient .addPresBtn {
+  background-color: #2663ee;
+  position: absolute;
+  top: 100px;
+  right: 500px;
+}
+
+.planning-container .fiche-patient .fiche-header {
+  background: #D9D9D9;
+  width: 100%;
+  height: 50px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.planning-container .fiche-patient .fiche-header label {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0em;
+  padding-left: 1rem;
+  color: #233368;
+}
+
+.planning-container .fiche-patient .fiche-body {
+  padding: 2rem;
+}
+
+.planning-container .fiche-patient .fiche-body .block {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  row-gap: 1rem;
+}
+
+.planning-container .fiche-patient .fiche-body .block .separator {
+  width: 100%;
+  height: 1px;
+  margin: 2rem 0;
+  background-color: #BFBFBF;
+}
+
+.planning-container .fiche-patient .fiche-body .block .row {
+  width: 100%;
+}
+
+.planning-container .fiche-patient .fiche-body .block .row .info-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #2874E5;
+}
+
+.planning-container .list-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding: 0 3rem;
+  width: 900px;
+}
+
+.planning-container .prescriptions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 1rem;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  padding-bottom: 2rem;
+}
+
+.planning-container .block {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-column-gap: 1rem;
+          column-gap: 1rem;
+}
+
+.planning-container .block img {
+  width: 17px;
+}
+
+.planning-container .block .details {
+  width: 860px;
+  height: 50px;
+  border-radius: 5px;
+  background: #DCEBFD;
+  border: 2px solid #2663EE;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  cursor: pointer;
+}
+
+.planning-container .block .details label {
+  text-align: center;
+}
+
+.planning-container .block .details img {
+  padding: 0 1rem;
+}
+
+.planning-container .block .details .label1 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.planning-container .block .details .label2 {
+  padding-left: 0.5rem;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.planning-container .block .details-product {
+  margin-top: 1rem;
+  border-left: 1px solid #2874E5;
+}
+
+.planning-container .child-block .status {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #2874E5;
+  margin-left: auto;
+  padding-right: 0.5rem;
+}
+
+.planning-container .child-block .details {
+  width: 812px;
+}
+
+.planning-container .child-block.jour-block .details {
+  width: 760px;
+}
+
+.planning-container .child-block .removeCureBtn {
+  width: 40px;
+  height: 40px;
+  background-color: #DCEBFD;
+  border: 2px solid #2663EE;
+  position: absolute;
+  left: 1020px;
+}
+
+.planning-container .products-block {
+  width: 710px;
+  margin-top: -1rem;
+  border-left: 2px solid #2874E5;
+}
+
+.planning-container h1 {
+  padding-left: 2rem;
+  color: var(--main-h1-color);
+}
+
+.planning-container .open-icon {
+  cursor: pointer;
+}
+
+.planning-container .child-block, .planning-container .products-block {
+  display: none;
+}
+
+.planning-container .shown {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.prescription-details {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-column-gap: 2rem;
+          column-gap: 2rem;
+}
+
+.prescription-details .field-detail {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #2874E5;
+}
+
+.prescription-details .prescription, .prescription-details .patient, .prescription-details .cure {
+  background: #F9F9F9;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 2rem;
+  padding: 0 1rem 1rem 2rem;
+}
+
+.prescription-details .prescription select, .prescription-details .prescription input, .prescription-details .patient select, .prescription-details .patient input, .prescription-details .cure select, .prescription-details .cure input {
+  width: 170px;
+}
+
+.prescription-details .prescription .field-row, .prescription-details .patient .field-row, .prescription-details .cure .field-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.prescription-details .prescription .field-row .field, .prescription-details .patient .field-row .field, .prescription-details .cure .field-row .field {
+  -webkit-box-flex: 3;
+      -ms-flex: 3;
+          flex: 3;
+}
+
+.prescription-details .prescription .field-row .field .field-changed, .prescription-details .patient .field-row .field .field-changed, .prescription-details .cure .field-row .field .field-changed {
+  border: green 2.5px solid;
+}
+
+.prescription-details .prescription .field-row .field.clcr-field, .prescription-details .patient .field-row .field.clcr-field, .prescription-details .cure .field-row .field.clcr-field {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.prescription-details .cures-list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.prescription-details .cures-list button {
+  width: 200px;
+}
+
+.prescription-details .cures-list .cures {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-column-gap: 1rem;
+          column-gap: 1rem;
+  overflow-x: auto;
+}
+
+.prescription-details .cures-list .cures .cure {
+  width: 43px;
+  height: 43px;
+  border-radius: 50px;
+  background: #DCEBFD;
+  color: #2874E5;
+  border: 3px solid #0096DC;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  cursor: pointer;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  padding: 0;
+  margin: 0;
+}
+
+.prescription-details .cures-list .cures .cure:hover {
+  background: #bfd9f9;
+}
+
+.prescription-details .cures-list .cures .cure.disabled-cure {
+  background: #98b1d0;
+}
+
+.prescription-details .cures-list .cures .selectedCure {
+  background: #a8ccf8;
+}
+
+.prescription-details .cures-list .cures .selectedCure:hover {
+  background: #a8ccf8;
+}
+
+.prescription-details h1 {
+  color: var(--main-h1-color);
+}
+
+.prescription-details .prescription {
+  -webkit-box-flex: 3;
+      -ms-flex: 3;
+          flex: 3;
+}
+
+.prescription-details .prescription .essaiClin-label {
+  color: red;
+  font-weight: bold;
+}
+
+.prescription-details .prescription .field-row {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 1rem;
+}
+
+.prescription-details .cure {
+  -webkit-box-flex: 2;
+      -ms-flex: 2;
+          flex: 2;
+}
+
+.prescription-details .cure .field-row {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 1rem;
+}
+
+.prescription-details .patient {
+  -webkit-box-flex: 5;
+      -ms-flex: 5;
+          flex: 5;
+}
+
+.products-container {
+  padding: 1rem;
+}
+
+.products-container h1 {
+  color: var(--main-h1-color);
+}
+
+.products-container td {
+  font-weight: 600;
+  line-height: 15px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #2874E5 !important;
+}
+
+.products-container .j-column {
+  background: #E9E9E9;
+  width: 15px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 18px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #353535;
+}
+
+.products-container .first-jour-row {
+  border-top: 3px solid lightgray;
+}
+
+.products-container .list-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.products-container .list-header .save-btn {
+  margin-left: 4rem;
+  width: 128px;
+  height: 27px;
+  border-radius: 12px;
+}
+
+.products-container .list-header .validate-all-btn {
+  margin-left: 4rem;
+  width: 230px;
+  height: 27px;
+  border-radius: 12px;
+}
+
+.products-container .list-header .plus-btn {
+  z-index: 1;
+  background-color: #2663EE;
+  margin-left: 1rem;
+}
+
+.products-container .list-header .pdf-btn {
+  z-index: 1;
+  background-color: #2663EE;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.products-container .list-header .pdf-btn img {
+  width: 18px;
+}
+
+.validationCircle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50px;
+  border: 3px solid #EE2626;
+  background: #FDDCDC;
+  cursor: pointer;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+.validationCircle.valid-medecin {
+  background: #DDFDDC;
+  border: 3px solid #05E11B;
+}
+
+.validationCircle.valid-pharmacien {
+  background: #05E11B;
+  border: 3px solid #05E11B;
+}
+
+.gear-icon, .pres-icon {
+  width: 30px;
+  cursor: pointer;
+}
+
+.x-icon {
+  width: 25px;
+  cursor: pointer;
+}
+
+.icons-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-column-gap: 0.5rem;
+          column-gap: 0.5rem;
+}
+
+.icons-container.disabled img {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.commentaire-container {
+  padding: 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  background: #F9F9F9;
+  margin-bottom: 1rem;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-column-gap: 2rem;
+          column-gap: 2rem;
+}
+
+.commentaire-container textarea {
+  width: 100%;
+  height: 60px;
+  font-size: 16px;
+}
+
+.commentaire-container h1 {
+  color: var(--main-h1-color);
+}
+
+.confirmation-modal-box {
+  height: 350px;
+}
+
+.confirmation-modal-box label {
+  padding: 1rem;
+}
+
+.molecule-modal-box {
+  height: 400px;
+}
+
+.molecule-modal-box .main-label {
+  color: var(--main-dark-blue);
+}
+
+.molecule-modal-box .field {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.molecule-modal-box label {
+  padding: 1rem;
+}
+
+.poche-modal-box {
+  padding: 0 2rem;
+  height: 520px;
+  width: 500px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 1rem;
+}
+
+.ajustement-modal {
+  padding: 0 2rem;
+  height: 800px;
+  width: 1000px;
+}
+
+.ajustement-modal thead {
+  background: #e3e3e3;
+}
+
+.ajustement-modal .repartitionTable {
+  height: 250px;
+}
+
+.ajustement-modal .fractionTable {
+  height: 120px;
+}
+
+.ajustement-modal .ajustement-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -ms-flex-line-pack: start;
+      align-content: flex-start;
+}
+
+.ajustement-modal .ajustement-header .doses {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-column-gap: 2rem;
+          column-gap: 2rem;
+}
+
+.ajustement-modal .float-left {
+  margin-right: auto;
+}
+
+.date-controls {
+  color: #00bd00;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.date-controls.date-controls-disabled {
+  color: gray;
+}
+
+.planning-tab {
+  margin-left: auto !important;
+}
+
+.FAB-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 2rem;
+}
+
+.FAB-container .fiche {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 1000px;
+  row-gap: 2rem;
+}
+
+.FAB-container .fiche .fab-bg {
+  border: #d7d7d7 2px solid;
+}
+
+.FAB-container .fiche .row {
+  width: 950px;
+  padding: 0 2rem;
+}
+
+.FAB-container .fiche .row label {
+  font-size: 18px;
+}
+
+.FAB-container .fiche .fab-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  border: black solid 1px;
+  width: 100%;
+  border-radius: 40px;
+}
+
+.FAB-container .fiche .prod-details {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 60px;
+  border-radius: 50px;
+}
+
+.FAB-container .fiche .fields {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-column-gap: 1.5rem;
+          column-gap: 1.5rem;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.FAB-container .fiche .patient-details {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  width: 100%;
+  -webkit-column-gap: 1rem;
+          column-gap: 1rem;
+}
+
+.FAB-container .fiche .patient-details .patient {
+  -webkit-box-flex: 7;
+      -ms-flex: 7;
+          flex: 7;
+  padding: 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  border-radius: 25px;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.FAB-container .fiche .patient-details .patient h2 {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.FAB-container .fiche .patient-details .admin {
+  -webkit-box-flex: 3;
+      -ms-flex: 3;
+          flex: 3;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 1rem;
+  border-radius: 25px;
+}
+
+.FAB-container .fiche .patient-data {
+  border-radius: 25px;
+  height: 60px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.FAB-container .fiche .dose-data {
+  border-radius: 25px;
+  height: 60px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.FAB-container .fiche .dose-data .conc-label {
+  font-size: 25px;
+}
+
+.FAB-container .fiche .dose-data .conc-info {
+  font-size: 25px;
+  color: var(--main-dark-blue);
+  font-weight: bold;
+}
+
+.FAB-container .fiche .dose-data .conc-info.alert {
+  color: red;
+}
+
+.FAB-container .fiche .prep-data {
+  border-radius: 25px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding-bottom: 1.5rem;
+}
+
+.FAB-container .fiche .prep-data .fields {
+  width: 100%;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.FAB-container .fiche .sticker-data {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding: 1rem;
+  padding-bottom: 1.5rem;
+  width: 100%;
+}
+
+.FAB-container .fiche .sticker-data .fields {
+  width: 100%;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.FAB-container .fiche .sticker-data .section {
+  width: 100%;
+}
+
+.FAB-container .fiche .sticker-data .header-section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  border-bottom: gray 1px solid;
+}
+
+.FAB-container .fiche .sticker-data .border-bottom {
+  border-bottom: gray 1px solid;
+  border-radius: unset;
+}
+
+.FAB-container .fiche .sticker-data .alert {
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+  background: red;
+}
+
+.FAB-container .fiche .last-details {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  width: 100%;
+  -webkit-column-gap: 1rem;
+          column-gap: 1rem;
+}
+
+.FAB-container .fiche .last-details .fab {
+  -webkit-box-flex: 3;
+      -ms-flex: 3;
+          flex: 3;
+  padding: 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  border-radius: 25px;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.FAB-container .fiche .last-details .fab h2 {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.FAB-container .fiche .last-details .fourF {
+  -webkit-box-flex: 7;
+      -ms-flex: 7 1;
+          flex: 7 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 1rem;
+  border-radius: 25px;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.FAB-container .fiche .last-details .fourF .Frow {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.addProtocole-container .protocole-planning {
+  padding-left: 5rem;
+}
+
+.addProtocole-container .protocole-planning .planning-table {
+  margin-bottom: 2rem;
+}
+
+.addProtocole-container .protocole-planning .planning-table thead {
+  background: #233368;
+}
+
+.addProtocole-container .protocole-planning .planning-table thead th {
+  color: white;
+}
+
+.addProtocole-container .protocole-planning .planning-table .protocole-icon {
+  cursor: pointer;
+  width: 25px;
+}
+
+.addProtocole-container .protocole-planning .add-btn {
+  margin-bottom: 2rem;
+  float: right;
+}
+
+.addProtocole-container .protocole-planning h1 {
+  color: var(--main-h1-color);
+  font-size: 2.5em;
+}
+
+.addProtocole-container .protocole-planning .planning-small-input {
+  width: 50px;
+}
+
+.addProtocole-container .protocole-planning .MuiAutocomplete-root {
+  width: 200px;
+}
+
+.productsList .MuiTableBody-root tr:nth-of-type(odd) {
+  background-color: #ecebeb;
+}
+/*# sourceMappingURL=dashboard.css.map */

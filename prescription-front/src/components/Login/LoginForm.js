@@ -17,6 +17,12 @@ export default function LoginForm({ setLoggedIn }) {
     const usernameRef = useRef();
     const passwordRef = useRef();
 
+    const handleEnter = (event) => {
+        if (event.key === 'Enter') {
+          handleLogin();
+        }
+    };
+
     const handleLogin = () => {
         // setLoggedIn(true);  TBF FOR SELECT PAGE 
         let username = usernameRef.current.value;
@@ -56,7 +62,7 @@ export default function LoginForm({ setLoggedIn }) {
                 </div>
                 <div className="field pass">
                     <label>Mot de Passe</label>
-                    <input ref={passwordRef} className="main-input" type="password" />
+                    <input onKeyDown={(e)=>handleEnter(e)} ref={passwordRef} className="main-input" type="password" />
                 </div>
                 <button className="main-btn" onClick={()=>handleLogin()}>Confirmer</button>
             </div>

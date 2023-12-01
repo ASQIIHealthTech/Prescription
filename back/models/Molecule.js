@@ -17,7 +17,7 @@ const Molecule = sequelize.define('Molecule', {
   },
   dose: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   formule: {
     type: DataTypes.STRING,
@@ -25,11 +25,35 @@ const Molecule = sequelize.define('Molecule', {
   },
   unite: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   jour_prod: {
     type: DataTypes.INTEGER,
     allowNull: false,
+  },
+  voie: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  type_perfusion: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  duree_perfusion: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  vehicule: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  volume_final: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  commentaire: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 });
 
