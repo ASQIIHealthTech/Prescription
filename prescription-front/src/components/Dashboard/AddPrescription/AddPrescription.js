@@ -25,8 +25,9 @@ export default function AddPrescription({ setAddPrescription, addPrescription, u
     organe: '',
     indication: '',
     protocole: '',
+    parent: null,
     nbrCures: 1,
-    essaiClin: 0
+    essaiClin: 0,
   });
 
   
@@ -87,16 +88,29 @@ export default function AddPrescription({ setAddPrescription, addPrescription, u
     if(isLastStep()){
       setLoading(true)
       let patientId = patient.id;
-      axios.post(process.env.REACT_APP_SERVER_URL + '/addPrescription', { patientId , data: prescriptionData })
-      .then((res)=>{
-          console.log(res)
-          if(res.status == 200){
-            navigate('/planning/' + patient.id)
-          }
-        })
-        .catch(error =>{
-          console.log(error)
-        })
+      if(prescriptionData.parent != ''){
+        axios.post(process.env.REACT_APP_SERVER_URL + '/addPrescriptionParent', { patientId , data: prescriptionData })
+        .then((res)=>{
+            console.log(res)
+            if(res.status == 200){
+              navigate('/planning/' + patient.id)
+            }
+          })
+          .catch(error =>{
+            console.log(error)
+          })
+      }else{
+        axios.post(process.env.REACT_APP_SERVER_URL + '/addPrescription', { patientId , data: prescriptionData })
+        .then((res)=>{
+            console.log(res)
+            if(res.status == 200){
+              navigate('/planning/' + patient.id)
+            }
+          })
+          .catch(error =>{
+            console.log(error)
+          })
+      }
     }else{
       const newCompleted = completed;
       newCompleted[activeStep] = true;

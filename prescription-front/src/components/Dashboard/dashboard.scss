@@ -66,6 +66,11 @@
         flex-wrap: wrap;
         justify-content: center;
 
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
         .filter{
 
             input, select{
@@ -252,7 +257,7 @@
     justify-content: flex-start;
     align-items: center;
     width: 690px;
-    height: 550px;
+    height: 590px;
     background-color: #fff;
     border-radius: 40px;
 
@@ -507,6 +512,13 @@
             left: 1020px;  
         }
     }
+    .pres-parent{
+        display: none;
+
+        .details{
+            width: 840px;
+        }
+    }
     .products-block{
         width: 710px;
         margin-top: -1rem;
@@ -558,7 +570,7 @@
                 flex: 3;
 
                 .field-changed{
-                    border: green 2.5px solid;
+                    border: red 3.5px solid;
                 }
                 &.clcr-field{
                     display: flex;
@@ -795,24 +807,46 @@
 }
 .ajustement-modal{
     padding: 0 2rem;
-    height: 800px;
+    height: 770px;
+    overflow-y: auto;
     width: 1000px;
 
     thead{
         background: #e3e3e3;
     }
     .repartitionTable{
-        height: 250px;
+        height: auto;
+        overflow: unset;
     }
     .fractionTable{
-        height: 120px;
+        height: auto;
+        overflow: unset;
+    }
+    .cc-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
     .ajustement-header{
         display: flex;
         width: 100%;
         flex-direction: column;
         align-content: flex-start;
+        row-gap: 1rem;
         
+        select{
+            width: 200px;
+        }
+        .fields-row{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            
+            &.justify-arround{
+                justify-content: space-around;
+            }
+        }
         .doses{
             display: flex;
             flex-direction: row;
@@ -1061,4 +1095,12 @@
 }
 .productsList .MuiTableBody-root tr:nth-of-type(odd){
     background-color: rgb(236, 235, 235);
+}
+.fiche-container{
+    width: 600px;
+
+    .name-container{
+        border-bottom: black 1px solid;
+        margin-bottom: 1rem;
+    }
 }

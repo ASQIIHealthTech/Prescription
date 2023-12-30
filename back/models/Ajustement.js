@@ -1,45 +1,40 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Assuming you named your configuration file as db.js
 
-const Protocole = sequelize.define('Protocole', {
+const Ajustement = sequelize.define('Ajustement', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
   },
-  id_protocole: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    // unique: true
-  },
-  protocole: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  intercure: {
+  id_product: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  nb_cures: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  details: {
+  dillution: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  indications: {
+  volume_dillution: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
+  cond_final: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  type_histo: {
-    type: DataTypes.STRING,
+  volume_solvant: {
+    type: DataTypes.FLOAT,
     allowNull: true,
   },
-  parent: {
-    type: DataTypes.STRING,
+  volume_final: {
+    type: DataTypes.FLOAT,
     allowNull: true,
-  }
+  },
+  volumePA: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
 });
 
-module.exports = Protocole;
+module.exports = Ajustement;

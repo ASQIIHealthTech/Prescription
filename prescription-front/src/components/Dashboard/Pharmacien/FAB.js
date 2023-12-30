@@ -5,7 +5,7 @@ import axios from 'axios';
 import { CircularProgress } from "@mui/material";
 import moment from 'moment';
 
-export default function FAB(){
+export default function FAB({ user }){
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     let [data, setData] = useState({});
@@ -14,6 +14,7 @@ export default function FAB(){
     let [flacons, setFlacons] = useState({});
     let [loading, setLoading] = useState(true);
     let [totalVolume, setTotalVolume] = useState(0);
+    let [volumeFinal, setVolumeFinal] = useState(0);
 
     let today = moment().format('YYYY-MM-DD');
     let [preDate, setPreDate] = useState(moment(today, 'YYYY-MM-DD').add(1, 'days').format('YYYY-MM-DD'));
@@ -65,9 +66,10 @@ export default function FAB(){
             .then((res)=>{
                 console.log(res.data)
                 setData(res.data);
-                if(!res.data.Vehicule.volume_finale){
-                    res.data.Vehicule.volume_finale = res.data.Vehicule.volume;
-                }
+                // if(!res.data.Vehicule.volume_finale){
+                //     res.data.Vehicule.volume_finale = res.data.Vehicule.volume;
+                // }
+                setVolumeFinal( res.data.Ajustement.volume_final )
                 setPatient(res.data.Cure.Prescription.Patient);
                 getPrepMolecule(res.data.name);
                 setLoading(false)
@@ -175,15 +177,15 @@ export default function FAB(){
                         </div>
                         <div className="field">
                             <label className="main-label">Volume Final : </label>
-                            <label className="info-label">{data.Vehicule.volume_finale} ml</label>
+                            <label className="info-label">{volumeFinal} ml</label>
                         </div>
                         <div className="field">
                             <label className="main-label conc-label">Concentration finale : </label>
                             {
-                                (getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(data.Vehicule.volume_finale).toFixed(2) > prepMolecule.concentration_min && getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(data.Vehicule.volume_finale).toFixed(2) < prepMolecule.concentration_max) ? (
-                                    <label className="info-label conc-info">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(data.Vehicule.volume_finale) ).toFixed(2) } mg/ml</label>
+                                (getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal).toFixed(2) > prepMolecule.concentration_min && getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal).toFixed(2) < prepMolecule.concentration_max) ? (
+                                    <label className="info-label conc-info">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal) ).toFixed(2) } mg/ml</label>
                                     ) : (
-                                    <label className="info-label conc-info alert">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(data.Vehicule.volume_finale) ).toFixed(2) } mg/ml</label>
+                                    <label className="info-label conc-info alert">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal) ).toFixed(2) } mg/ml</label>
                                 )
                             }
                         </div>
@@ -195,15 +197,15 @@ export default function FAB(){
                     <div className="fields">
                         <div className="field">
                             <label className="main-label">Véhicule : </label>
-                            <label className="info-label">{data.Vehicule.contenu} | {data.Vehicule.volume} ml</label>
+                            <label className="info-label">{data.Ajustement.cond_final} | {data.Vehicule.volume} ml</label>
                         </div>
                         <div className="field">
                             <label className="main-label">Volume final : </label>
-                            <label className="info-label">{data.Vehicule.volume_finale} ml</label>
+                            <label className="info-label">{volumeFinal} ml</label>
                         </div>
                         <div className="field">
                             <label className="main-label conc-label">Volume a retirer : </label>
-                            <label className="info-label conc-info">{ (parseFloat(data.Vehicule.volume) - parseFloat(data.Vehicule.volume_finale) + parseFloat(totalVolume)).toFixed(2) } ml</label>
+                            {/* <label className="info-label conc-info">{ (parseFloat(data.Vehicule.volume) - parseFloat(volumeFinal) + parseFloat(totalVolume)).toFixed(2) } ml</label> */}
                         </div>
                     </div>
                 </div>
@@ -284,17 +286,207 @@ export default function FAB(){
                         </div>
                         <div className="field">
                             <label className="main-label">Volume Final : </label>
-                            <label className="info-label">{data.Vehicule.volume_finale} ml</label>
+                            <label className="info-label">{volumeFinal} ml</label>
                         </div>
                         <div className="field">
                             <label className="main-label conc-label">Concentration : </label>
-                            <label className="info-label conc-info">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(data.Vehicule.volume_finale)).toFixed(2)} mg/ml</label>
+                            <label className="info-label conc-info">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal)).toFixed(2)} mg/ml</label>
                         </div>
                     </div>
                     <div className="fields border-bottom">
                         <div className="field">
                             <label className="main-label">Véhicule : </label>
-                            <label className="info-label">{data.Vehicule.contenu}</label>
+                            <label className="info-label">{data.Ajustement.cond_final}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Voie d'administration : </label>
+                            <label className="info-label">{data.Molecule.voie}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label conc-label">Durée : </label>
+                            <label className="info-label conc-info">{data.Molecule.duree_perfusion}</label>
+                        </div>
+                    </div>
+                    <div className="fields">
+                        <div className="field">
+                            <label className="main-label">Date d'administration : </label>
+                            <label className="info-label">{data.startDate}  J{getDateDifference(data.Cure.startDate, data.startDate) + 1}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">De la cure n° : </label>
+                            <label className="info-label">{data.Cure.name.split(' ')[1]}</label>
+                        </div>
+                    </div>
+                    <div className="fields">
+                        <div className="field">
+                            <label className="main-label">Conservation : </label>
+                            <label className="info-label">{(prepMolecule.conservation_reconstitution_frigo == 'Oui' ) ? 'Frigo' : 'Non Frigo' } / {(prepMolecule.abri_lumière == 'oui' ) ? 'Abri Lumière' : 'Non Lumière' }</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Date de fabrication : </label>
+                            <label className="info-label">{today}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Date de péremption : </label>
+                            <label className="info-label">{preDate}</label>
+                        </div>
+                    </div>
+                    <h2 className="alert">Ne pas Avaler - Respectez les does prescrites - Uniquement sur ordonnance</h2>
+                </div>
+                
+                <div className="row fab-bg sticker-data">
+                    <div className="section header-section">
+                        <div className="field">
+                            <label className="main-label">Centre Hospitalier : </label>
+                            <label className="info-label">adresse</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">N° Ordonnancier : </label>
+                            <label className="info-label">adresse</label>
+                        </div>
+                    </div>
+                    <div className="fields">
+                        <div className="field">
+                            <label className="main-label">Prescripteur : Dr</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label"></label>
+                            <label className="info-label"></label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label conc-label"> </label>
+                            <label className="info-label conc-info"></label>
+                        </div>
+                    </div>
+                    <div className="fields border-bottom">
+                        <div className="field">
+                            <label className="main-label">Mohammed mahmoud</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">id_patient : </label>
+                            <label className="info-label">{patient.id}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label conc-label">DDN : </label>
+                            <label className="info-label conc-info">{patient.birthDate}</label>
+                        </div>
+                    </div>
+                    <div className="field">
+                        <h2>{data.name}</h2>
+                    </div>
+                    <div className="fields">
+                        <div className="field">
+                            <label className="main-label">Dose : </label>
+                            <label className="info-label">{data.dose} mg</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Volume Final : </label>
+                            <label className="info-label">{volumeFinal} ml</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label conc-label">Concentration : </label>
+                            <label className="info-label conc-info">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal)).toFixed(2)} mg/ml</label>
+                        </div>
+                    </div>
+                    <div className="fields border-bottom">
+                        <div className="field">
+                            <label className="main-label">Véhicule : </label>
+                            <label className="info-label">{data.Ajustement.cond_final}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Voie d'administration : </label>
+                            <label className="info-label">{data.Molecule.voie}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label conc-label">Durée : </label>
+                            <label className="info-label conc-info">{data.Molecule.duree_perfusion}</label>
+                        </div>
+                    </div>
+                    <div className="fields">
+                        <div className="field">
+                            <label className="main-label">Date d'administration : </label>
+                            <label className="info-label">{data.startDate}  J{getDateDifference(data.Cure.startDate, data.startDate) + 1}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">De la cure n° : </label>
+                            <label className="info-label">{data.Cure.name.split(' ')[1]}</label>
+                        </div>
+                    </div>
+                    <div className="fields">
+                        <div className="field">
+                            <label className="main-label">Conservation : </label>
+                            <label className="info-label">{(prepMolecule.conservation_reconstitution_frigo == 'Oui' ) ? 'Frigo' : 'Non Frigo' } / {(prepMolecule.abri_lumière == 'oui' ) ? 'Abri Lumière' : 'Non Lumière' }</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Date de fabrication : </label>
+                            <label className="info-label">{today}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Date de péremption : </label>
+                            <label className="info-label">{preDate}</label>
+                        </div>
+                    </div>
+                    <h2 className="alert">Ne pas Avaler - Respectez les does prescrites - Uniquement sur ordonnance</h2>
+                </div>
+                
+                <div className="row fab-bg sticker-data">
+                    <div className="section header-section">
+                        <div className="field">
+                            <label className="main-label">Centre Hospitalier : </label>
+                            <label className="info-label">adresse</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">N° Ordonnancier : </label>
+                            <label className="info-label">adresse</label>
+                        </div>
+                    </div>
+                    <div className="fields">
+                        <div className="field">
+                            <label className="main-label">Prescripteur : Dr</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label"></label>
+                            <label className="info-label"></label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label conc-label"> </label>
+                            <label className="info-label conc-info"></label>
+                        </div>
+                    </div>
+                    <div className="fields border-bottom">
+                        <div className="field">
+                            <label className="main-label">Mohammed mahmoud</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">id_patient : </label>
+                            <label className="info-label">{patient.id}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label conc-label">DDN : </label>
+                            <label className="info-label conc-info">{patient.birthDate}</label>
+                        </div>
+                    </div>
+                    <div className="field">
+                        <h2>{data.name}</h2>
+                    </div>
+                    <div className="fields">
+                        <div className="field">
+                            <label className="main-label">Dose : </label>
+                            <label className="info-label">{data.dose} mg</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Volume Final : </label>
+                            <label className="info-label">{volumeFinal} ml</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label conc-label">Concentration : </label>
+                            <label className="info-label conc-info">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal)).toFixed(2)} mg/ml</label>
+                        </div>
+                    </div>
+                    <div className="fields border-bottom">
+                        <div className="field">
+                            <label className="main-label">Véhicule : </label>
+                            <label className="info-label">{data.Ajustement.cond_final}</label>
                         </div>
                         <div className="field">
                             <label className="main-label">Voie d'administration : </label>

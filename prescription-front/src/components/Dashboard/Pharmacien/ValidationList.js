@@ -13,12 +13,10 @@ export default function ValidationList({ searchArgs, search }) {
   let [filteredRows, setFilteredRows] = useState([]);
 
   const getLastCure = (Prescriptions)=>{
-    console.log(Prescriptions)
     if(!Prescriptions || Prescriptions.length == 0){
       return null;
     }
     let addr = '';
-    console.log(Prescriptions)
     Prescriptions.forEach(pres=>{
       pres.Cures.forEach(cure=>{
         if(cure.state == "En Cours"){
@@ -36,14 +34,18 @@ export default function ValidationList({ searchArgs, search }) {
 
   const presBtn = (e)=>{
     let addr = getLastCure(e.row.Prescriptions);
-    console.log(addr)
     return (
-      <Fab className="planning-btn" color="2663EE" aria-label="planning" onClick={()=>navigate(addr)}>
+      <>
+        <Fab className="planning-btn" color="2663EE" aria-label="planning" onClick={()=>navigate(addr)}>
+            <img src="/icons/prescription.svg" alt="+" />
+        </Fab>
+        <Fab className="planning-btn" color="2663EE" aria-label="planning" onClick={()=>navigate('/planning/'+e.row.id)}>
           <img src="/icons/list.svg" alt="+" />
-      </Fab>
+        </Fab>
+      </>
     )
   }
-
+  
   const columns = [
     { field: "DMI", headerName: "DMI", flex:1 },
     { field: "nom", headerName: "Nom", flex:1 },
@@ -58,7 +60,6 @@ export default function ValidationList({ searchArgs, search }) {
       .then(res => {
         setData(res.data);
         setRows(res.data);
-        console.log(res.data)
         setLoading(false)
       })
       .catch(err =>{
@@ -68,9 +69,7 @@ export default function ValidationList({ searchArgs, search }) {
   }, [])
 
   useEffect(()=>{
-    console.log('searching')
     filterRows();
-    console.log(search)
   }, [search])
 
   function filterRows(){
@@ -116,7 +115,7 @@ export default function ValidationList({ searchArgs, search }) {
         }}
         className='main-table'
         pageSizeOptions={[5, 10, 25, 50]}
-        checkboxSelection
+        // checkboxSelection
       /> : <CircularProgress /> }
     </div>
   );

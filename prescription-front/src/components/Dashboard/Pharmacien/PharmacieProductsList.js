@@ -69,13 +69,13 @@ export default function PharmacieProductsList({ search, searchArgs }) {
     let val = 0;
     switch (unite){
       case 'mg/kg':
-        return parseInt(row.dose * patient.poids).toFixed(2);
+        return parseFloat(row.dose * patient.poids).toFixed(2);
       case 'mg':
-        return parseInt(row.dose).toFixed(2);
+        return parseFloat(row.dose).toFixed(2);
       case 'mg/m²':
-        return parseInt(row.dose * patient.surfCorp).toFixed(2);
+        return parseFloat(row.dose * patient.surfCorp).toFixed(2);
       case 'AUC':
-        return parseInt(row.dose * (patient.clairance + 25)).toFixed(2) ;
+        return parseFloat(row.dose * (patient.clairance + 25)).toFixed(2) ;
       default:
         return '-';
     }

@@ -1,7 +1,7 @@
-const express = require('express');
 require('dotenv').config(); 
+const express = require('express');
 const app = express();
-const port = 3030;
+const port = process.env.PORT;
 var bodyParser = require('body-parser')
 const cors = require('cors')
 
@@ -27,6 +27,7 @@ try {
 const User = require('./models/User');
 const Patient = require('./models/Patient');
 const Protocole = require('./models/Protocole');
+const ParentProtocole = require('./models/ParentProtocole');
 const Molecule = require('./models/Molecule');
 const Prescription = require('./models/Prescription');
 const Cure = require('./models/Cure');
@@ -35,6 +36,7 @@ const DataHistory = require('./models/DataHistory');
 const Vehicule = require('./models/Vehicule');
 const PrepMolecule = require('./models/PrepMolecule');
 const Flacon = require('./models/Flacon');
+const Ajustement = require('./models/Ajustement');
 
 Patient.hasMany(Prescription, {foreignKey: 'id_patient'});
 Prescription.belongsTo(Patient, {foreignKey: 'id_patient'});
@@ -52,6 +54,9 @@ Product.hasOne(Vehicule, {foreignKey: 'id_product'});
 Vehicule.belongsTo(Product, {foreignKey: 'id_product'});
 
 Product.belongsTo(Molecule, {foreignKey: 'id_molecule'});
+
+Product.hasOne(Ajustement, {foreignKey: 'id_product'});
+Ajustement.belongsTo(Product, {foreignKey: 'id_product'});
 
 DataHistory.belongsTo(Patient, {foreignKey: 'id_patient'});
 DataHistory.belongsTo(User, {foreignKey: 'id_user'});

@@ -14,6 +14,21 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
   let [rows, setRows] = useState([]);
   let [filteredRows, setFilteredRows] = useState([]);
 
+  const deletePatient = (patientId)=>{
+    if(confirm('are you sure you want to delete this patient?')){
+      axios.post(process.env.REACT_APP_SERVER_URL + '/deletePatient', { patientId })
+      .then(res => {
+        console.log(res.data)
+        const newRows = rows.filter(item => item.id != patientId);
+        console.log(111, newRows)
+        setRows(newRows)
+      })
+      .catch(err =>{
+        console.log(err)
+      })
+    }
+  }
+
   const prescriptionButton = (event)=>{
     return(
       <>
@@ -22,6 +37,9 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
         </Fab>
         <Fab title="Planning des prescriptions" className="planning-btn" color="2663EE" aria-label="planning" onClick={()=>navigate('/planning/'+event.row.id)}>
             <img src="/icons/list.svg" alt="+" />
+        </Fab>
+        <Fab title="Planning des prescriptions" className="planning-btn" color="2663EE" aria-label="planning" onClick={()=>deletePatient(event.row.id)}>
+            <img src="/icons/delete.svg" alt="+" />
         </Fab>
       </>
     ) 
@@ -100,7 +118,7 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
   return (
     <div className="PatientList-container">
       <div className="list-header">
-        <h1>Liste Des Patients</h1>
+        <h1>Liste des patients</h1>
         <Fab title="Ajouter un Patient" color="2663EE" aria-label="add" onClick={()=>addPatient()}>
             <img src="/icons/plus.png" alt="+" />
         </Fab>

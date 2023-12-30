@@ -13,6 +13,8 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const PrepMolecule = require('./models/PrepMolecule');
 const Flacon = require('./models/Flacon');
+const ParentProtocole = require('./models/ParentProtocole');
+const Ajustement = require('./models/Ajustement');
 
 router.get('/', (req,res)=>{
     res.send('hey')
@@ -118,6 +120,22 @@ router.post('/addPatient', async (req,res)=>{
     }
 })
 
+router.post('/deletePatient', async (req,res)=>{
+    const { patientId } = req.body;
+
+    try{
+        await Patient.destroy({
+            where: {
+                id: patientId
+            }
+        })
+
+        return res.sendStatus(200);
+    }catch(err){
+        return res.sendStatus(400);
+    }
+})
+
 router.post('/getAllPatients', async (req,res)=>{
     try{
         const patients = await Patient.findAll({
@@ -175,6 +193,14 @@ router.post('/getAllProtocoles', async (req,res)=>{
     return res.status(200).send(Protocoles);
 })
 
+router.post('/getParentProtocoles', async (req,res)=>{
+    const Protocoles = await Protocole.findAll({
+        attributes: ['parent'],
+        group: ['parent']
+    });
+    return res.status(200).send(Protocoles);
+})
+
 router.post('/getProtocole', async (req,res)=>{
     const { id } = req.body;
 
@@ -213,6 +239,26 @@ router.post('/getMolecules', async (req,res)=>{
     const molecules = await Molecule.findAll({
         where: {
             id_protocole
+        },
+        order: [ ['jour_prod', 'ASC'] ]
+    })
+
+    return res.status(200).send([protocole, molecules])
+
+})
+
+router.post('/getMoleculesParent', async (req,res)=>{
+    const { parent } = req.body;
+
+    const protocole = await Protocole.findOne({
+        where: {
+            parent
+        }
+    })
+
+    const molecules = await Molecule.findAll({
+        where: {
+            id_protocole: protocole.id
         },
         order: [ ['jour_prod', 'ASC'] ]
     })
@@ -269,11 +315,6 @@ router.post('/addPrescription', async (req,res)=>{
         return res.sendStatus(400)
     }
 
-    const patient = await Patient.findOne({
-        where: {
-            id: patientId
-        }
-    })
     const protocole = await Protocole.findOne({
         where: {
             id_protocole: data.protocole
@@ -314,11 +355,80 @@ router.post('/addPrescription', async (req,res)=>{
                 dose: mol.dose,
                 startDate: molDate,
                 validation: 0,
-                adjusted: 0
+                adjusted: 0,
+                liberer: 0,
+                terminer: 0
             })
         })
     }
     return res.status(200).send(molecules);
+})
+
+router.post('/addPrescriptionParent', async (req,res)=>{
+    const { patientId, data } = req.body;
+
+    if(! (patientId && data)){
+        return res.sendStatus(400)
+    }
+
+    const protocoles = await Protocole.findAll({
+        where: {
+            parent: data.parent
+        }
+    })
+    
+    const parentProtocole = await ParentProtocole.create({
+        name: data.parent
+    })
+
+    protocoles.forEach(async (protocole)=>{
+
+        const molecules = await Molecule.findAll({
+            where:{
+                id_protocole: protocole.id
+            },
+            order: [ ['jour_prod', 'ASC'] ]
+        })
+    
+        const prescription = await Prescription.create({
+            id_patient: patientId,
+            id_protocole: protocole.id,
+            id_parent: parentProtocole.id,
+            prescripteur: data.prescripteur,
+            startDate: data.date,
+            nbrCures: data.nbrCures,
+            essaiClin: data.essaiClin
+        })
+        
+        let keys = Object.keys(molecules);
+        for(let i=0; i < data.nbrCures ; i++){
+            let date = addDaysToDate(prescription.startDate, parseInt(protocole.intercure) * i);
+            let cure = await Cure.create({
+                id_prescription: prescription.id,
+                name: 'Cure ' + (i + 1),
+                startDate: date,
+                state: (i==0 ? 'En Cours' : 'Prévu')
+            })
+            keys.forEach(async (key)=>{
+                let mol = molecules[key];
+                let molDate = addDaysToDate(cure.startDate, parseInt(mol.jour_prod) - 1);
+                await Product.create({
+                    id_cure: cure.id,
+                    id_molecule: mol.id,
+                    name: mol.molecule,
+                    dose: mol.dose,
+                    startDate: molDate,
+                    validation: 0,
+                    adjusted: 0,
+                    liberer: 0,
+                    terminer: 0
+                })
+            })
+        }
+
+    })
+
+    return res.status(200).send('DONE');
 })
 
 router.post('/getPrescription', async (req, res)=>{
@@ -443,6 +553,7 @@ router.post('/getPlanning', async (req, res)=>{
         where: {
             id_patient: patientId
         },
+        // order: [['id', 'ASC'], ['id_parent', 'DESC']],
         include: { all: true, nested: true }
     })
 
@@ -470,6 +581,24 @@ router.post('/changeProductValidation', async (req,res)=>{
 
     return res.sendStatus(200)
 })
+router.post('/saveAjustement', async(req,res)=>{
+    const { ajustementData, prodId } = req.body;
+
+    await Ajustement.destroy({
+        where: {
+            id_product: prodId
+        }
+    })
+    
+    const ajustement = await Ajustement.create({
+        ...ajustementData,
+        id_product: prodId
+    })
+
+    return res.status(200).send(ajustement)
+
+})
+
 router.post('/getAjustementData', async(req,res)=>{
     const { prodId } = req.body;
 
@@ -478,6 +607,11 @@ router.post('/getAjustementData', async(req,res)=>{
             id: prodId
         },
         include: [Molecule, Vehicule]
+    })
+    let prepMolecules = await PrepMolecule.findAll({
+        where: {
+            dci: product.name
+        }
     })
     let cure = await Cure.findOne({
         where: {
@@ -490,8 +624,14 @@ router.post('/getAjustementData', async(req,res)=>{
         },
         include: [Patient, Protocole]
     })
+    
+    let ajustement = await Ajustement.findOne({
+        where: {
+            id_product: prodId
+        },
+    })
 
-    res.status(200).send([prescription, cure, product])
+    res.status(200).send([prescription, cure, product, prepMolecules, ajustement])
 })
 
 router.post('/setAdjusted', async(req,res)=>{
@@ -499,6 +639,30 @@ router.post('/setAdjusted', async(req,res)=>{
 
     let product = await Product.update({ adjusted: value }, {
         where: {
+            id
+        }
+    })
+
+    res.status(200).send(product)
+})
+
+router.post('/setLiberer', async(req,res)=>{
+    const { id, value } = req.body;
+
+    let product = await Product.update({ liberer: value }, {
+        where: {
+            id
+        }
+    })
+
+    res.status(200).send(product)
+})
+
+router.post('/setTerminer', async(req,res)=>{
+    const { id, value } = req.body;
+
+    let product = await Product.update({ terminer: value }, {
+        where: {    
             id
         }
     })

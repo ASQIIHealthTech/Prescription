@@ -9,13 +9,22 @@ const { Sequelize } = require('sequelize');
 //     dialect: 'mysql'
 // });
 
+// const sequelize = new Sequelize({
+//     username: 'root',
+//     password: 'asqiiaminpasswordDB',
+//     database: 'prescription',
+//     host: 'database',
+//     port: 3306,
+//     dialect: 'mysql'
+// });
+
 const sequelize = new Sequelize({
     username: 'root',
-    password: 'pass',
-    database: 'prescription',
+    password: 'asqiiaminpasswordDB',
+    database: process.env.DB_DATABASE || 'prescription',
     host: 'database',
-    port: 3306,
+    port: process.env.DB_PORT || 3306,
     dialect: 'mysql'
 });
 
-module.exports = sequelize;;
+module.exports = sequelize;

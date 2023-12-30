@@ -14,6 +14,19 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
   let [loading, setLoading] = useState(true)
   let [poche, setPoche] = useState(0)
   let [vehData, setVehData] = useState(null)
+  let [fractionDose, setFractionDose] = useState(0)
+  let [volumePA, setVolumePA] = useState(0)
+  let [ajustementData, setAjustementData] = useState({
+    dillution: '',
+    volume_dillution: '',
+    cond_final: '',
+    volume_solvant: null,
+    volumePA: 0
+  })
+
+
+  let condFinalRef = useRef(0);
+  let volumeSolvantRef = useRef(0);
 
   const getAdaptedDose = (row)=>{
     // return 55.32;
@@ -31,27 +44,16 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
     }
   }
 
-  const getPrepMolecule = (dci)=>{
-    axios.post(process.env.REACT_APP_SERVER_URL+'/getPrepMolecule', { dci})
-        .then(res=>{
-            console.log(res)
-            setPrepMolecule(res.data);
-        })
-        .catch(err=>{
-            console.log(err)
-        })
-  }
-
   const getFlacons = (dci, productId)=>{
     setFlacons([]);
     axios.post(process.env.REACT_APP_SERVER_URL+'/getFlacons', { dci })
         .then(res=>{
             console.log(res)
             if(res.data.length == 0){
-              setFlacons(prev=>[...prev, { productId , prepId: null, name: dci + ' ' + 50 + ' mg', dosage: 50, volume: 5, quantity: 0 }])
+              setFlacons(prev=>[...prev, { productId , prepId: null, name: dci + ' ' + 50 + ' mg', dosage: 50, volume: 5, quantity: 0, fracQuantity: 0, fraction: 0 }])
             }else{
               res.data.forEach(flac=>{
-                setFlacons(prev=>[...prev, { productId  , prepId: flac.id, name: flac.dci + ' ' + flac.dosage + ' mg', dosage: flac.dosage, volume: flac.dosage / 10, quantity: 0 }])
+                setFlacons(prev=>[...prev, { productId  , prepId: flac.id, name: flac.dci + ' ' + flac.dosage + ' mg', dosage: flac.dosage, volume: flac.volume, quantity: 0, fracQuantity: 0, fraction: 0 }])
               })
             }
         })
@@ -60,6 +62,20 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
         })
   }
 
+  useEffect(()=>{
+    if(flacons){
+      let total = 0;
+      flacons.forEach(flac=>{
+        total += flac.volume * (flac.quantity + flac.fraction);
+      })
+      setVolumePA(total);
+      setAjustementData({
+        ...ajustementData,
+        volumePA: total
+      });
+    }
+  }, [flacons])
+
   useEffect(() => {
     //get all data
     axios.post(process.env.REACT_APP_SERVER_URL + '/getAjustementData', { prodId: ajustement })
@@ -67,8 +83,11 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
         console.log(res)
         setData(res.data)
         setVehData(res.data[2].Vehicule)
-        getPrepMolecule(res.data[2].name);
+        setPrepMolecule(res.data[3][0]);
         getFlacons(res.data[2].name, res.data[2].id);
+        if(res.data[4]){
+          setAjustementData(res.data[4])
+        }
         setLoading(false);
       })
       .catch(err=>{
@@ -85,14 +104,14 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
   }
 
   const getAdjustedDose = (num)=>{
-      const val = Math.round(num / 0.2) * 0.2;
+      const val = Math.round(num * 2) / 2;
       return val.toFixed(2);
   }
 
   const flaskBtn = (id)=>(
     <img className="gear-icon" src="/icons/flask.png" onClick={()=>openPoche(id)} />
   )
-    
+
   const openPoche = (id)=>{
     setPoche(id);
   }
@@ -105,7 +124,17 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
       .catch(err=>{
         console.log(err)
       })
+
+    ajustementData.volume_final = ( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) ) > (parseInt(ajustementData.volume_dillution) + 50) ? (parseInt(ajustementData.volume_dillution) + 50) : ( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) );
       
+    axios.post(process.env.REACT_APP_SERVER_URL+'/saveAjustement', { ajustementData, prodId: ajustement })
+      .then(res=>{
+        console.log(res)
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+
     axios.post(process.env.REACT_APP_SERVER_URL+'/saveFlacons', { flacons })
       .then(res=>{
         console.log(res)
@@ -113,7 +142,7 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
       .catch(err=>{
         console.log(err)
       })
-    
+
     for(let el of rows){
       if(el.id == ajustement){
         el.adjusted = 1;
@@ -121,6 +150,58 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
     }
     setAjustement(0);
   }
+
+  const liberer = ()=>{
+    data[2].liberer = 1;
+    axios.post(process.env.REACT_APP_SERVER_URL+'/setLiberer', { id: data[2].id, value: 1 })
+      .then(res=>{
+        console.log(res)
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+      setAjustement(0)
+  }
+
+  const volumeDillChanged = (e)=>{
+    let value = e.target.value;
+    setAjustementData({
+      ...ajustementData,
+      volume_dillution: value,
+      volume_solvant: value
+    })
+  }
+
+  const dillChanged = (e)=>{
+    let value = e.target.value;
+    setAjustementData({
+      ...ajustementData,
+      dillution: value,
+      cond_final: value
+    })
+  }
+  
+  const condFinalChanged = (e)=>{
+    let value = e.target.value;
+    setAjustementData({
+      ...ajustementData,
+      cond_final: value
+    })
+  }
+  
+  const volumeSolvantChanged = (e)=>{
+    let value = e.target.value;
+    setAjustementData({
+      ...ajustementData,
+      volume_solvant: parseInt(value)
+    })
+    console.log(ajustementData)
+  }
+
+  // const inputEmpty = ()=>{
+  //   return ajustementData.dillution != '' && ajustementData.volume_dillution != '' && ajustementData.cond_final != '' && ajustementData.volume_solvant != '';
+  //   return true
+  // }
 
   if(!data || loading){
     return '';
@@ -132,61 +213,130 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
       <div className="modal-box ajustement-modal">
         <h2>Ajustement</h2>
         <div className="ajustement-header">
-          <div className="field">
-            <label>Patient: </label>
-            <label className='main-label'>{data[0].Patient.nom + ' ' + data[0].Patient.prenom} </label>
-          </div>
-          <div className="doses">
+          <div className="fields-row">
+            <div className="field">
+              <label>Patient: </label>
+              <label className='main-label'>{data[0].Patient.nom + ' ' + data[0].Patient.prenom} </label>
+            </div>
             <div className="field">
               <label>Produit: </label>
               <label className='main-label'>{data[2].name} </label>
             </div>
-              {flaskBtn(data[2].id)}
-              { !vehData ? null : (
-                <>
-                  <div className="field">
-                    <label>Vehicule: </label>
-                      <label className='main-label'>{getVehicule()} </label>
-                    </div>
-                    <div className="field">
-                      <label>Concentration: </label>
-                      <label className='main-label'>{( getAdjustedDose(getAdaptedDose()) / parseInt(vehData?.volume) ).toFixed(2) } mg/ml</label>
-                    </div>
-                </>
-              )
-            }
-          </div>
-          <div className="field">
-            <label>date: </label>
-            <label className='main-label'>{data[2].startDate} </label>
-          </div>
-          <div className="doses">
             <div className="field">
-              <label>Dose Prescrite: </label>
+              <label>Date: </label>
+              <label className='main-label'>{data[2].startDate} </label>
+            </div>
+          </div>
+
+          <div className="fields-row justify-arround">
+            <div className="field">
+              <label>Dillution: </label>
+              <select disabled={data[2].liberer == 1} value={ajustementData.dillution} onChange={(e)=>dillChanged(e)} className="main-input">
+                <option value=""></option>
+                <option value="Poche NaCl 0.9%">Poche NaCl 0.9%</option>
+                <option value="Poche Glucose 5%">Poche Glucose 5%</option>
+                <option value="Poche NaCl 0.9% sans PVC">Poche NaCl 0.9% sans PVC</option>
+                <option value="Poche Glucose 5% sans PVC">Poche Glucose 5% sans PVC</option>
+                <option value="Flacon NaCl 0.9%">Flacon NaCl 0.9%</option>
+                <option value="Flacon Glucose 5%">Flacon Glucose 5%</option>
+              </select>
+            </div>
+            <div className="field">
+              <label>Volume dillution: </label>
+              <select disabled={data[2].liberer == 1} value={ajustementData.volume_dillution} onChange={(e)=>volumeDillChanged(e)} className="main-input">
+                <option value=""></option>
+                <option value="100">100 ml</option>
+                <option value="250">250 ml</option>
+                <option value="500">500 ml</option>
+                <option value="1000">1000 ml</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="fields-row">
+            <div className="field">
+              <label>Sensibilité PVC: </label>
+              <label className='main-label'>{prepMolecule.sensibilité_pvc ? "Oui" : 'Non' } </label>
+            </div>
+            <div className="field">
+              <label>Sensibilité Lumière: </label>
+              <label className='main-label'>{prepMolecule.abri_lumière ? "Oui" : 'Non' }</label>
+            </div>
+            <div className="field">
+              <label>Dose prescrite: </label>
               <label className='main-label'>{getAdaptedDose().toFixed(2) } mg </label>
             </div>
             <div className="field">
-              <label>Dose Ajustée: </label>
-              <label className='main-label'>{getAdjustedDose(getAdaptedDose()) } mg </label>
+              <label>Dose ajustée: </label>
+              <label className='main-label'>{ getAdjustedDose(getAdaptedDose()) } mg </label>
+            </div>
+          </div>
+
+          <div className="fields-row justify-arround">
+            <div className="field">
+              <label>Conditionnement final: </label>
+              <select disabled={data[2].liberer == 1} onChange={(e)=>condFinalChanged(e)} value={ajustementData.cond_final} ref={condFinalRef} className="main-input">
+                <option value=""></option>
+                <option value="Poche NaCl 0.9%">Poche NaCl 0.9%</option>
+                <option value="Poche NaCl 0.9% sans PVC">Poche NaCl 0.9% sans PVC</option>
+                <option value="Flacon NaCl 0.9%">Flacon NaCl 0.9%</option>
+                <option value="Poche Glucose 5%">Poche Glucose 5%</option>
+                <option value="Poche Glucose 5% sans PVC">Poche Glucose 5% sans PVC</option>
+                <option value="Flacon Glucose 5%">Flacon Glucose 5%</option>
+                <option value="Seringue 1 ml">Seringue 1 ml</option>
+                <option value="Seringue 2 ml">Seringue 2 ml</option>
+                <option value="Seringue 5 ml">Seringue 5 ml</option>
+                <option value="Seringue 50 ml">Seringue 50 ml</option>
+              </select>
             </div>
             <div className="field">
-              <label>Volume Ajusté: </label>
-              <label className='main-label'>{getAdjustedDose(getAdaptedDose()) / 10} ml </label>
+              <label>Volume solvant: </label>
+              <input disabled={data[2].liberer == 1} onChange={(e)=>volumeSolvantChanged(e)} value={ajustementData.volume_solvant}  ref={volumeSolvantRef} type="number" className="main-input" />
+            </div>
+          </div>
+
+          <div className="fields-row">
+            <div className="field">
+              <label>Volume PA: </label>
+              <label className='main-label'>{volumePA.toFixed(2)} ml </label>
+            </div>
+            <div className="field">
+              <label>Volume PA Ajusté: </label>
+              <label className='main-label'>{ getAdjustedDose(volumePA.toFixed(2))} ml </label>
             </div>
             <div className="field">
               <label>Ratio: </label>
-              <label className='main-label'>{ ( parseInt( getAdjustedDose(getAdaptedDose()) * 100 ) / getAdaptedDose() ).toFixed(2) + ' %' } </label>
+              <label className='main-label'>{ ( parseInt( getAdjustedDose(getAdaptedDose()) * 100 ) / getAdaptedDose() ).toFixed(2) + ' %' }</label>
+            </div>
+          </div>
+
+          <div className="fields-row justify-arround">
+            <div className="field">
+              <label>Volume final: </label>
+              <label className='main-label'>{ ( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) ) > (parseInt(ajustementData.volume_dillution) + 50) ? (parseInt(ajustementData.volume_dillution) + 50) : ( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) )  } ml </label>
+            </div>
+            <div className="field">
+              <div className='cc-container'>
+                <div className='main-cc'>
+                  <label>Concentration: </label>
+                  <label className={'main-label'}>{( getAdjustedDose(getAdaptedDose()) / (( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) ) > (parseInt(ajustementData.volume_dillution) + 50) ? (parseInt(ajustementData.volume_dillution) + 50) : ( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) )) ).toFixed(2) } mg/ml </label>
+                </div>
+                <div className='margin-cc'>
+                  <label>CC min: <b>{prepMolecule.concentration_min} mg/ml </b> - </label>
+                  <label>CC max: <b>{prepMolecule.concentration_max} mg/ml </b> </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <h2 className='float-left'>Repartition</h2>
-        <RepartitionTable data={data} flacons={flacons} setFlacons={setFlacons} adaptedDose={getAdaptedDose()} />
+        <h2 className='float-left'>Répartition</h2>
+        <RepartitionTable fractionDose={fractionDose} setFractionDose={setFractionDose} data={data} flacons={flacons} setFlacons={setFlacons} adaptedDose={getAdaptedDose()} />
         <h2 className='float-left'>Fraction</h2>
-        <FractionTable flacons={flacons} setFlacons={setFlacons} data={data} adaptedDose={getAdaptedDose()} />
+        <FractionTable fractionDose={fractionDose} setFractionDose={setFractionDose} flacons={flacons} setFlacons={setFlacons} data={data} adaptedDose={getAdaptedDose()} />
         <div className="btn-container">
           <button className="main-btn" onClick={()=>setAjustement(0)}>Annuler</button>
-          <button className="main-btn" disabled={!vehData} onClick={()=>submit()}>Enregistrer</button>
-          <button className="main-btn" disabled={!vehData} >libérer</button>
+          <button className="main-btn" onClick={()=>submit()}>Enregistrer</button>
+          <button className="main-btn" onClick={()=>liberer()} >libérer</button>
         </div>
       </div>
     </div>

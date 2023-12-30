@@ -79,7 +79,7 @@ export default function PocheModal({ poche, setPoche, setVehData, vehData, getAd
             </select>
         </div>
         <div className='field'>
-          <label className='main-label'>Volume Finale: </label>
+          <label className='main-label'>Volume Final: </label>
           <input className="main-input" onChange={()=>calcConcentration(true)} defaultValue={vehData?.volume_finale || prepMolecule.volume_dilution} ref={volume_finale} />
         </div>
         <div className="field">

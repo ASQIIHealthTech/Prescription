@@ -61,13 +61,13 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
     let val = 0;
     switch (unite){
       case 'mg/kg':
-        return parseInt(dose * patient.poids).toFixed(2);
+        return parseFloat(dose * patient.poids).toFixed(2);
       case 'mg':
-        return parseInt(dose).toFixed(2);
+        return parseFloat(dose).toFixed(2);
       case 'mg/m²':
-        return parseInt(dose * patient.surfCorp).toFixed(2);
+        return parseFloat(dose * patient.surfCorp).toFixed(2);
       case 'AUC':
-        return parseInt(dose * (patient.clairance + 25)).toFixed(2) ;
+        return parseFloat(dose * (patient.clairance + 25)).toFixed(2) ;
       default:
         return '-';
     }
@@ -80,8 +80,12 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
     let value = 0;
     if(user.type == "medecin"){
       value = changedRow.validation == 0 ? 1 : 0;
-    }else if(changedRow.validation == 1){
-      value = changedRow.validation == 1 ? 2 : 1;
+    }else if(user.type == "pharmacien"){
+      if(changedRow.validation == 1){
+        value = 2;
+      }else if (changedRow.validation == 2){
+        value = 1;
+      }
     }else{
       return;
     }
@@ -117,7 +121,7 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
   }
 
   const getPercentage = (dose, molDose)=>{
-    return parseFloat((parseInt(dose) * 100)/parseInt(molDose).toFixed(2)).toString()
+    return parseFloat((parseInt(dose) * 100)/parseInt(molDose).toFixed(2)).toFixed(2).toString()
   }
 
   function addDays(date, days) {

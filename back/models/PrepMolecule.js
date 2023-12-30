@@ -87,6 +87,10 @@ const PrepMolecule = sequelize.define('PrepMolecule', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  sensibilité_pvc  : {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 module.exports = PrepMolecule;

@@ -15,6 +15,10 @@ const Prescription = sequelize.define('Prescription', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  id_parent: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   prescripteur: {
     type: DataTypes.STRING,
     allowNull: false,

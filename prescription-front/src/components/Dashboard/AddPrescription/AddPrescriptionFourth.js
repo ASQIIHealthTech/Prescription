@@ -9,10 +9,17 @@ export default function AddPrescriptionFourth({ patient, prescriptionData, setPr
     useEffect(()=>{
         if(prescriptionData.protocole != ''){
             axios.post(process.env.REACT_APP_SERVER_URL + '/getMolecules', { id_protocole: prescriptionData.protocole })
-                .then(res=>{
-                    setProtocole(res.data[0])
-                    setMolecules(res.data[1])
-                })
+            .then(res=>{
+                setProtocole(res.data[0])
+                setMolecules(res.data[1])
+            })
+        }else if(prescriptionData.parent != ''){
+            console.log(2)
+            axios.post(process.env.REACT_APP_SERVER_URL + '/getMoleculesParent', { parent: prescriptionData.parent })
+            .then(res=>{
+                setProtocole(res.data[0])
+                setMolecules(res.data[1])
+            })
         }
     }, [])
 

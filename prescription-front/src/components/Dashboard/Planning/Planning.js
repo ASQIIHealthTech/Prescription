@@ -9,6 +9,7 @@ export default function Planning({ patientId }) {
   let [loading, setLoading] = useState(true);
   let [data, setData] = useState([]);
   let [patient, setPatient] = useState([]);
+  let currentParentPres = null;
 
   useEffect(() => {
     axios
@@ -55,9 +56,20 @@ export default function Planning({ patientId }) {
         <h1>PLANNING DES PRESCRIPTIONS</h1>
         <div className="prescriptions">
           {data.length > 0 &&
-            data.map((pres, index) => (
-              <Prescription pres={pres} index={index} />
-            ))}
+            data.map((pres, index) => {
+              console.log(pres.id_parent, currentParentPres)
+              if(pres.id_parent != null && currentParentPres != pres.id_parent){
+                currentParentPres = pres.id_parent;
+                return (
+                  <ParentPrescription pres={pres} index={index} data={data} />
+                )
+              }else if(pres.id_parent == null){
+                return (
+                  <Prescription pres={pres} index={index} />
+                )
+              }
+          }
+            )}
         </div>
       </div>
       <div className="fiche-patient">
@@ -114,7 +126,63 @@ export default function Planning({ patientId }) {
   );
 }
 
-export function Prescription({ pres, index }){
+export function ParentPrescription({ pres, index, data }){
+  const navigate = useNavigate();
+  let [prots, setProts] = useState([])
+
+  useEffect(()=>{
+    data.forEach(currPres=>{
+      if(currPres.id_parent == pres.id_parent){
+        setProts(prev=>[...prev, currPres])
+      }
+    })
+  }, [])
+
+  const showPrescriptions = (e, presId)=>{
+    let el = e.target;
+    let prescriptions = document.querySelectorAll("div[id_parent='"+ pres.id_parent +"']");
+    prescriptions.forEach(element=>{
+      element.classList.toggle('shown')
+      if(element.childNodes[0].shown){
+        //hide products if shown
+        element.childNodes[0].click()
+      }
+    })
+    if(el.shown){
+      el.shown = 0;
+      e.target.src = '/icons/plus_blue.png'
+    }else{
+      el.shown = 1;
+      e.target.src = '/icons/minus_blue.png'
+    }
+  }
+
+  // const navigatePrescription = (pres)=>{
+  //   navigate('/prescription/'+pres);
+  // }
+
+  return(
+    <>
+    <div key={index} className="block parent-block">
+      <img className="open-icon" onClick={(e)=>showPrescriptions(e, pres.id_parent)} src="/icons/plus_blue.png" />
+      <div className="details">
+        <img src="/icons/layers.png" />
+        <label className="bold label1">
+          Groupe Prescriptions :{" "}
+        </label>
+        <label className="label2">
+          Protocole Parent: {pres?.Protocole?.parent}
+        </label>
+      </div>
+    </div>
+    {prots.length > 0 && prots.map((prot, protIndex) => (
+      <Prescription pres={prot} index={protIndex} parent={true} />
+    ))}
+    </>
+  )
+}
+
+export function Prescription({ pres, index, parent }){
   const navigate = useNavigate();
   let [currentDay, setCurrentDay] = useState('')
 
@@ -143,7 +211,7 @@ export function Prescription({ pres, index }){
 
   return(
     <>
-    <div key={index} className="block parent-block">
+    <div key={index} id_parent={pres.id_parent} className={"block parent-block " + (parent ? 'pres-parent' : '')}>
       <img className="open-icon" onClick={(e)=>showCures(e, pres.id)} src="/icons/plus_blue.png" />
       <div onClick={()=>navigatePrescription(pres.id)} className="details">
         <img src="/icons/prescription.png" />

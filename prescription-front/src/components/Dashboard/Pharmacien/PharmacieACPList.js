@@ -44,12 +44,28 @@ export default function PharmacieACPList({ search, searchArgs }) {
       return (<img className="gear-icon" src="/icons/clipboard.png" /> )
     }
   }
+
+  const terminer = (row)=>{
+    if(row.liberer == 0){
+      return;
+    }else{
+      axios.post(process.env.REACT_APP_SERVER_URL+'/setTerminer', { id: row.id, value: 1 })
+      .then(res=>{
+          row.terminer = 1;
+          console.log(res)
+        })
+        .catch(err=>{
+          console.log(err)
+        })
+    }
+  }
   
   const doneBtn = (e)=>{
-    if(e.row.adjusted == 1){
-      return (<img className="gear-icon" src="/icons/checkNo.png" onClick={()=>openNewTab('/FAB?ids=' + e.row.id)} /> )
+    console.log(e.row)
+    if(e.row.terminer == 0){
+      return (<img className="gear-icon" src="/icons/checkNo.png" onClick={()=>terminer(e.row)} /> )
     }else{
-      return (<img className="gear-icon" src="/icons/checkNo.png" /> )
+      return (<img className="gear-icon" src="/icons/checkYes.png" /> )
     }
   }
   
@@ -76,7 +92,9 @@ export default function PharmacieACPList({ search, searchArgs }) {
                 patient: pres.Patient.nom + ' ' + pres.Patient.prenom,
                 protocole: (pres.Protocole != undefined ? pres.Protocole.protocole : null),
                 validation: prod.validation,
-                adjusted: prod.adjusted
+                adjusted: prod.adjusted,
+                liberer: prod.liberer,
+                terminer: prod.terminer
               }
               setConstData(prev=>[ ...prev, obj])
               setRows(prev=>[ ...prev, obj])
@@ -101,13 +119,13 @@ export default function PharmacieACPList({ search, searchArgs }) {
     console.log(row)
     switch (unite){
       case 'mg/kg':
-        return parseInt(row.dose * patient.poids).toFixed(2);
+        return parseFloat(row.dose * patient.poids).toFixed(2);
       case 'mg':
-        return parseInt(row.dose).toFixed(2);
+        return parseFloat(row.dose).toFixed(2);
       case 'mg/m²':
-        return parseInt(row.dose * patient.surfCorp).toFixed(2);
+        return parseFloat(row.dose * patient.surfCorp).toFixed(2);
       case 'AUC':
-        return parseInt(row.dose * (patient.clairance + 25)).toFixed(2) ;
+        return parseFloat(row.dose * (patient.clairance + 25)).toFixed(2) ;
       default:
         return '-';
     }
@@ -172,7 +190,7 @@ export default function PharmacieACPList({ search, searchArgs }) {
             },
           }}
           pageSizeOptions={[5, 10, 25, 50, 100]}
-          checkboxSelection
+          // checkboxSelection
           className="main-table"
           disableRowSelectionOnClick
           onRowSelectionModelChange={(ids)=>{

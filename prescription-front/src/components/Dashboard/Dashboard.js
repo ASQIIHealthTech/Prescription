@@ -9,6 +9,7 @@ import Prescription from './Prescription/Prescription'
 import axios from 'axios'
 import PharmacienBody from './Pharmacien/PharmacienBody'
 import AddProtocole from './Admin/AddProtocole';
+import Fiche from './Prescription/Fiche'
 
 export function Dashboard({ path }){
     const navigate = useNavigate()
@@ -40,6 +41,8 @@ export function Dashboard({ path }){
                     return (<Planning patientId={patientId} />);
                 case 'prescription':
                     return (<Prescription user={user} presId={presId} />);
+                case 'fiche':
+                    return (<Fiche user={user} presId={presId} />);
                 case 'addProtocole':
                     return (<AddProtocole />);
                 default:
@@ -51,6 +54,8 @@ export function Dashboard({ path }){
                     return (<PharmacienBody />);
                 case 'prescription':
                     return (<Prescription user={user} presId={presId} />);
+                case 'planning':
+                    return (<Planning patientId={patientId} />);
             }
         }
     }

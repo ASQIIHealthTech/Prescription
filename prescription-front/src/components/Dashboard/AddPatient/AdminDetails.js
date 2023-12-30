@@ -14,6 +14,7 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
   const [clairance, setClairance] = useState(0);
   let [formData, setFormData] = useState({
     DMI: 0,
+    index: 0,
     nom: "",
     prenom: "",
     sexe: "",
@@ -135,6 +136,15 @@ export default function AdminDetails({ setAddingPatient, handleNext }) {
           <input
             onChange={changeField}
             field="DMI"
+            type="number"
+            className="main-input"
+          />
+        </div>
+        <div className="field">
+          <label className="main-label">Index</label>
+          <input
+            onChange={changeField}
+            field="index"
             type="number"
             className="main-input"
           />

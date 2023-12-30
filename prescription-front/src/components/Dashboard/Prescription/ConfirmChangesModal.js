@@ -34,6 +34,14 @@ export default function ConfirmChangesModal({ setConfirmChanges, cure, refreshDa
         setOpen(false);
     }
 
+    const handleKeyPress = (e) => {
+      // Check if Enter key is pressed
+      if (e.key === 'Enter') {
+        // Call the function for button click
+        confirm();
+      }
+    };
+
   return (
     <div className="modal-container">
         {/* <Snackbar open={open} autoHideDuration={6000} onClose={handleAlertClose} >
@@ -46,7 +54,7 @@ export default function ConfirmChangesModal({ setConfirmChanges, cure, refreshDa
         <label className='main-label'>Pour confirmer l'enregistrement , veuillez entrer votre mot de passe : </label>
         <div className='field'>
             <label className='main-label'>Mot De Passe</label>
-            <input className='main-input' type='password' ref={passRef} />
+            <input className='main-input' type='password' onKeyDown={handleKeyPress} ref={passRef} />
         </div>
         <div className="btn-container">
           <button className="main-btn" onClick={()=>setConfirmChanges(false)}>Annuler</button>

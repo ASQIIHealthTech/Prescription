@@ -9,7 +9,11 @@ const Patient = sequelize.define('Patient', {
   },
   DMI: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
+  },
+  index: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
   },
   nom: {
     type: DataTypes.STRING,

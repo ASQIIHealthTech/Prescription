@@ -7,64 +7,92 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-export default function FractionTable({ data, adaptedDose, flacons, setFlacons }) {
-  let [lowestFlac, setLowestFlac] = React.useState({});
+function ccyFormat(num) {
+  return `${num.toFixed(2)}`;
+}
+
+export default function FractionTable({ data, adaptedDose, flacons }) {
   let [totalDose, setTotalDose] = React.useState(0);
   let [totalVolume, setTotalVolume] = React.useState(0);
-  let [diff, setDiff] = React.useState(adaptedDose - totalDose);
-
+  let [loading, setLoading] = React.useState(true);
+  let [fractionDose, setFractionDose] = React.useState(0);
+  console.log(fractionDose)
+  
   React.useEffect(() => {
+    calculateTotal();
+    if(flacons.length > 0){
+      setTimeout( ()=>{
+        setLoading(false);
+        calculateTotal();
+      }, 200)
+    }
+  }, [flacons])
+
+  const calculateTotal = ()=>{
     let dose = 0;
     let volume = 0;
-    
-    let lowFlac = flacons[0];
+
     flacons.forEach((flac, i)=>{
       dose += flac.dosage * flac.quantity; 
-      volume += (flac.dosage / 10) * flac.quantity; 
-      if(lowFlac.dosage > flac.dosage){
-        lowFlac = flacons[i];
-      }
-      setLowestFlac(flac);
+      volume += flac.volume * flac.quantity; 
     })
     setTotalDose(dose)
     setTotalVolume(volume)
+    setFractionDose( (getAdjustedDose(adaptedDose) - dose) );
+    if(flacons.length > 0 && (getAdjustedDose(adaptedDose) - dose) > 0){
+      flacons[0].fracQuantity = 1;
+      flacons[0].fraction = ( ( (getAdjustedDose(adaptedDose) - dose) * 100) / flacons[0].dosage ) / 100;
+      console.log(flacons[0].fraction)
+    }
+  }
 
-    console.log(adaptedDose, dose)
-    setDiff((adaptedDose - dose).toFixed(2));
-  }, [flacons])
+  const changeNumber = (e, flac, i)=>{
+    let value = e.target.value
+    flac.fracQuantity = parseInt(value)
+    calculateTotal()
+  }
 
   const getAdjustedDose = (num)=>{
-    const val = Math.round(num / 0.2) * 0.2;
+    const val = Math.round(num * 2) / 2;
     return val.toFixed(2);
   }
 
-  return (
-    <TableContainer className='fractionTable' component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Spécialité</TableCell>
-            <TableCell align="right">Dosage</TableCell>
-            <TableCell align="right">Dose</TableCell>
-            <TableCell align="right">Volume</TableCell>
-            <TableCell align="right">Volume Corrigé</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-            <TableRow
-                key={0}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-                <TableCell component="th" scope="row">
-                {lowestFlac.name} 
-                </TableCell>
-                <TableCell align="right">{lowestFlac.dosage}  mg</TableCell>
-                <TableCell align="right">{( getAdjustedDose(adaptedDose) - totalDose ).toFixed(2)} mg</TableCell>
-                <TableCell align="right">{(diff/10).toFixed(2)} ml</TableCell>
-                <TableCell align="right">{( (getAdjustedDose(adaptedDose) - totalDose)/10 ).toFixed(2)} ml</TableCell>
+  if(!loading){
+    return (
+      <TableContainer className='repartitionTable' component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="spanning table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Spécialité</TableCell>
+              <TableCell align="right">Dosage</TableCell>
+              <TableCell align="right">Quantité</TableCell>
+              <TableCell align="right">Dose</TableCell>
+              <TableCell align="right">Volume unitaire</TableCell>
+              <TableCell align="right">Volume prélever</TableCell>
             </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+          </TableHead>
+          <TableBody>
+            {
+              !loading && flacons.map((flac, i)=>(
+                <TableRow key={i}>
+                    <TableCell align="left">{flac.name}</TableCell>
+                    <TableCell align="right">{flac.dosage} mg</TableCell>
+                    <TableCell align="right"><input disabled={true} type='number' value={ (fractionDose > 0 && i==0) ? 1 : (flac.fracQuantity)} onChange={(e)=>changeNumber(e, flac, i)} className='main-input' /></TableCell>
+                    <TableCell align="right">{flac.dosage} mg</TableCell>
+                    <TableCell align="right">{flac.volume} ml</TableCell>
+                    <TableCell align="right">{flac.volume * flac.fracQuantity} ml</TableCell>
+                </TableRow>
+              ))
+            }
+            <TableRow>
+              <TableCell colSpan={3}>Total</TableCell>
+              <TableCell align="right">{( fractionDose ).toFixed(2)} mg</TableCell>
+              <TableCell colSpan={1}></TableCell>
+              <TableCell align="right">{( (flacons[0].volume * fractionDose) / flacons[0].dosage  ).toFixed(2)} ml</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  }
 }

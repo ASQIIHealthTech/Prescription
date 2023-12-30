@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useSearchParams } from "react-router-dom"
+import { Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import CureList from '../AddPrescription/CureList'
 import axios from 'axios';
 import ProductsList from "./ProductsList";
@@ -8,6 +8,7 @@ import { jsPDF } from "jspdf";
 import ConfirmChangesModal from "./ConfirmChangesModal";
 
 export default function Prescription({user}){
+    const navigate = useNavigate();
     const { presId } = useParams();
     const [params] = useSearchParams();
     let [loading, setLoading] = useState(true);
@@ -152,6 +153,11 @@ export default function Prescription({user}){
 
         let surfCorp = getSurfCorp(data.Patient.poids, data.Patient.taille);
 
+        //limit to 2
+        if(surfCorp > 2){
+            surfCorp = 2;
+        }
+
         if(type == 'surfCorp'){
             surfCorp = value;
         }
@@ -187,26 +193,26 @@ export default function Prescription({user}){
                         <label className="field-detail">{ data.Patient.sexe }</label>
                     </div>
                     <div className="field">
-                        <label className="main-label">Age: </label>
-                        <label className="field-detail">{ getAge(data.Patient.birthDate) } ANS</label>
+                        <label className="main-label">DDN: </label>
+                        <label className="field-detail">{data.Patient.birthDate + ' (' + getAge(data.Patient.birthDate)  } ANS)</label>
                     </div>
                     <div className="field">
                         <label className="main-label">Poids: </label>
-                        <input type="number" className="main-input" onBlur={(e)=>changePatientData(e, 'poids')} defaultValue={data.Patient.poids} />
+                        <input type="number" disabled={user.type != 'medecin'} className="main-input" onBlur={(e)=>changePatientData(e, 'poids')} defaultValue={data.Patient.poids} />
                     </div>
                 </div>
                 <div className="field-row">
                     <div className="field">
                         <label className="main-label">Taille: </label>
-                        <input type="number" className="main-input" onBlur={(e)=>changePatientData(e, 'taille')} defaultValue={data.Patient.taille} />
+                        <input type="number" disabled={user.type != 'medecin'} className="main-input" onBlur={(e)=>changePatientData(e, 'taille')} defaultValue={data.Patient.taille} />
                     </div>
                     <div className="field">
                         <label className="main-label">Créatinine: </label>
-                        <input type="number" className="main-input" onBlur={(e)=>changePatientData(e, 'creatinine')} defaultValue={data.Patient.creatinine} />
+                        <input type="number" disabled={user.type != 'medecin'} className="main-input" onBlur={(e)=>changePatientData(e, 'creatinine')} defaultValue={data.Patient.creatinine} />
                     </div>
                     <div className="field">
                         <label className="main-label">Formule: </label>
-                        <select name="formuleClair" id="formuleClair" className="main-input" onChange={(e)=>changePatientData(e, 'formuleClair')} defaultValue={data.Patient.formuleClair}>
+                        <select disabled={user.type != 'medecin'} name="formuleClair" id="formuleClair" className="main-input" onChange={(e)=>changePatientData(e, 'formuleClair')} defaultValue={data.Patient.formuleClair}>
                             <option value=""></option>
                             <option value="mdrd">MDRD</option>
                             <option value="cockroft">Cockroft</option>
@@ -216,11 +222,11 @@ export default function Prescription({user}){
                 <div className="field-row">
                     <div className="field">
                         <label className="main-label">Surface Corporelle: </label>
-                        <input type="number" ref={surfCorpRef} className="main-input" onBlur={(e)=>changePatientData(e, 'surfCorp')} defaultValue={data.Patient.surfCorp} />
+                        <input disabled={user.type != 'medecin'} type="number" ref={surfCorpRef} className="main-input" onBlur={(e)=>changePatientData(e, 'surfCorp')} defaultValue={data.Patient.surfCorp} />
                     </div>
                     <div className="field clcr-field">
                         <label className="main-label">Clcr: </label>
-                        <label className="field-detail" ref={clcrRef} >{data.Patient.clairance} ml/m</label>
+                        <label disabled={user.type != 'medecin'} className="field-detail" ref={clcrRef} >{data.Patient.clairance} ml/m</label>
                     </div>
                 </div>
             </div>
@@ -233,7 +239,7 @@ export default function Prescription({user}){
                     </div>
                     <div className="field">
                         <label className="main-label">Date début cure {selectedCure + 1 } : </label>
-                        <input type="date" className="main-input" onChange={changeCureDate} value={data.Cures[selectedCure].startDate} />
+                        <input type="date" disabled={user.type != 'medecin'} className="main-input" onChange={changeCureDate} value={data.Cures[selectedCure].startDate} />
                     </div>
                     <div className="field">
                         <label className="main-label">Status : </label>
@@ -283,12 +289,18 @@ export default function Prescription({user}){
                 <h1>PRODUITS (CURE {selectedCure+1})</h1>
                 <button className="main-btn save-btn" id="saveBtn" onClick={()=>setConfirmChanges(true)}>Enregistrer</button>
                 {/* <button className="main-btn validate-all-btn" onClick={()=>setValidateAll(true)}>Valider Tous Les Produits</button> */}
-                <Fab className="pdf-btn" color="2663EE" aria-label="add" onClick={()=>exportPDF()}>
-                    <img src="/icons/pdf.svg" alt="+" />
-                </Fab>
-                <Fab className="plus-btn" color="2663EE" aria-label="add" onClick={()=>console.log('CLICK')}>
-                    <img src="/icons/plus.png" alt="+" />
-                </Fab>
+                {
+                    user.type == 'medecin' && (
+                        <>
+                            <Fab className="pdf-btn" color="2663EE" aria-label="add" onClick={()=>navigate('/fiche/'+presId)}>
+                                <img src="/icons/pdf.svg" alt="+" />
+                            </Fab>
+                            <Fab className="plus-btn" color="2663EE" aria-label="add" onClick={()=>console.log('CLICK')}>
+                                <img src="/icons/plus.png" alt="+" />
+                            </Fab>
+                        </>
+                    )
+                }
             </div>
             <ProductsList user={user} rows={rows} setRows={setRows} products={data.Cures[selectedCure].Products} cure={data.Cures[selectedCure]} patient={data.Patient} validateAll={validateAll} setValidateAll={setValidateAll} />
         </div>

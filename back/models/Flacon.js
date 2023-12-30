@@ -31,6 +31,10 @@ const Flacon = sequelize.define('Flacon', {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  fracQuantity: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   
 });
 
