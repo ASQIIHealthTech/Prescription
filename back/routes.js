@@ -374,7 +374,8 @@ router.post('/addPrescriptionParent', async (req,res)=>{
     const protocoles = await Protocole.findAll({
         where: {
             parent: data.parent
-        }
+        },
+        order: [ [ 'id', 'ASC' ]]
     })
     
     const parentProtocole = await ParentProtocole.create({

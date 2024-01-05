@@ -92,7 +92,8 @@ body {
   color: white;
 }
 
-.percentage-input-container{
+.percentage-input-container, .kg-input-container, .cm-input-container, .m2-input-container,
+.umol-input-container{
     display: inline-block;
     position: relative;
 }
@@ -110,6 +111,70 @@ body {
     for arrow buttons will appear to the right of number inputs */
 .percentage-input-container:hover::after,
 .percentage-input-container:focus-within::after {
+  right: 1.5em;
+}
+
+.kg-input-container::after {
+  content: 'kg';
+  position: absolute;
+  top: 7px;
+  right: .5em;
+  transition: all .05s ease-in-out;
+  color: #2874E5 !important;
+}
+
+/* move unit more to the left on hover or focus within
+    for arrow buttons will appear to the right of number inputs */
+.kg-input-container:hover::after,
+.kg-input-container:focus-within::after {
+  right: 1.5em;
+}
+
+.cm-input-container::after {
+  content: 'cm';
+  position: absolute;
+  top: 7px;
+  right: .5em;
+  transition: all .05s ease-in-out;
+  color: #2874E5 !important;
+}
+
+/* move unit more to the left on hover or focus within
+    for arrow buttons will appear to the right of number inputs */
+.cm-input-container:hover::after,
+.cm-input-container:focus-within::after {
+  right: 1.5em;
+}
+
+.m2-input-container::after {
+  content: 'm²';
+  position: absolute;
+  top: 7px;
+  right: .5em;
+  transition: all .05s ease-in-out;
+  color: #2874E5 !important;
+}
+
+/* move unit more to the left on hover or focus within
+    for arrow buttons will appear to the right of number inputs */
+.m2-input-container:hover::after,
+.m2-input-container:focus-within::after {
+  right: 1.5em;
+}
+
+.umol-input-container::after {
+  content: 'µmol/L';
+  position: absolute;
+  top: 7px;
+  right: .5em;
+  transition: all .05s ease-in-out;
+  color: #2874E5 !important;
+}
+
+/* move unit more to the left on hover or focus within
+    for arrow buttons will appear to the right of number inputs */
+.umol-input-container:hover::after,
+.umol-input-container:focus-within::after {
   right: 1.5em;
 }
 

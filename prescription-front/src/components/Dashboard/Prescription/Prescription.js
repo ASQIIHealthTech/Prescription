@@ -21,6 +21,14 @@ export default function Prescription({user}){
     let clcrRef = useRef(null);
     let surfCorpRef = useRef(null);
 
+    useEffect(() => {
+        // Prompt confirmation when reload page is triggered
+        window.onbeforeunload = () => { return "" };
+            
+        // Unmount the window.onbeforeunload event
+        return () => { window.onbeforeunload = null };
+      }, []);
+      
     const refreshData = ()=>{
         setTimeout(()=>{
             axios.post(process.env.REACT_APP_SERVER_URL + '/getPrescription', { presId })
@@ -30,12 +38,6 @@ export default function Prescription({user}){
             })
         }, 500 )
     }
-
-    const handleEnter = (event) => {
-        if (event.key === 'Enter') {
-          handleLogin();
-        }
-    };
 
     useEffect(()=>{
         if(params.get('cure')){
@@ -118,18 +120,6 @@ export default function Prescription({user}){
             })
     }
 
-    const exportPDF = async () => {
-        const pdf = new jsPDF({
-            orientation: "landscape",
-            compress: true,
-            format: [1760, 500], //Extra space at the end
-        });
-        const data = await document.querySelector("#toExportPDF");
-        pdf.html(data).then(() => {
-          pdf.save("shipping_label.pdf");
-        });
-      };
-
     const changeCommentaire = (e)=>{
         let commentaire = e.target.value;
         setData({
@@ -198,17 +188,23 @@ export default function Prescription({user}){
                     </div>
                     <div className="field">
                         <label className="main-label">Poids: </label>
-                        <input type="number" disabled={user.type != 'medecin'} className="main-input" onBlur={(e)=>changePatientData(e, 'poids')} defaultValue={data.Patient.poids} />
+                        <div className='kg-input-container'>
+                            <input type="number" disabled={user.type != 'medecin'} className="main-input " onChange={(e)=>changePatientData(e, 'poids')} defaultValue={data.Patient.poids} />
+                        </div>
                     </div>
                 </div>
                 <div className="field-row">
                     <div className="field">
                         <label className="main-label">Taille: </label>
-                        <input type="number" disabled={user.type != 'medecin'} className="main-input" onBlur={(e)=>changePatientData(e, 'taille')} defaultValue={data.Patient.taille} />
+                        <div className='cm-input-container'>
+                            <input type="number" disabled={user.type != 'medecin'} className="main-input" onChange={(e)=>changePatientData(e, 'taille')} defaultValue={data.Patient.taille} />
+                        </div>
                     </div>
                     <div className="field">
                         <label className="main-label">Créatinine: </label>
-                        <input type="number" disabled={user.type != 'medecin'} className="main-input" onBlur={(e)=>changePatientData(e, 'creatinine')} defaultValue={data.Patient.creatinine} />
+                        <div className='umol-input-container'>
+                            <input type="number" disabled={user.type != 'medecin'} className="main-input" onBlur={(e)=>changePatientData(e, 'creatinine')} defaultValue={data.Patient.creatinine} />
+                        </div>
                     </div>
                     <div className="field">
                         <label className="main-label">Formule: </label>
@@ -222,11 +218,13 @@ export default function Prescription({user}){
                 <div className="field-row">
                     <div className="field">
                         <label className="main-label">Surface Corporelle: </label>
-                        <input disabled={user.type != 'medecin'} type="number" ref={surfCorpRef} className="main-input" onBlur={(e)=>changePatientData(e, 'surfCorp')} defaultValue={data.Patient.surfCorp} />
+                        <div className='m2-input-container'>
+                            <input disabled={user.type != 'medecin'} type="number" ref={surfCorpRef} className="main-input" onBlur={(e)=>changePatientData(e, 'surfCorp')} defaultValue={data.Patient.surfCorp} />
+                        </div>
                     </div>
                     <div className="field clcr-field">
                         <label className="main-label">Clcr: </label>
-                        <label disabled={user.type != 'medecin'} className="field-detail" ref={clcrRef} >{data.Patient.clairance} ml/m</label>
+                        <label disabled={user.type != 'medecin'} className="field-detail" ref={clcrRef} >{data.Patient.clairance} ml/min</label>
                     </div>
                 </div>
             </div>
@@ -240,6 +238,7 @@ export default function Prescription({user}){
                     <div className="field">
                         <label className="main-label">Date début cure {selectedCure + 1 } : </label>
                         <input type="date" disabled={user.type != 'medecin'} className="main-input" onChange={changeCureDate} value={data.Cures[selectedCure].startDate} />
+                        <label className="main-label day-label">{new Intl.DateTimeFormat('fr-FR', { weekday: 'long' }).format(new Date(data.Cures[selectedCure].startDate))}</label>
                     </div>
                     <div className="field">
                         <label className="main-label">Status : </label>

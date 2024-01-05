@@ -2,11 +2,5 @@
 /prescription-front/.env
 /back/node_modules
 /back/.env
-presfront.tar
-presImage.tar
+imagePrescription.tar
 presDB.sql
-presback.tar
-presAddProt.tar
-presUp.tar
-presUpN.tar
-presUpreac.tar

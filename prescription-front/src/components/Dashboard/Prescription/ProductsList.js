@@ -19,15 +19,6 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
     return moment.duration(start.diff(end)).asDays();
   }
 
-  useEffect(() => {
-    // Prompt confirmation when reload page is triggered
-    console.log(products)
-    window.onbeforeunload = () => { return "" };
-        
-    // Unmount the window.onbeforeunload event
-    return () => { window.onbeforeunload = null };
-  }, []);
-
   useEffect(()=>{
     let groupedData = [];
     let firstDate = cure.startDate;
