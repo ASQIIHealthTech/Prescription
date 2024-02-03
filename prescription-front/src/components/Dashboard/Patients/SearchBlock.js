@@ -21,6 +21,10 @@ export default function SearchBlock({ searchArgs, setSearch }){
                     <input onChange={addSearchArg} field="DMI" type="number" className="main-input" />
                 </div>
                 <div className="filter">
+                    <label className="main-label">Index</label>
+                    <input onChange={addSearchArg} field="index" type="number" className="main-input" />
+                </div>
+                <div className="filter">
                     <label className="main-label">Nom</label>
                     <input onChange={addSearchArg} field="nom" type="text" className="main-input" />
                 </div>

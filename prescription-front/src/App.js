@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Login } from './components/Login/Login'
 import { Dashboard } from './components/Dashboard/Dashboard'
+import Test from './components/Login/Test'
 import FAB from './components/Dashboard/Pharmacien/FAB';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -22,6 +23,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/test" element={<Test />} />
           {/* MEDECIN */}
           <Route path="/dashboard" element={<Dashboard path={'patients'} />} />
           <Route path="/prescription/:presId" element={<Dashboard path={'prescription'} />} />

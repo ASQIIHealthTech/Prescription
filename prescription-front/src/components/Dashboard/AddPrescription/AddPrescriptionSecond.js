@@ -108,7 +108,7 @@ export default function AddPrescriptionSecond({ patient, prescriptionData, setPr
     return(
         <>
             <div className="prescription-second">
-                <div className="row">
+                {/* <div className="row">
                     <label className="main-label">Primitif : </label>
                     <select onChange={changeData} value={prescriptionData.organe} name="organe" id="organe" className="main-input">
                         <option value=""></option>
@@ -134,7 +134,7 @@ export default function AddPrescriptionSecond({ patient, prescriptionData, setPr
                             } 
                         })}
                     </select>
-                </div>
+                </div> */}
                 <div className="row">
                     <label className="main-label">Protocole : </label>
                     <select onChange={changeData} value={prescriptionData.protocole} name="protocole" id="Protocole" className="main-input">

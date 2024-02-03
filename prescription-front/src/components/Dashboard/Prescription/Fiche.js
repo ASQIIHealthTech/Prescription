@@ -1,12 +1,16 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import moment from 'moment';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import ProductsList from "./ProductsList";
 
 export default function Fiche ({user}){
+    const navigate = useNavigate();
     const { presId } = useParams();
+    const [Params, setParams] = useSearchParams();
     let [data, setData] = useState([]);
     let [loading, setLoading] = useState(true);
+    let [rows, setRows] = useState([]);
 
     let today = moment().format('YYYY-MM-DD');
 
@@ -29,6 +33,10 @@ export default function Fiche ({user}){
       };
 
     useEffect(()=>{
+        console.log(Params.get("selectedCure"))
+        if(!Params || !Params.get("selectedCure") ){
+            navigate('/Dashboard')
+        }
         axios.post(process.env.REACT_APP_SERVER_URL + '/getPrescription', { presId })
         .then((res)=>{
             setData(res.data)
@@ -52,8 +60,8 @@ export default function Fiche ({user}){
                     <br></br>
                     <label>Creatinine: <b>{data.Patient.creatinine}</b>  |  Formule: <b>{data.Patient.formuleClair}</b>  |  Clairance de la créatinine: <b>{data.Patient.clairance} ml/min</b> </label>
                     <h3>Détails du traitements :</h3>
-                    <label>Primitif: <b>TBF</b></label>
-                    <br></br>
+                    {/* <label>Primitif: <b>TBF</b></label> */}
+                    {/* <br></br> */}
                     <label>Nom du Protocole: <b>{data.Protocole.protocole}</b></label>
                     <br></br>
                     <label>Intercure: <b>{data.Protocole.intercure} jours</b></label>
@@ -61,6 +69,9 @@ export default function Fiche ({user}){
                     <label>Nombre de cures: <b>{data.nbrCures}</b></label>
                     <br></br>
                     <label>Date Debut traitement: <b>{data.startDate}</b></label>
+                    <div className="fiche-list">
+                        <ProductsList user={user} rows={rows} setRows={setRows} products={data.Cures[0].Products} cure={data.Cures[Params.get("selectedCure")]} patient={data.Patient} fiche={true} />
+                    </div>
                 </div>
             </div>
         )

@@ -138,7 +138,7 @@ export default function PharmacieProductsList({ search, searchArgs }) {
           },
         }}
         pageSizeOptions={[5, 10, 25, 50, 100]}
-        checkboxSelection
+        // checkboxSelection
         className='main-table'
       />
   ); }

@@ -39,9 +39,7 @@ export default function AddPrescriptionFirst({ patient, prescriptionData, setPre
             <div className="prescription-details">
                 <div className="row">
                     <label className="main-label">Nom du Prescripteur : </label>
-                    <select onChange={changeData} value={prescriptionData.prescripteur} name="prescripteur" id="prescripteur" className="main-input">
-                        <option value={user.name}>{user.name}</option>
-                    </select>
+                    <input onChange={changeData} defaultValue={user.name} className="main-input" type="text" name="prescripteur" id="prescripteur" />
                 </div>
                 <div className="row">
                     <label className="main-label">Date de la prescription : </label>

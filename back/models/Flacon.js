@@ -35,6 +35,10 @@ const Flacon = sequelize.define('Flacon', {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  fraction: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
   
 });
 

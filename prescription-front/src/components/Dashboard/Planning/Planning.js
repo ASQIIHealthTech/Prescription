@@ -15,6 +15,7 @@ export default function Planning({ patientId }) {
     axios
       .post(process.env.REACT_APP_SERVER_URL + "/getPlanning", { patientId })
       .then((res) => {
+        console.log(res.data)
         setData(res.data[0]);
         setPatient(res.data[1]);
         setLoading(false);
@@ -171,7 +172,7 @@ export function ParentPrescription({ pres, index, data }){
           Groupe Prescriptions :{" "}
         </label>
         <label className="label2">
-          Protocole Parent: {pres?.Protocole?.parent}
+          Protocole Parent: {pres?.Protocole?.parent} - {pres?.startDate}
         </label>
       </div>
     </div>
@@ -193,6 +194,7 @@ export function Prescription({ pres, index, parent }){
       element.classList.toggle('shown')
       if(element.childNodes[0].shown){
         //hide products if shown
+        console.log(element)
         element.childNodes[0].click()
       }
     })
@@ -209,9 +211,16 @@ export function Prescription({ pres, index, parent }){
     navigate('/prescription/'+pres);
   }
 
+  const removePres = ()=>{
+
+  }
+
   return(
     <>
     <div key={index} id_parent={pres.id_parent} className={"block parent-block " + (parent ? 'pres-parent' : '')}>
+      <Fab title="Supprimer la prescription" color="2663EE" aria-label="add" className="removeBtn" onClick={()=>removePres()}>
+          <img src="/icons/trash.png" alt="+" />
+      </Fab>
       <img className="open-icon" onClick={(e)=>showCures(e, pres.id)} src="/icons/plus_blue.png" />
       <div onClick={()=>navigatePrescription(pres.id)} className="details">
         <img src="/icons/prescription.png" />
@@ -219,7 +228,7 @@ export function Prescription({ pres, index, parent }){
           Prescription-{index + 1} :{" "}
         </label>
         <label className="label2">
-          Protocole {pres?.Protocole?.protocole}
+          Protocole {pres?.Protocole?.protocole} - {pres?.startDate}
         </label>
       </div>
     </div>
@@ -313,7 +322,7 @@ export function Cure({ cure, presIndex, cureIndex, currentDay, setCurrentDay }){
   return(
     <>
     <div key={cureIndex} className="block child-block" pres={presIndex}>
-      <Fab title="Supprimer la cure" color="2663EE" aria-label="add" className="removeCureBtn" onClick={()=>addPres()}>
+      <Fab title="Supprimer la cure" color="2663EE" aria-label="add" className="removeBtn" onClick={()=>removeCure()}>
           <img src="/icons/trash.png" alt="+" />
       </Fab>
       <img className="open-icon" onClick={(e)=>showJours(e, cure.id)} shown={0} src="/icons/plus_blue.png" />

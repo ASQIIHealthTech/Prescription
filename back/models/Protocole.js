@@ -39,6 +39,10 @@ const Protocole = sequelize.define('Protocole', {
   parent: {
     type: DataTypes.STRING,
     allowNull: true,
+  },
+  ordre: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
   }
 });
 

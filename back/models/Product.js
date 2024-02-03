@@ -27,6 +27,10 @@ const Product = sequelize.define('Product', {
     type: DataTypes.DATEONLY,
     allowNull: false,
   },
+  heureAdmin: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   validation: {
     type: DataTypes.INTEGER,
     allowNull: false,

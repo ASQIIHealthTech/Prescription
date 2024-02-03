@@ -47,6 +47,7 @@ export default function ValidationList({ searchArgs, search }) {
   }
   
   const columns = [
+    { field: "index", headerName: "index", flex:1 },
     { field: "DMI", headerName: "DMI", flex:1 },
     { field: "nom", headerName: "Nom", flex:1 },
     { field: "prenom", headerName: "Prénom", flex:1 },

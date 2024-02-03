@@ -21,7 +21,11 @@ export default function CureList({ molecules, patient }) {
       case 'mg':
         return row.dose;
       case 'mg/m²':
-        return row.dose * patient.surfCorp;
+        let val = parseFloat(row.dose * patient.surfCorp).toFixed(2);
+        if(row && row.molecule == "Vincristine" && val > 2){
+          return 2;
+        }
+        return val;
       case 'AUC':
         return row.dose * (patient.clairance + 25) ;
       default:

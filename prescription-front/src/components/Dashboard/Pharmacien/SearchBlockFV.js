@@ -16,6 +16,10 @@ export default function SearchBlockFV({ searchArgs, setSearch }){
         <div className="search-block">
             <div className="filters">
                 <div className="filter">
+                    <label className="main-label">index</label>
+                    <input onChange={addSearchArg} field="index" type="number" className="main-input" />
+                </div>
+                <div className="filter">
                     <label className="main-label">DMI</label>
                     <input onChange={addSearchArg} field="DMI" type="number" className="main-input" />
                 </div>

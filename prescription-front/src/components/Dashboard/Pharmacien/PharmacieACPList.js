@@ -52,7 +52,8 @@ export default function PharmacieACPList({ search, searchArgs }) {
       axios.post(process.env.REACT_APP_SERVER_URL+'/setTerminer', { id: row.id, value: 1 })
       .then(res=>{
           row.terminer = 1;
-          console.log(res)
+          filterRows();
+          console.log(res, row)
         })
         .catch(err=>{
           console.log(err)
@@ -136,7 +137,6 @@ export default function PharmacieACPList({ search, searchArgs }) {
   }, [search])
 
   function filterRows(){
-    console.log(rows)
     if(Object.keys(searchArgs).length == 0){
       setRows(constData)
       return;

@@ -6,6 +6,7 @@ import ProductsList from "./ProductsList";
 import { CircularProgress, Fab } from "@mui/material";
 import { jsPDF } from "jspdf";
 import ConfirmChangesModal from "./ConfirmChangesModal";
+import AddProductModal from "./AddProductModal";
 
 export default function Prescription({user}){
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function Prescription({user}){
     let [data, setData] = useState([]);
     let [validateAll, setValidateAll] = useState(false);
     let [confirmChanges, setConfirmChanges] = useState(false);
+    let [addProd, setAddProd] = useState(0);
     let [rows, setRows] = useState([])
 
     let clcrRef = useRef(null);
@@ -157,7 +159,7 @@ export default function Prescription({user}){
             data.Patient.surfCorp = surfCorp
         }
         
-        clcrRef.current.innerHTML = getClairance() + ' ml/m'; 
+        clcrRef.current.innerHTML = getClairance() + ' ml/min'; 
         data.Patient.clairance = getClairance();
 
         axios.post(process.env.REACT_APP_SERVER_URL + '/changePatientData', { id: data.Patient.id, type, value, surfCorp, clairance: getClairance()})
@@ -167,6 +169,12 @@ export default function Prescription({user}){
             })
     }
 
+    const openFiche = ()=>{
+        if(confirm("Changes you made may not be saved.")){
+            navigate('/fiche/'+presId + "?selectedCure=" + selectedCure);
+        }
+    }
+
     if(loading){
         return <CircularProgress />;
     }
@@ -174,6 +182,7 @@ export default function Prescription({user}){
     return(
         <>
         {confirmChanges && <ConfirmChangesModal setConfirmChanges={setConfirmChanges} cure={rows} refreshData={refreshData} user={user} />}
+        {addProd == 1 && <AddProductModal setAddProd={setAddProd} data={data} selectedCure={selectedCure} refreshData={refreshData} />}
         <div className="prescription-details">
         <div className="patient">
                 <h1>PATIENT : { data.Patient.nom + ' ' + data.Patient.prenom }</h1>
@@ -291,10 +300,10 @@ export default function Prescription({user}){
                 {
                     user.type == 'medecin' && (
                         <>
-                            <Fab className="pdf-btn" color="2663EE" aria-label="add" onClick={()=>navigate('/fiche/'+presId)}>
+                            <Fab className="pdf-btn" color="2663EE" aria-label="add" onClick={()=>openFiche()}>
                                 <img src="/icons/pdf.svg" alt="+" />
                             </Fab>
-                            <Fab className="plus-btn" color="2663EE" aria-label="add" onClick={()=>console.log('CLICK')}>
+                            <Fab className="plus-btn" color="2663EE" aria-label="add" onClick={()=>setAddProd(1)}>
                                 <img src="/icons/plus.png" alt="+" />
                             </Fab>
                         </>

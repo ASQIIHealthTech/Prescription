@@ -57,10 +57,10 @@ export default function RepartitionTable({ data, adaptedDose, flacons, setFracti
           <TableRow>
             <TableCell>Spécialité</TableCell>
             <TableCell align="right">Dosage</TableCell>
+            <TableCell align="right">Volume unitaire</TableCell>
             <TableCell align="right">Quantité</TableCell>
             <TableCell align="right">Dose</TableCell>
-            <TableCell align="right">Volume unitaire</TableCell>
-            <TableCell align="right">Volume prélever</TableCell>
+            <TableCell align="right">Volume à prélever</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -69,17 +69,16 @@ export default function RepartitionTable({ data, adaptedDose, flacons, setFracti
               <TableRow key={0}>
                   <TableCell align="left">{flac.name}</TableCell>
                   <TableCell align="right">{flac.dosage} mg</TableCell>
-                  <TableCell align="right"><input disabled={data[2].liberer == 1} type='number' value={flac.quantity} onChange={(e)=>changeNumber(e, flac)} className='main-input' /></TableCell>
-                  <TableCell align="right">{flac.dosage} mg</TableCell>
                   <TableCell align="right">{flac.volume} ml</TableCell>
+                  <TableCell align="right"><input disabled={data[2].liberer == 1} type='number' value={flac.quantity} onChange={(e)=>changeNumber(e, flac)} className='main-input' /></TableCell>
+                  <TableCell align="right">{flac.dosage * flac.quantity} mg</TableCell>
                   <TableCell align="right">{flac.volume * flac.quantity} ml</TableCell>
               </TableRow>
             ))
           }
           <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell colSpan={4}>Total</TableCell>
             <TableCell align="right">{ccyFormat(totalDose)} mg</TableCell>
-            <TableCell colSpan={1}></TableCell>
             <TableCell align="right">{ccyFormat(totalVolume)} ml</TableCell>
           </TableRow>
         </TableBody>

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import RepartitionTable from './RepartitionTable';
 import FractionTable from './FractionTable';
 import PocheModal from "./PocheModal";
+import { CircularProgress } from '@mui/material';
 
 
 export default function AjustementModal({ setAjustement, ajustement, rows }) {
@@ -148,6 +149,7 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
         el.adjusted = 1;
       }
     }
+    setLoading(false);
     setAjustement(0);
   }
 
@@ -156,11 +158,12 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
     axios.post(process.env.REACT_APP_SERVER_URL+'/setLiberer', { id: data[2].id, value: 1 })
       .then(res=>{
         console.log(res)
+        setLoading(true);
+        submit();
       })
       .catch(err=>{
         console.log(err)
       })
-      setAjustement(0)
   }
 
   const volumeDillChanged = (e)=>{
@@ -191,11 +194,14 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
   
   const volumeSolvantChanged = (e)=>{
     let value = e.target.value;
-    setAjustementData({
-      ...ajustementData,
-      volume_solvant: parseInt(value)
-    })
-    console.log(ajustementData)
+    if(parseInt(value) > parseInt(ajustementData.volume_dillution) + 50 ){
+      return;
+    }else{
+      setAjustementData({
+        ...ajustementData,
+        volume_solvant: parseInt(value)
+      })
+    }
   }
 
   // const inputEmpty = ()=>{
@@ -203,8 +209,13 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
   //   return true
   // }
 
+  const concRange = ()=>{
+    let val = ( getAdjustedDose(getAdaptedDose()) / (( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) ) > (parseInt(ajustementData.volume_dillution) + 50) ? (parseInt(ajustementData.volume_dillution) + 50) : ( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) )) ).toFixed(2);
+    return val >= prepMolecule.concentration_min && val <= prepMolecule.concentration_max;
+  }
+
   if(!data || loading){
-    return '';
+    return <CircularProgress />;
   }else if(poche != 0){
     return <PocheModal poche={poche} prepMolecule={prepMolecule} setPoche={setPoche} setVehData={setVehData} vehData={vehData} getAdjustedDose={getAdjustedDose} getAdaptedDose={getAdaptedDose} />;
   }else{
@@ -319,7 +330,7 @@ export default function AjustementModal({ setAjustement, ajustement, rows }) {
               <div className='cc-container'>
                 <div className='main-cc'>
                   <label>Concentration: </label>
-                  <label className={'main-label'}>{( getAdjustedDose(getAdaptedDose()) / (( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) ) > (parseInt(ajustementData.volume_dillution) + 50) ? (parseInt(ajustementData.volume_dillution) + 50) : ( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) )) ).toFixed(2) } mg/ml </label>
+                  <label className={'main-label' + (concRange() ? ' conc-green' : ' conc-red')}>{( getAdjustedDose(getAdaptedDose()) / (( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) ) > (parseInt(ajustementData.volume_dillution) + 50) ? (parseInt(ajustementData.volume_dillution) + 50) : ( (parseFloat(volumePA) + parseFloat(ajustementData.volume_solvant)).toFixed(2) )) ).toFixed(2) } mg/ml </label>
                 </div>
                 <div className='margin-cc'>
                   <label>CC min: <b>{prepMolecule.concentration_min} mg/ml </b> - </label>

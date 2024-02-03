@@ -98,13 +98,18 @@ router.post('/signup', async (req,res)=>{
 router.post('/checkToken', async (req,res)=>{
     const { token } = req.body;
 
-    let data = jwt.verify(token, process.env.JWT_KEY)
-
-    if(data){
-        return res.status(200).send(data)
-    }else{
+    try{
+        let data = jwt.verify(token, process.env.JWT_KEY)
+    
+        if(data){
+            return res.status(200).send(data)
+        }else{
+            return res.sendStatus(400);
+        }
+    }catch{
         return res.sendStatus(400);
     }
+
 
 })
 
@@ -139,7 +144,7 @@ router.post('/deletePatient', async (req,res)=>{
 router.post('/getAllPatients', async (req,res)=>{
     try{
         const patients = await Patient.findAll({
-            attributes: ['id', 'matrimonial', 'DMI', 'nom', 'prenom', 'birthDate', 'sexe']
+            attributes: ['id','index', 'matrimonial', 'DMI', 'nom', 'prenom', 'birthDate', 'sexe']
         })
         return res.status(200).send(patients);
     }catch(err){
@@ -151,7 +156,7 @@ router.post('/getAllPatients', async (req,res)=>{
 router.post('/getAllPatientsWithPres', async (req,res)=>{
     try{
         const patients = await Patient.findAll({
-            attributes: ['id', 'matrimonial', 'DMI', 'nom', 'prenom', 'birthDate', 'sexe'],
+            attributes: ['id', 'index', 'matrimonial', 'DMI', 'nom', 'prenom', 'birthDate', 'sexe'],
             include: { all: true, nested: true }
         })
         return res.status(200).send(patients);
@@ -307,6 +312,43 @@ function getDateDifference(date1Str, date2Str) {
     //Difference in number of days
     return moment.duration(start.diff(end)).asDays();
 }
+
+
+router.post('/addProduct', async (req,res)=>{
+    const { molecule, cure, jours, molDate } = req.body;
+
+    const newMolecule = await Molecule.findOne({
+        where: {
+            molecule
+        }
+    })
+    
+    const newCure = await Cure.findOne({
+        where: {
+            id: cure
+        }
+    })
+
+    jours.forEach(async (key, jour) =>{
+        if(key==null){
+            return;
+        }
+        await Product.create({
+            id_cure: cure,
+            id_molecule: newMolecule.id,
+            name: newMolecule.molecule,
+            dose: newMolecule.dose,
+            startDate: addDaysToDate(newCure.startDate, jour - 1 ),
+            validation: 0,
+            adjusted: 0,
+            liberer: 0,
+            terminer: 0
+        })
+    })
+
+    res.sendStatus(200);
+
+})
 
 router.post('/addPrescription', async (req,res)=>{
     const { patientId, data } = req.body;
@@ -520,7 +562,7 @@ router.post('/updateCure', async (req,res)=>{
         cure.forEach(el=>{
             if(el){
                 el.forEach(prod=>{
-                    Product.update({ dose: prod.dose, validation: prod.validation, startDate: prod.startDate }, {
+                    Product.update({ dose: prod.dose, validation: prod.validation, startDate: prod.startDate, heureAdmin: prod.heureAdmin }, {
                         where:{
                             id: prod.id
                         }
@@ -661,12 +703,55 @@ router.post('/setLiberer', async(req,res)=>{
 
 router.post('/setTerminer', async(req,res)=>{
     const { id, value } = req.body;
-
-    let product = await Product.update({ terminer: value }, {
+    
+    let product = await Product.findOne({
         where: {    
             id
         }
     })
+
+    product.terminer = value;
+
+    await product.save();
+
+    let cure = await Cure.findOne({
+        where: {
+            id: product.id_cure
+        },
+        include: { all: true, nested: true }
+    })
+    
+    let prescription = await Prescription.findOne({
+        where: {
+            id: cure.id_prescription
+        },
+        include: { all: true, nested: true }
+    })
+
+    let done = true;
+    console.log(cure.Products)
+    cure.Products.forEach(prod =>{
+        if(prod.terminer == 0){
+            done = false;
+            console.log(111)
+        }
+    })
+    console.log(done)
+
+    if(done){
+        cure.state = 'Terminée';
+        await cure.save();
+        let j = 0;
+        prescription.Cures.forEach((el, index) => {
+            if(el.id == cure.id){
+                j = index; 
+            }
+        })
+        if(j < prescription.Cures.length-1){
+            prescription.Cures[j+1].state = 'En Cours';
+            prescription.save();
+        }
+    }
 
     res.status(200).send(product)
 })

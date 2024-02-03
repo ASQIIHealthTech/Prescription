@@ -96,27 +96,21 @@ export default function FAB({ user }){
         <div className="FAB-container">
             <div className="fiche">
                 <div className="row fab-header">
-                    <h2>Centre hospitalier</h2>
+                    <img src="ariana.png" height={100} />
                     <h1>FICHE DE FABRICATION</h1>
-                    <label>N° ordonnancier</label>
-                </div>
-                <div className="row fab-bg prod-details">
-                    <div className="field">
-                        <label className="main-label">Produit : </label>
-                        <label className="info-label">{data.name}</label>
-                    </div>
-                    <div className="field">
-                        <label className="main-label">Protocole : </label>
-                        <label className="info-label">{data.Cure.Prescription.Protocole.protocole}</label>
-                    </div>
+                    <label>N° ordonnancier: {data.id}</label>
                 </div>
                 <div className="patient-details">
                     <div className="patient fab-bg">
                         <h2>{patient.prenom + ' ' + patient.nom}</h2>
                         <div className="fields">
                             <div className="field">
-                                <label className="main-label">ID Patient : </label>
-                                <label className="info-label">{patient.id}</label>
+                                <label className="main-label">DMI : </label>
+                                <label className="info-label">{patient.DMI}</label>
+                            </div>
+                            <div className="field">
+                                <label className="main-label">Index : </label>
+                                <label className="info-label">{patient.index}</label>
                             </div>
                             <div className="field">
                                 <label className="main-label">DDN : </label>
@@ -125,6 +119,52 @@ export default function FAB({ user }){
                             <div className="field">
                                 <label className="main-label">Genre : </label>
                                 <label className="info-label">{patient.sexe}</label>
+                            </div>
+                            <div className="field">
+                                <label className="main-label">Poids : </label>
+                                <label className="info-label">{patient.poids} kg</label>
+                            </div>
+                            <div className="field">
+                                <label className="main-label">Taille : </label>
+                                <label className="info-label">{patient.taille} cm</label>
+                            </div>
+                            <div className="field">
+                                <label className="main-label">SC : </label>
+                                <label className="info-label">{patient.surfCorp} m²</label>
+                            </div>
+                            <div className="field">
+                                <label className="main-label">Creatinémie : </label>
+                                <label className="info-label">{patient.creatinine} µmol/L</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="admin fab-bg">
+                        <div className="fields">
+                            <div className="field">
+                                <label className="main-label">Produit : </label>
+                                <label className="info-label">{data.name}</label>
+                            </div>
+                            <div className="field">
+                                <label className="main-label">Protocole : </label>
+                                <label className="info-label">{data.Cure.Prescription.Protocole.protocole}</label>
+                            </div>
+                            <div className="field">
+                                <label className="main-label">Dose Prescrite : </label>
+                                <label className="info-label">{getAdaptedDose(data.Molecule.unite, data.dose)} mg</label>
+                            </div>
+                            <div className="field">
+                                <label className="main-label">Volume Final : </label>
+                                <label className="info-label">{volumeFinal} ml</label>
+                            </div>
+                            <div className="field">
+                                <label className="main-label">Concentration finale : </label>
+                                <label className="info-label">{
+                                    (getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal).toFixed(2) > prepMolecule.concentration_min && getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal).toFixed(2) < prepMolecule.concentration_max) ? (
+                                        <label className="info-label conc-info">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal) ).toFixed(2) } mg/ml</label>
+                                        ) : (
+                                        <label className="info-label conc-info alert">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal) ).toFixed(2) } mg/ml</label>
+                                    )}
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -144,60 +184,27 @@ export default function FAB({ user }){
                             </div>
                             <div className="field">
                                 <label className="main-label">Prescripteur : </label>
-                                <label className="info-label">DR Mghirbi</label>
+                                <label className="info-label">Nom medecin</label>
+                            </div>
+                            <div className="field">
+                                <label className="main-label">Validation : </label>
+                                <label className="info-label">Nom Pharmacien</label>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="row fab-bg patient-data">
-                    <div className="fields">
-                        <div className="field">
-                            <label className="main-label">Poids : </label>
-                            <label className="info-label">{patient.poids} kg</label>
+                    {/* <div className="admin fab-bg">
+                        <div className="fields">
+                            
                         </div>
-                        <div className="field">
-                            <label className="main-label">Taille : </label>
-                            <label className="info-label">{patient.taille} cm</label>
-                        </div>
-                        <div className="field">
-                            <label className="main-label">SC : </label>
-                            <label className="info-label">{patient.surfCorp} m²</label>
-                        </div>
-                        <div className="field">
-                            <label className="main-label">Creatinémie : </label>
-                            <label className="info-label">{patient.creatinine} µmol/L</label>
-                        </div>
-                    </div>
-                </div>
-                <div className="row fab-bg dose-data">
-                    <div className="fields">
-                        <div className="field">
-                            <label className="main-label">Dose Prescrite : </label>
-                            <label className="info-label">{getAdaptedDose(data.Molecule.unite, data.dose)} mg</label>
-                        </div>
-                        <div className="field">
-                            <label className="main-label">Volume Final : </label>
-                            <label className="info-label">{volumeFinal} ml</label>
-                        </div>
-                        <div className="field">
-                            <label className="main-label conc-label">Concentration finale : </label>
-                            {
-                                (getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal).toFixed(2) > prepMolecule.concentration_min && getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal).toFixed(2) < prepMolecule.concentration_max) ? (
-                                    <label className="info-label conc-info">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal) ).toFixed(2) } mg/ml</label>
-                                    ) : (
-                                    <label className="info-label conc-info alert">{(getAdaptedDose(data.Molecule.unite, data.dose) / parseInt(volumeFinal) ).toFixed(2) } mg/ml</label>
-                                )
-                            }
-                        </div>
-                    </div>
+                    </div> */}
                 </div>
                 <FABTable totalVolume={totalVolume} setTotalVolume={setTotalVolume} flacons={flacons} data={data} prepMolecule={prepMolecule} adaptedDose={getAdaptedDose(data.Molecule.unite, data.dose)} />
                 <div className="row fab-bg prep-data">
-                    <h2>Préparation</h2>
+                    {/* <h2>Préparation</h2> */}
                     <div className="fields">
                         <div className="field">
                             <label className="main-label">Véhicule : </label>
-                            <label className="info-label">{data.Ajustement.cond_final} | {data.Vehicule.volume} ml</label>
+                            <label className="info-label">{data.Ajustement.cond_final} | {data.Ajustement.volume_dillution} ml</label>
                         </div>
                         <div className="field">
                             <label className="main-label">Volume final : </label>
@@ -226,50 +233,37 @@ export default function FAB({ user }){
                             </div>
                         </div>
                     </div>
-                    <div className="fourF fab-bg">
+                    {/* <div className="fourF fab-bg">
                         <div className="Frow FborderL">
-                            <div className="field">
-                                <label className="main-label">Validation : </label>
-                                <label className="info-label">Nom Pharmacien</label>
-                            </div>
                             <div className="field">
                                 <label className="main-label">Preparation : </label>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="row fab-bg sticker-data">
                     <div className="section header-section">
                         <div className="field">
                             <label className="main-label">Centre Hospitalier : </label>
-                            <label className="info-label">adresse</label>
+                            <label className="info-label">Hôpital Abderrahmane MAMI</label>
                         </div>
                         <div className="field">
                             <label className="main-label">N° Ordonnancier : </label>
-                            <label className="info-label">adresse</label>
-                        </div>
-                    </div>
-                    <div className="fields">
-                        <div className="field">
-                            <label className="main-label">Prescripteur : Dr</label>
-                        </div>
-                        <div className="field">
-                            <label className="main-label"></label>
-                            <label className="info-label"></label>
-                        </div>
-                        <div className="field">
-                            <label className="main-label conc-label"> </label>
-                            <label className="info-label conc-info"></label>
+                            <label className="info-label">{data.id}</label>
                         </div>
                     </div>
                     <div className="fields border-bottom">
                         <div className="field">
-                            <label className="main-label">Mohammed mahmoud</label>
+                            <label className="main-label">Prescripteur : Dr Nom Medecin</label>
                         </div>
                         <div className="field">
-                            <label className="main-label">id_patient : </label>
-                            <label className="info-label">{patient.id}</label>
+                            <label className="main-label">DMI : </label>
+                            <label className="info-label">{patient.DMI}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Index : </label>
+                            <label className="info-label">{patient.index}</label>
                         </div>
                         <div className="field">
                             <label className="main-label conc-label">DDN : </label>
@@ -313,7 +307,7 @@ export default function FAB({ user }){
                             <label className="info-label">{data.startDate}  J{getDateDifference(data.Cure.startDate, data.startDate) + 1}</label>
                         </div>
                         <div className="field">
-                            <label className="main-label">De la cure n° : </label>
+                            <label className="main-label">N° de la cure : </label>
                             <label className="info-label">{data.Cure.name.split(' ')[1]}</label>
                         </div>
                     </div>
@@ -331,40 +325,31 @@ export default function FAB({ user }){
                             <label className="info-label">{preDate}</label>
                         </div>
                     </div>
-                    <h2 className="alert">Ne pas Avaler - Respectez les does prescrites - Uniquement sur ordonnance</h2>
+                    <h2 className="alert">Ne pas Avaler - Respectez les doses prescrites - Uniquement sur ordonnance</h2>
                 </div>
                 
                 <div className="row fab-bg sticker-data">
                     <div className="section header-section">
                         <div className="field">
                             <label className="main-label">Centre Hospitalier : </label>
-                            <label className="info-label">adresse</label>
+                            <label className="info-label">Hôpital Abderrahmane MAMI</label>
                         </div>
                         <div className="field">
                             <label className="main-label">N° Ordonnancier : </label>
-                            <label className="info-label">adresse</label>
-                        </div>
-                    </div>
-                    <div className="fields">
-                        <div className="field">
-                            <label className="main-label">Prescripteur : Dr</label>
-                        </div>
-                        <div className="field">
-                            <label className="main-label"></label>
-                            <label className="info-label"></label>
-                        </div>
-                        <div className="field">
-                            <label className="main-label conc-label"> </label>
-                            <label className="info-label conc-info"></label>
+                            <label className="info-label">{data.id}</label>
                         </div>
                     </div>
                     <div className="fields border-bottom">
                         <div className="field">
-                            <label className="main-label">Mohammed mahmoud</label>
+                            <label className="main-label">Prescripteur : Dr Nom Medecin</label>
                         </div>
                         <div className="field">
-                            <label className="main-label">id_patient : </label>
-                            <label className="info-label">{patient.id}</label>
+                            <label className="main-label">DMI : </label>
+                            <label className="info-label">{patient.DMI}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Index : </label>
+                            <label className="info-label">{patient.index}</label>
                         </div>
                         <div className="field">
                             <label className="main-label conc-label">DDN : </label>
@@ -426,40 +411,31 @@ export default function FAB({ user }){
                             <label className="info-label">{preDate}</label>
                         </div>
                     </div>
-                    <h2 className="alert">Ne pas Avaler - Respectez les does prescrites - Uniquement sur ordonnance</h2>
+                    <h2 className="alert">Ne pas Avaler - Respectez les doses prescrites - Uniquement sur ordonnance</h2>
                 </div>
                 
                 <div className="row fab-bg sticker-data">
                     <div className="section header-section">
                         <div className="field">
                             <label className="main-label">Centre Hospitalier : </label>
-                            <label className="info-label">adresse</label>
+                            <label className="info-label">Hôpital Abderrahmane MAMI</label>
                         </div>
                         <div className="field">
                             <label className="main-label">N° Ordonnancier : </label>
-                            <label className="info-label">adresse</label>
-                        </div>
-                    </div>
-                    <div className="fields">
-                        <div className="field">
-                            <label className="main-label">Prescripteur : Dr</label>
-                        </div>
-                        <div className="field">
-                            <label className="main-label"></label>
-                            <label className="info-label"></label>
-                        </div>
-                        <div className="field">
-                            <label className="main-label conc-label"> </label>
-                            <label className="info-label conc-info"></label>
+                            <label className="info-label">{data.id}</label>
                         </div>
                     </div>
                     <div className="fields border-bottom">
                         <div className="field">
-                            <label className="main-label">Mohammed mahmoud</label>
+                            <label className="main-label">Prescripteur : Dr Nom Medecin</label>
                         </div>
                         <div className="field">
-                            <label className="main-label">id_patient : </label>
-                            <label className="info-label">{patient.id}</label>
+                            <label className="main-label">DMI : </label>
+                            <label className="info-label">{patient.DMI}</label>
+                        </div>
+                        <div className="field">
+                            <label className="main-label">Index : </label>
+                            <label className="info-label">{patient.index}</label>
                         </div>
                         <div className="field">
                             <label className="main-label conc-label">DDN : </label>
@@ -521,7 +497,7 @@ export default function FAB({ user }){
                             <label className="info-label">{preDate}</label>
                         </div>
                     </div>
-                    <h2 className="alert">Ne pas Avaler - Respectez les does prescrites - Uniquement sur ordonnance</h2>
+                    <h2 className="alert">Ne pas Avaler - Respectez les doses prescrites - Uniquement sur ordonnance</h2>
                 </div>
             </div>
         </div>

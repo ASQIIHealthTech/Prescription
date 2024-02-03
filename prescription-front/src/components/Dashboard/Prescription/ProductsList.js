@@ -8,7 +8,7 @@ import Paper from '@mui/material/Paper';
 import { useEffect, useState, useRef } from 'react';
 import moment from 'moment';
 
-export default function ProductsList({ user, rows, setRows, products, cure, patient, validateAll, setValidateAll }) {
+export default function ProductsList({ user, rows, setRows, products, cure, patient, validateAll, setValidateAll, fiche }) {
   let [loading, setLoading] = useState(false);
 
   function getDateDifference(date1Str, date2Str) {
@@ -48,7 +48,7 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
     }
   }, [validateAll])
 
-  const getAdaptedDose = (unite, dose)=>{
+  const getAdaptedDose = (unite, dose, row)=>{
     let val = 0;
     switch (unite){
       case 'mg/kg':
@@ -56,7 +56,11 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
       case 'mg':
         return parseFloat(dose).toFixed(2);
       case 'mg/m²':
-        return parseFloat(dose * patient.surfCorp).toFixed(2);
+        let val = parseFloat(dose * patient.surfCorp).toFixed(2);
+        if(row && row.Molecule.molecule == "Vincristine" && val > 2){
+          return 2;
+        }
+        return val;
       case 'AUC':
         return parseFloat(dose * (patient.clairance + 25)).toFixed(2) ;
       default:
@@ -105,7 +109,7 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
       }
       return jour;
     });
-    document.getElementById("prod-adaptedDose-"+jourIndex+'-'+j).value = getAdaptedDose(changedRow.Molecule.unite, value);
+    document.getElementById("prod-adaptedDose-"+jourIndex+'-'+j).value = getAdaptedDose(changedRow.Molecule.unite, value, changedRow);
     console.log(value, changedRow.Molecule.dose, getPercentage(value, changedRow.Molecule.dose));
     document.getElementById("prod-percentage-"+jourIndex+'-'+j).value = getPercentage(value, changedRow.Molecule.dose);
     setRows(updatedData);
@@ -158,6 +162,20 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
 
   }
 
+  const changeHeureAdmin = (changedRow, value, jourIndex, j)=>{
+    console.log(11)
+    const updatedData = rows.map((jour, index) => {
+      if (index === jourIndex) {
+        const updatedJour = jour.map((row) =>
+          row === changedRow ? { ...row, heureAdmin: value } : row
+        );
+        return updatedJour;
+      }
+      return jour;
+    });
+    setRows(updatedData);
+  }
+
   return (
     <TableContainer className='productsList' id="toExportPDF" sx={{ height: 350 }} component={Paper}>
       <Table aria-label="simple table">
@@ -172,6 +190,8 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
             <TableCell align="left">Dose adaptée</TableCell>
             <TableCell align="left">Dose %</TableCell>
             <TableCell align="left">Validation</TableCell>
+            <TableCell align="left">durée du perfusion</TableCell>
+            <TableCell align="left">Heure d'administration</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -192,13 +212,15 @@ export default function ProductsList({ user, rows, setRows, products, cure, pati
                   <TableCell align="left"><label className={'date-controls prevent-selection' + (index == 1 ? ' date-controls-disabled' : '')} onClick={(e)=>changeDate(0, row, index, j)}>-</label> {row.startDate} <label className='date-controls prevent-selection' onClick={(e)=>changeDate(1, row, index, j)}>+</label></TableCell>
                   <TableCell align="left">{row.Molecule.molecule}</TableCell>
                   <TableCell align="left">{row.Molecule.dose + ' ' + row.Molecule.unite}</TableCell>
-                  <TableCell align="left">{getAdaptedDose(row.Molecule.unite, row.Molecule.dose) } mg</TableCell>
+                  <TableCell align="left">{getAdaptedDose(row.Molecule.unite, row.Molecule.dose, row) } mg</TableCell>
                   <TableCell align="left"><input id={"prod-dose-"+index+'-'+j} type='number' disabled={row.validation != 0} onChange={(e)=>changeDose(row, e.target.value, index, j)} value={row.dose} className='main-input' /></TableCell>
-                  <TableCell align="left"><input id={"prod-adaptedDose-"+index+'-'+j} type='number' disabled  value={getAdaptedDose(row.Molecule.unite, row.dose)} className='main-input' /></TableCell>
+                  <TableCell align="left"><input id={"prod-adaptedDose-"+index+'-'+j} type='number' disabled  value={getAdaptedDose(row.Molecule.unite, row.dose, row)} className='main-input' /></TableCell>
                   <TableCell align="left"><div className='percentage-input-container'><input id={"prod-percentage-"+index+'-'+j} disabled onBlur={(e)=>changePercentage(e, row, index, j)} type='number' value={getPercentage(row.dose, row.Molecule.dose)} className='main-input' /></div></TableCell>
                   <TableCell align="left">
                     <div onClick={(e)=>toggleValidate(row, e, index)} className={'validationCircle' + ( row.validation == 1 ? ' valid-medecin' : '') + ( row.validation == 2 ? ' valid-pharmacien' : '') }></div>
                   </TableCell>
+                  <TableCell align="left"><input type="number" className="main-input" /></TableCell>
+                  <TableCell align="left"><input type="time" className="main-input" disabled={row.validation != 0} value={row.heureAdmin || "10:00"} onChange={(e)=>changeHeureAdmin(row, e.target.value, index, j)} /></TableCell>
                 </TableRow>
               ))}
             </>

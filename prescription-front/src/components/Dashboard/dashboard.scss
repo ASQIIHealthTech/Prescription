@@ -257,7 +257,7 @@
     justify-content: flex-start;
     align-items: center;
     width: 690px;
-    height: 590px;
+    height: 540px;
     background-color: #fff;
     border-radius: 40px;
 
@@ -503,14 +503,14 @@
                 width: 760px;
             }
         }
-        .removeCureBtn{
-            width: 40px;
-            height: 40px;
-            background-color: #DCEBFD;
-            border: 2px solid #2663EE;
-            position: absolute;
-            left: 1020px;  
-        }
+    }
+    .removeBtn{
+        width: 40px;
+        height: 40px;
+        background-color: #DCEBFD;
+        border: 2px solid #2663EE;
+        position: absolute;
+        left: 1020px;  
     }
     .pres-parent{
         display: none;
@@ -560,7 +560,7 @@
         padding: 0 1rem 1rem 2rem;
 
         select, input{
-            width: 170px;
+            width: 140px;
         }
         .field-row{
             display: flex;
@@ -808,6 +808,15 @@
     flex-direction: column;
     row-gap: 1rem;
 }
+.addProd-modal-box{
+    padding: 0 2rem;
+    height: 500px;
+    width: 700px;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
 .ajustement-modal{
     padding: 0 2rem;
     height: 770px;
@@ -830,6 +839,13 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+
+        .conc-red{
+            color: red;
+        }
+        .conc-green{
+            color: green;
+        }
     }
     .ajustement-header{
         display: flex;
@@ -884,7 +900,7 @@
         align-items: center;
         justify-content: center;
         width: 1000px;
-        row-gap: 2rem;
+        row-gap: 1rem;
 
         .fab-bg{
             border: rgb(215, 215, 215) 2px solid;
@@ -928,7 +944,7 @@
             column-gap: 1rem;
 
             .patient{
-                flex: 7;
+                flex: 4;
                 padding: 1rem;
                 display: flex;
                 flex-direction: column;
@@ -945,6 +961,7 @@
                 flex: 3;
                 display: flex;
                 justify-content: center;
+                flex-direction: column;
                 align-items: center;
                 padding: 1rem;
                 border-radius: 25px;
@@ -984,7 +1001,8 @@
             justify-content: space-around;
             align-items: flex-start;
             flex-direction: column;
-            padding-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            padding-top: 1rem;
 
             .fields{
                 width: 100%;
@@ -1035,6 +1053,7 @@
                 flex-direction: column;
                 border-radius: 25px;
                 justify-content: space-around;
+                align-items: center;
 
                 h2{
                     padding: 0;
@@ -1100,10 +1119,21 @@
     background-color: rgb(236, 235, 235);
 }
 .fiche-container{
-    width: 600px;
+    width: 1400px;
 
     .name-container{
         border-bottom: black 1px solid;
         margin-bottom: 1rem;
+    }
+    .productsList{
+        height: auto;
+
+        input{
+            width: 100px !important;
+            
+        }
+        .date-controls{
+            display: none;
+        }
     }
 }

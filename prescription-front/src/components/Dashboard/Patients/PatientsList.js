@@ -15,7 +15,7 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
   let [filteredRows, setFilteredRows] = useState([]);
 
   const deletePatient = (patientId)=>{
-    if(confirm('are you sure you want to delete this patient?')){
+    if(window.confirm('are you sure you want to delete this patient?')){
       axios.post(process.env.REACT_APP_SERVER_URL + '/deletePatient', { patientId })
       .then(res => {
         console.log(res.data)
@@ -47,6 +47,7 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
   
   const columns = [
     { field: "DMI", headerName: "DMI", flex:1 },
+    { field: "index", headerName: "Index", flex:1 },
     { field: "nom", headerName: "Nom", flex:1 },
     { field: "prenom", headerName: "Prénom", flex:1 },
     { field: "birthDate", headerName: "Date Naissance", flex:1 },
@@ -134,7 +135,7 @@ export default function PatientList({ addPatient, searchArgs, search, setSearch,
             },
           }}
           pageSizeOptions={[5, 10, 25, 50]}
-          checkboxSelection
+          // checkboxSelection
         /> : <CircularProgress /> }
       </div>
     </div>

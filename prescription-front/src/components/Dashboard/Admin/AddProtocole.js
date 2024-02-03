@@ -14,6 +14,8 @@ export default function AddProtocole(){
         details: '',
         indications: '',
         type_histo: '',
+        parent: '',
+        ordre: 1
     })
     let [rows, setRows] = useState([])
 

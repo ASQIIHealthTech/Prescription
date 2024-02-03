@@ -65,10 +65,10 @@ export default function FractionTable({ data, adaptedDose, flacons }) {
             <TableRow>
               <TableCell>Spécialité</TableCell>
               <TableCell align="right">Dosage</TableCell>
+              <TableCell align="right">Volume unitaire</TableCell>
               <TableCell align="right">Quantité</TableCell>
               <TableCell align="right">Dose</TableCell>
-              <TableCell align="right">Volume unitaire</TableCell>
-              <TableCell align="right">Volume prélever</TableCell>
+              <TableCell align="right">Volume à prélever</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -77,17 +77,16 @@ export default function FractionTable({ data, adaptedDose, flacons }) {
                 <TableRow key={i}>
                     <TableCell align="left">{flac.name}</TableCell>
                     <TableCell align="right">{flac.dosage} mg</TableCell>
-                    <TableCell align="right"><input disabled={true} type='number' value={ (fractionDose > 0 && i==0) ? 1 : (flac.fracQuantity)} onChange={(e)=>changeNumber(e, flac, i)} className='main-input' /></TableCell>
-                    <TableCell align="right">{flac.dosage} mg</TableCell>
                     <TableCell align="right">{flac.volume} ml</TableCell>
-                    <TableCell align="right">{flac.volume * flac.fracQuantity} ml</TableCell>
+                    <TableCell align="right"><input disabled={true} type='number' value={ (fractionDose > 0 && i==0) ? 1 : (flac.fracQuantity)} onChange={(e)=>changeNumber(e, flac, i)} className='main-input' /></TableCell>
+                    <TableCell align="right">{(flac.dosage * flac.fraction).toFixed(2)} mg</TableCell>
+                    <TableCell align="right">{(flac.volume * flac.fraction).toFixed(2)} ml</TableCell>
                 </TableRow>
               ))
             }
             <TableRow>
-              <TableCell colSpan={3}>Total</TableCell>
+              <TableCell colSpan={4}>Total</TableCell>
               <TableCell align="right">{( fractionDose ).toFixed(2)} mg</TableCell>
-              <TableCell colSpan={1}></TableCell>
               <TableCell align="right">{( (flacons[0].volume * fractionDose) / flacons[0].dosage  ).toFixed(2)} ml</TableCell>
             </TableRow>
           </TableBody>
